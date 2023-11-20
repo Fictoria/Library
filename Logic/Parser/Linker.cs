@@ -144,11 +144,33 @@ public class Linker
                 throw new ResolveException($"unknown functor '{call.Functor}'");
             case Unary unary:
                 LinkExpression(program, unary.Expression);
-                expression.Type = unary.Expression.Type;
+
+                switch (unary.Operator)
+                {
+                    case "-":
+                        if (unary.Expression.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
+                            unary.Expression.Type.Equals(Fictoria.Logic.Type.Type.Float))
+                        {
+                            expression.Type = unary.Expression.Type;
+                            break;
+                        }
+                        throw new ParseException($"invalid type '{unary.Expression.Type}' for unary operator '{unary.Operator}'");
+                    case "!":
+                        if (unary.Expression.Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+                        {
+                            expression.Type = Fictoria.Logic.Type.Type.Boolean;
+                            break;
+                        }
+                        throw new ParseException($"invalid type '{unary.Expression.Type}' for unary operator '{unary.Operator}'");
+                    default:
+                        throw new ParseException($"unknown unary operator '{unary.Operator}'");
+                }
+                
                 break;
             case Infix infix:
                 LinkExpression(program, infix.Left);
                 LinkExpression(program, infix.Right);
+                
                 if (!infix.Left.Type.Equals(infix.Right.Type))
                 {
                     throw new ParseException($"mismatched types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
@@ -191,9 +213,11 @@ public class Linker
                         }
                         throw new ParseException($"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
                     default:
-                        throw new ParseException($"invalid infix operator '{infix.Operator}'");
+                        throw new ParseException($"unknown infix operator '{infix.Operator}'");
                 }
                 break;
+            default:
+                throw new ParseException($"unknown expression '{expression}'");
         }
     }
 }
