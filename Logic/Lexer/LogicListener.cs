@@ -126,6 +126,18 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitInfixExpression([NotNull] LogicParser.InfixExpressionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>wildcardExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>wildcardExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>identifierExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>
@@ -193,6 +205,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitParenthetical([NotNull] LogicParser.ParentheticalContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.wildcard"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWildcard([NotNull] LogicParser.WildcardContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.wildcard"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWildcard([NotNull] LogicParser.WildcardContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.literal"/>.
 	/// </summary>

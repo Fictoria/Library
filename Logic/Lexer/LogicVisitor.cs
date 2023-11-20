@@ -89,6 +89,13 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitInfixExpression([NotNull] LogicParser.InfixExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>wildcardExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>identifierExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>
@@ -128,6 +135,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitParenthetical([NotNull] LogicParser.ParentheticalContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.wildcard"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitWildcard([NotNull] LogicParser.WildcardContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.literal"/>.
 	/// </summary>

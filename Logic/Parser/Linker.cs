@@ -102,6 +102,7 @@ public class Linker
         switch (expression)
         {
             case Literal _:
+            case Wildcard _:
                 // nop
                 break;
             case Identifier identifier:

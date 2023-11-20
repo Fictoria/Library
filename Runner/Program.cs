@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Expression;
+using Fictoria.Logic.Fact;
 using Fictoria.Logic.Lexer;
 using Fictoria.Logic.Parser;
 using Parser = Fictoria.Logic.Parser.Parser;
@@ -58,11 +59,9 @@ public static class Program
                    greater(x: int, y: int) = x > y.
                    sample() = greater(3, 2) or greater(2, 3).
                    
-                   //can_pick_up(t: thing) =
-                   //     near(t) &
-                   //     not(carrying(?)).
+                   //carrying(wood2).
                    
-                   //flip(b: boolean) = !b | false.
+                   can_pick_up(t: thing) = near(t) and !carrying(_).
                    """;
         
         var inputStream = new AntlrInputStream(text);
@@ -76,9 +75,10 @@ public static class Program
         var program = (Fictoria.Logic.Program)visitor.Visit(ast);
         Linker.LinkAll(program);
         var context = new Context(program);
-        var p = program.Scope.Functions["sample"];
+        var p = program.Scope.Functions["can_pick_up"];
         var r = p.Evaluate(context, new List<Expression>
         {
+            new Identifier("wood1")
         });
         Console.Out.WriteLine(r);
     }

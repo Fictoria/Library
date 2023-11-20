@@ -149,6 +149,20 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitInfixExpression([NotNull] LogicParser.InfixExpressionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>wildcardExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>wildcardExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>identifierExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -228,6 +242,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParenthetical([NotNull] LogicParser.ParentheticalContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.wildcard"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterWildcard([NotNull] LogicParser.WildcardContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.wildcard"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitWildcard([NotNull] LogicParser.WildcardContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.literal"/>.
 	/// <para>The default implementation does nothing.</para>

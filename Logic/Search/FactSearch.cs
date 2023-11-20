@@ -1,5 +1,6 @@
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
+using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
 
 namespace Fictoria.Logic.Search;
@@ -22,7 +23,11 @@ public class FactSearch
                 for (int i = 0; i < fact.Arguments.Count; i++)
                 {
                     var value = fact.Arguments[i].Evaluate(context);
-                    if (value.Equals(values[i]))
+                    if (values[i].GetType() == typeof(Wildcard))
+                    {
+                        found = true;
+                    }
+                    else if (value.Equals(values[i]))
                     {
                         found = true;
                     }

@@ -39,6 +39,7 @@ function
 expression
     :   literal                                                         # literalExpression
     |   identifier                                                      # identifierExpression
+    |   wildcard                                                        # wildcardExpression
     |   parenthetical                                                   # parenExpression
     |   call                                                            # callExpression
     |   op=('-' | '!') expression                                       # unaryExpression
@@ -57,7 +58,11 @@ call
 parenthetical
     :   OPEN_PAREN expression CLOSE_PAREN
     ;
-    
+
+wildcard
+    :   WILDCARD
+    ;
+
 literal
     :   literalBool
     |   literalInt
@@ -97,6 +102,10 @@ FLOAT
 
 QUESTION
     :   '?'
+    ;
+
+WILDCARD
+    :   '_'
     ;
 
 EQUALS

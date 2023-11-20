@@ -150,6 +150,11 @@ public class Parser : LogicBaseVisitor<object>
         return new Identifier(identifier);
     }
 
+    public override object VisitWildcard(LogicParser.WildcardContext context)
+    {
+        return new Wildcard();
+    }
+
     public override object VisitParenthetical(LogicParser.ParentheticalContext context)
     {
         var expression = (Expression.Expression)Visit(context.expression());
