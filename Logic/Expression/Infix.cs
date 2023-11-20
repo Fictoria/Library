@@ -44,8 +44,12 @@ public class Infix : Expression
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Float))
         {
-            var left = (double)Left.Evaluate(context);
-            var right = (double)Right.Evaluate(context);
+            var leftRaw = Left.Evaluate(context);
+            var rightRaw = Right.Evaluate(context);
+            
+            // TODO this is inelegant and slow
+            var left = double.Parse(leftRaw.ToString());
+            var right = double.Parse(rightRaw.ToString());
 
             switch (Operator)
             {
@@ -56,22 +60,68 @@ public class Infix : Expression
                 case "*":
                     return left * right;
                 case "/":
+                    // TODO hmm
                     return left / right;
             }
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))
         {
-            var left = (bool)Left.Evaluate(context);
-            var right = (bool)Right.Evaluate(context);
-
-            switch (Operator)
+            if (Left.Type.Equals(Fictoria.Logic.Type.Type.Int))
             {
-                case "and":
-                    return left && right;
-                case "or":
-                    return left || right;
-                case "xor":
-                    return left ^ right;
+                var left = (long)Left.Evaluate(context);
+                var right = (long)Right.Evaluate(context);
+                switch (Operator)
+                {
+                    case ">":
+                        return left > right;
+                    case "<":
+                        return left < right;
+                    case ">=":
+                        return left >= right;
+                    case "<=":
+                        return left <= right;
+                    case "==":
+                        return left == right;
+                    case "!=":
+                        return left != right;
+                }
+            }
+            else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Float))
+            {
+                var left = (double)Left.Evaluate(context);
+                var right = (double)Right.Evaluate(context);
+                switch (Operator)
+                {
+                    case ">":
+                        return left > right;
+                    case "<":
+                        return left < right;
+                    case ">=":
+                        return left >= right;
+                    case "<=":
+                        return left <= right;
+                    case "==":
+                        // TODO epsilon
+                        return left == right;
+                    case "!=":
+                        // TODO epsilon
+                        return left != right;
+                }
+            }
+            else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+            {
+                var left = (bool)Left.Evaluate(context);
+                var right = (bool)Right.Evaluate(context);
+
+                switch (Operator)
+                {
+                    case "and":
+                        return left && right;
+                    case "or":
+                        return left || right;
+                    case "xor":
+                        return left ^ right;
+                }
             }
         }
 
