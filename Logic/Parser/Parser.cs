@@ -1,4 +1,3 @@
-using Antlr4.Runtime.Misc;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
@@ -27,10 +26,10 @@ public class Parser : LogicBaseVisitor<object>
             switch (statement)
             {
                 case Type.Type type:
-                    scope.Types[type.Name] = type;
+                    scope.DefineType(type);
                     break;
                 case Schema schema:
-                    scope.Schemata[schema.Name] = schema;
+                    scope.DefineSchema(schema);
                     break;
                 case Fact.Fact fact:
                     if (fact.Schema.Name == "instance")
@@ -38,15 +37,10 @@ public class Parser : LogicBaseVisitor<object>
                         continue;
                     }
                     
-                    if (!scope.Facts.ContainsKey(fact.Schema.Name))
-                    {
-                        scope.Facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
-                    }
-
-                    scope.Facts[fact.Schema.Name].Add(fact);
+                    scope.DefineFact(fact);
                     break;
                 case Function.Function function:
-                    scope.Functions[function.Name] = function;
+                    scope.DefineFunction(function);
                     break;
             }
         }
@@ -87,7 +81,7 @@ public class Parser : LogicBaseVisitor<object>
             
             var instance = context.argument(0).identifier().IDENTIFIER().GetText();
             var type = context.argument(1).identifier().IDENTIFIER().GetText();
-            scope.Instances[instance] = new Placeholder(type);
+            scope.DefineInstance(new Instance(instance, new Placeholder(type)));
             return new Fact.Fact(scope.Schemata["instance"], new List<Expression.Expression>());
         }
         

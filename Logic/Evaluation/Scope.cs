@@ -20,4 +20,34 @@ public class Scope
         Functions = new Dictionary<string, Function.Function>();
         Bindings = new Dictionary<string, object>();
     }
+    
+    public void DefineType(Type.Type type)
+    {
+        Types[type.Name] = type;
+    }
+    
+    public void DefineSchema(Schema schema)
+    {
+        Schemata[schema.Name] = schema;
+    }
+    
+    public void DefineFact(Fact.Fact fact)
+    {
+        var facts = Facts;
+        if (!facts.ContainsKey(fact.Schema.Name))
+        {
+            facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
+        }
+        facts[fact.Schema.Name].Add(fact);
+    }
+    
+    public void DefineInstance(Instance instance)
+    {
+        Instances[instance.Name] = instance.Type;
+    }
+
+    public void DefineFunction(Function.Function function)
+    {
+        Functions[function.Name] = function;
+    }
 }

@@ -40,11 +40,6 @@ public class Context
         return false;
     }
     
-    public void DefineType(Type.Type type)
-    {
-        Stack.Peek().Types[type.Name] = type;
-    }
-    
     public bool ResolveType(string name, out Type.Type type)
     {
         foreach (var container in Stack)
@@ -58,11 +53,6 @@ public class Context
         return false;
     }
     
-    public void DefineSchema(Schema schema)
-    {
-        Stack.Peek().Schemata[schema.Name] = schema;
-    }
-    
     public bool ResolveSchema(string name, out Schema schema)
     {
         foreach (var container in Stack)
@@ -74,16 +64,6 @@ public class Context
 
         schema = null!;
         return false;
-    }
-    
-    public void DefineFact(Fact.Fact fact)
-    {
-        var facts = Stack.Peek().Facts;
-        if (!facts.ContainsKey(fact.Schema.Name))
-        {
-            facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
-        }
-        facts[fact.Schema.Name].Add(fact);
     }
 
     public bool ResolveFact(string name, out ISet<Fact.Fact> facts)
@@ -99,11 +79,6 @@ public class Context
         return false;
     }
     
-    public void DefineInstance(Instance instance)
-    {
-        Stack.Peek().Instances[instance.Name] = instance.Type;
-    }
-    
     public bool ResolveInstance(string name, out Instance instance)
     {
         foreach (var container in Stack)
@@ -115,11 +90,6 @@ public class Context
 
         instance = null!;
         return false;
-    }
-
-    public void DefineFunction(Function.Function function)
-    {
-        Stack.Peek().Functions[function.Name] = function;
     }
     
     public bool ResolveFunction(string name, out Function.Function function)
