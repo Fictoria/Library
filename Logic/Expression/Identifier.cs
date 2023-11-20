@@ -16,7 +16,7 @@ public class Identifier : Expression
     {
         if (context.Resolve(Name, out var variable))
         {
-            return variable;
+            return ((Expression)variable).Evaluate(context);
         }
 
         if (context.ResolveInstance(Name, out var instance))

@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Misc;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
@@ -32,6 +33,11 @@ public class Parser : LogicBaseVisitor<object>
                     scope.Schemata[schema.Name] = schema;
                     break;
                 case Fact.Fact fact:
+                    if (fact.Schema.Name == "instance")
+                    {
+                        continue;
+                    }
+                    
                     if (!scope.Facts.ContainsKey(fact.Schema.Name))
                     {
                         scope.Facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
@@ -71,8 +77,22 @@ public class Parser : LogicBaseVisitor<object>
     public override object VisitFact(LogicParser.FactContext context)
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
+        
+        if (identifier == "instance")
+        {
+            if (context.argument().Length != 2)
+            {
+                throw new ParseException($"instance facts require exactly 2 arguments");
+            }
+            
+            var instance = context.argument(0).identifier().IDENTIFIER().GetText();
+            var type = context.argument(1).identifier().IDENTIFIER().GetText();
+            scope.Instances[instance] = new Placeholder(type);
+            return new Fact.Fact(scope.Schemata["instance"], new List<Expression.Expression>());
+        }
+        
         var arguments = context.argument().Select(a => (Expression.Expression)Visit(a)).ToList();
-
+        
         if (scope.Schemata.TryGetValue(identifier, out var schema))
         {
             return new Fact.Fact(schema, arguments);
@@ -123,9 +143,9 @@ public class Parser : LogicBaseVisitor<object>
         throw new ParseException($"invalid float literal '{value}'");
     }
 
-    public override object VisitIdentifierExpression(LogicParser.IdentifierExpressionContext context)
+    public override object VisitIdentifier(LogicParser.IdentifierContext context)
     {
-        var identifier = context.identifier().IDENTIFIER().GetText();
+        var identifier = context.IDENTIFIER().GetText();
 
         return new Identifier(identifier);
     }

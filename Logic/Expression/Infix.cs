@@ -22,8 +22,12 @@ public class Infix : Expression
     {
         if (Type.Equals(Fictoria.Logic.Type.Type.Int))
         {
-            var left = (long)Left.Evaluate(context);
-            var right = (long)Right.Evaluate(context);
+            var leftRaw = Left.Evaluate(context);
+            var rightRaw = Right.Evaluate(context);
+            
+            // TODO this is inelegant and slow
+            var left = long.Parse(leftRaw.ToString());
+            var right = long.Parse(rightRaw.ToString());
 
             switch (Operator)
             {

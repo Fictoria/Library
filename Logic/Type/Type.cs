@@ -33,7 +33,7 @@ public class Type
     public Type(string name, List<Type>? parents = null)
     {
         Name = name;
-        Parents = parents;
+        Parents = parents ?? new List<Type>();
     }
 
     public bool IsA(Type other)
