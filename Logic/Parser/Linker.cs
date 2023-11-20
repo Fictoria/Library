@@ -118,6 +118,12 @@ public class Linker
                     break;
                 }
 
+                if (scope.Types.TryGetValue(identifier.Name, out var type))
+                {
+                    expression.Type = type;
+                    break;
+                }
+
                 throw new ResolveException($"unknown symbol '{identifier.Name}'");
             case Parenthetical parenthetical:
                 LinkExpression(program, parenthetical);

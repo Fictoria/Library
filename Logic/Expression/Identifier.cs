@@ -1,4 +1,5 @@
 using Fictoria.Logic.Evaluation;
+using Fictoria.Logic.Exceptions;
 
 namespace Fictoria.Logic.Expression;
 
@@ -23,7 +24,12 @@ public class Identifier : Expression
         {
             return instance;
         }
-        
-        throw new NotImplementedException();
+
+        if (context.ResolveType(Name, out var type))
+        {
+            return type;
+        }
+
+        throw new ResolveException($"unknown symbol '{Name}'");
     }
 }

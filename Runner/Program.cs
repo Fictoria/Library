@@ -47,7 +47,7 @@ public static class Program
                    location(tree1, 5, 2).
                    location(tree2, 3, 4).
                    location(fp1, 4, 5).
-                   location(wood1, 5, 2).
+                   //location(wood1, 5, 2).
                    location(wood2, 3, 4).
                    
                    near(t: thing).
@@ -55,13 +55,8 @@ public static class Program
                    
                    near(wood1).
                    
-                   double(x: int) = x * 2.
-                   greater(x: int, y: int) = x > y.
-                   sample() = greater(3, 2) or greater(2, 3).
-                   
-                   //carrying(wood2).
-                   
-                   can_pick_up(t: thing) = near(t) and !carrying(_).
+                   can_find(t: thing) = location(t, _, _).
+                   //provides_wood(t: thing) = provides(t, wood).
                    """;
         
         var inputStream = new AntlrInputStream(text);
@@ -75,10 +70,10 @@ public static class Program
         var program = (Fictoria.Logic.Program)visitor.Visit(ast);
         Linker.LinkAll(program);
         var context = new Context(program);
-        var p = program.Scope.Functions["can_pick_up"];
+        var p = program.Scope.Functions["can_find"];
         var r = p.Evaluate(context, new List<Expression>
         {
-            new Identifier("wood1")
+            new Identifier("wood")
         });
         Console.Out.WriteLine(r);
     }

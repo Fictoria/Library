@@ -31,8 +31,15 @@ public class FactSearch
                     {
                         found = true;
                     }
-                    else if (fact.Arguments[i].GetType() == typeof(Type.Type) &&
-                             ((Instance)value).Type.IsA((Type.Type)value))
+                    else if (value.GetType() == typeof(Type.Type) &&
+                             values[i].GetType() == typeof(Instance) &&
+                             ((Instance)values[i]).Type.IsA((Type.Type)value))
+                    {
+                        found = true;
+                    }
+                    else if (values[i].GetType() == typeof(Type.Type) &&
+                             value.GetType() == typeof(Instance) &&
+                             ((Instance)value).Type.IsA((Type.Type)values[i]))
                     {
                         found = true;
                     }
