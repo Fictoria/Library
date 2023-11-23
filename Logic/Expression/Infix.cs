@@ -18,6 +18,7 @@ public class Infix : Expression
         Type = Fictoria.Logic.Type.Type.Nothing;
     }
     
+    // TODO this method is long
     public object Evaluate(Context context)
     {
         if (Type.Equals(Fictoria.Logic.Type.Type.Int))
@@ -44,12 +45,9 @@ public class Infix : Expression
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Float))
         {
-            var leftRaw = Left.Evaluate(context);
-            var rightRaw = Right.Evaluate(context);
-            
             // TODO this is inelegant and slow
-            var left = double.Parse(leftRaw.ToString());
-            var right = double.Parse(rightRaw.ToString());
+            var left = double.Parse(Left.Evaluate(context).ToString());
+            var right = double.Parse(Right.Evaluate(context).ToString());
 
             switch (Operator)
             {
@@ -70,6 +68,7 @@ public class Infix : Expression
             {
                 var left = (long)Left.Evaluate(context);
                 var right = (long)Right.Evaluate(context);
+                
                 switch (Operator)
                 {
                     case ">":
@@ -90,6 +89,7 @@ public class Infix : Expression
             {
                 var left = (double)Left.Evaluate(context);
                 var right = (double)Right.Evaluate(context);
+                
                 switch (Operator)
                 {
                     case ">":

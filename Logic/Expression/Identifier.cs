@@ -30,6 +30,6 @@ public class Identifier : Expression
             return type;
         }
 
-        throw new ResolveException($"unknown symbol '{Name}'");
+        throw new ResolveException($"unknown identifier '{Name}'");
     }
 }
