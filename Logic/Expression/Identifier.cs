@@ -11,6 +11,7 @@ public class Identifier : Expression
     public Identifier(string name)
     {
         Name = name;
+        Type = Logic.Type.Type.Nothing;
     }
     
     public object Evaluate(Context context)

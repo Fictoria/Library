@@ -10,4 +10,11 @@ public class Program
     {
         Scope = scope;
     }
+
+    public object Evaluate(string code)
+    {
+        var context = new Context(this);
+        var expression = Loader.LoadExpression(code);
+        return expression.Evaluate(context);
+    }
 }

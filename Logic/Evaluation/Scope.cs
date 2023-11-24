@@ -40,6 +40,9 @@ public class Scope
     {
         Functions[function.Name] = function;
     }
-    
-    // TODO add scope merging
+
+    public void Merge(Scope other)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,13 +1,12 @@
-﻿using System.Formats.Asn1;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
+using Fictoria.Logic;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Expression;
-using Fictoria.Logic.Fact;
 using Fictoria.Logic.Lexer;
 using Fictoria.Logic.Parser;
 using Parser = Fictoria.Logic.Parser.Parser;
 
-namespace Logic;
+namespace Runner;
 
 public static class Program
 {
@@ -53,28 +52,16 @@ public static class Program
                    near(t: thing).
                    carrying(t: thing).
                    
+                   can_pick_up(t: thing) = near(t) and !carrying(_).
+                   
                    near(wood1).
                    
                    can_find(t: thing) = location(t, _, _).
                    //provides_wood(t: thing) = provides(t, wood).
                    """;
-        
-        var inputStream = new AntlrInputStream(text);
-        var lexer = new LogicLexer(inputStream);
-        var tokens = new CommonTokenStream(lexer);
-        var parser = new LogicParser(tokens);
 
-        var ast = parser.logic();
-        var visitor = new Parser();
-        
-        var program = (Fictoria.Logic.Program)visitor.Visit(ast);
-        Linker.LinkAll(program);
-        var context = new Context(program);
-        var p = program.Scope.Functions["can_find"];
-        var r = p.Evaluate(context, new List<Expression>
-        {
-            new Identifier("wood")
-        });
-        Console.Out.WriteLine(r);
+        var program = Loader.Load(text);
+        var result = program.Evaluate("can_find(wood)");
+        Console.Out.WriteLine(result);
     }
 }
