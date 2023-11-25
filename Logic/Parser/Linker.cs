@@ -131,19 +131,19 @@ public class Linker
             case Identifier identifier:
                 if (scope.Bindings.TryGetValue(identifier.Name, out var variable))
                 {
-                    expression.Type = (Type.Type)variable;
+                    identifier.Type = (Type.Type)variable;
                     break;
                 }
 
                 if (scope.Instances.TryGetValue(identifier.Name, out var instance))
                 {
-                    expression.Type = instance;
+                    identifier.Type = instance;
                     break;
                 }
 
                 if (scope.Types.TryGetValue(identifier.Name, out var type))
                 {
-                    expression.Type = type;
+                    identifier.Type = type;
                     break;
                 }
 
@@ -177,6 +177,12 @@ public class Linker
                     }
                 }
                 tuple.Type = Type.Type.Tuple;
+                break;
+            case Assign assign:
+                scope.Bindings[assign.Variable] = Type.Type.Variable;
+                LinkExpression(program, assign.Value);
+                assign.Type = assign.Value.Type;
+                scope.Bindings[assign.Variable] = assign.Value.Type;
                 break;
             case Call call:
                 if (scope.Schemata.TryGetValue(call.Functor, out var schema))

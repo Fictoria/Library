@@ -110,6 +110,13 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>assignExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignExpression([NotNull] LogicParser.AssignExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>identifierExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>
@@ -137,6 +144,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitUnaryExpression([NotNull] LogicParser.UnaryExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.assign"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssign([NotNull] LogicParser.AssignContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.call"/>.
 	/// </summary>

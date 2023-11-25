@@ -187,6 +187,14 @@ public class Parser : LogicBaseVisitor<object>
         return new Infix(context.GetText(), left, op, right);
     }
 
+    public override object VisitAssign(LogicParser.AssignContext context)
+    {
+        var variable = context.identifier().IDENTIFIER().GetText();
+        var expression = (Expression.Expression)Visit(context.expression());
+        
+        return new Assign(context.GetText(), variable, expression);
+    }
+
     public override object VisitParameter(LogicParser.ParameterContext context)
     {
         var name = context.identifier()[0].IDENTIFIER().GetText();

@@ -22,6 +22,7 @@ public class Type
     public static readonly Type Object    = new("object");
     public static readonly Type Schema    = new("schema");
     public static readonly Type Function  = new("function");
+    public static readonly Type Variable  = new("variable");
     public static readonly Type Tuple     = new("tuple");
     public static readonly HashSet<Type> BuiltIns = new()
     {
