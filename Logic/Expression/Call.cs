@@ -6,17 +6,16 @@ namespace Fictoria.Logic.Expression;
 
 public class Call : Expression
 {
-    public Type.Type Type { get; set; }
     public string Functor { get; }
-    public List<Expression> Arguments { get; }
+    public IEnumerable<Expression> Arguments { get; }
 
-    public Call(string functor, List<Expression> arguments)
+    public Call(string text, string functor, IEnumerable<Expression> arguments) : base(text)
     {
         Functor = functor;
         Arguments = arguments;
     }
 
-    public object Evaluate(Context context)
+    public override object Evaluate(Context context)
     {
         if (context.ResolveSchema(Functor, out var schema))
         {
@@ -25,14 +24,9 @@ public class Call : Expression
 
         if (context.ResolveFunction(Functor, out var function))
         {
-            return function.Evaluate(context, Arguments);
+            return function.Evaluate(context, Arguments.ToList());
         }
 
         throw new EvaluateException($"call expression with functor '{Functor}' is not a schema or function");
-    }
-
-    public override string ToString()
-    {
-        return $"{Functor}({String.Join(", ", Arguments.Select(a => a.ToString()))})";
     }
 }

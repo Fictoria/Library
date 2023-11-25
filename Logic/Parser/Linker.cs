@@ -1,6 +1,8 @@
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
+using Fictoria.Logic.Fact;
 using Fictoria.Logic.Type;
+using Tuple = Fictoria.Logic.Expression.Tuple;
 
 namespace Fictoria.Logic.Parser;
 
@@ -10,6 +12,7 @@ public class Linker
     {
         LinkTypes(program);
         LinkSchemata(program);
+        LinkFacts(program);
         LinkInstances(program);
         LinkFunctions(program);
     }
@@ -21,9 +24,9 @@ public class Linker
         {
             type.Parents = type.Parents.Select(parent =>
             {
-                if (parent.GetType() != typeof(Placeholder)) return parent;
+                if (parent.GetType() != typeof(TypePlaceholder)) return parent;
                 
-                var placeholder = (Placeholder)parent;
+                var placeholder = (TypePlaceholder)parent;
                 if (scope.Types.TryGetValue(placeholder.Name, out var found))
                 {
                     return found;
@@ -33,7 +36,7 @@ public class Linker
             }).ToList();
         }
     }
-
+    
     private static void LinkSchemata(Program program)
     {
         var scope = program.Scope;
@@ -41,9 +44,9 @@ public class Linker
         {
             foreach (var parameter in schema.Parameters)
             {
-                if (parameter.Type.GetType() != typeof(Placeholder)) continue;
+                if (parameter.Type.GetType() != typeof(TypePlaceholder)) continue;
                 
-                var placeholder = (Placeholder)parameter.Type;
+                var placeholder = (TypePlaceholder)parameter.Type;
                 if (scope.Types.TryGetValue(placeholder.Name, out var found))
                 {
                     parameter.Type = found;
@@ -55,14 +58,34 @@ public class Linker
         }
     }
 
+    private static void LinkFacts(Program program)
+    {
+        var scope = program.Scope;
+        foreach (var (_, facts) in scope.Facts)
+        {
+            foreach (var fact in facts)
+            {
+                if (fact.Schema.GetType() != typeof(SchemaPlaceholder)) continue;
+            
+                if (scope.Schemata.TryGetValue(fact.Schema.Name, out var found))
+                {
+                    fact.Schema = found;
+                    continue;
+                }
+
+                throw new ParseException($"unknown schema '{fact.Schema.Name}'");
+            }
+        }
+    }
+
     private static void LinkInstances(Program program)
     {
         var scope = program.Scope;
         foreach (var (name, type) in scope.Instances)
         {
-            if (type.GetType() != typeof(Placeholder)) continue;
+            if (type.GetType() != typeof(TypePlaceholder)) continue;
             
-            var placeholder = (Placeholder)type;
+            var placeholder = (TypePlaceholder)type;
             if (scope.Types.TryGetValue(placeholder.Name, out var found))
             {
                 scope.Instances[name] = found;
@@ -80,9 +103,9 @@ public class Linker
         {
             foreach (var parameter in function.Parameters)
             {
-                if (parameter.Type.GetType() != typeof(Placeholder)) continue;
+                if (parameter.Type.GetType() != typeof(TypePlaceholder)) continue;
                 
-                var placeholder = (Placeholder)parameter.Type;
+                var placeholder = (TypePlaceholder)parameter.Type;
                 if (scope.Types.TryGetValue(placeholder.Name, out var found))
                 {
                     parameter.Type = found;
@@ -125,25 +148,67 @@ public class Linker
                 }
 
                 throw new ResolveException($"unknown symbol '{identifier.Name}'");
+            case Binding binding:
+                if (scope.Bindings.TryGetValue("$", out var found))
+                {
+                    binding.Type = (Type.Type)found;
+                    scope.Bindings[binding.Name] = (Type.Type)found;
+                    break;
+                }
+                
+                throw new ResolveException($"search binding '{binding}' is not valid here");
             case Parenthetical parenthetical:
                 LinkExpression(program, parenthetical);
                 expression.Type = parenthetical.Type;
+                if (parenthetical.Expression.ContainsBinding)
+                {
+                    parenthetical.ContainsBinding = true;
+                    parenthetical.BindingName = parenthetical.Expression.BindingName;
+                }
                 break;
-            case Call call:
-                foreach (var e in call.Arguments)
+            case Tuple tuple:
+                foreach (var e in tuple.Expressions)
                 {
                     LinkExpression(program, e);
+                    if (e.ContainsBinding)
+                    {
+                        tuple.ContainsBinding = true;
+                        tuple.BindingName = e.BindingName;
+                    }
                 }
-
-                // TODO this will cause a double-resolve; can solve with finer granularity models
-                if (scope.Schemata.TryGetValue(call.Functor, out var _))
+                tuple.Type = Type.Type.Tuple;
+                break;
+            case Call call:
+                if (scope.Schemata.TryGetValue(call.Functor, out var schema))
                 {
                     expression.Type = Fictoria.Logic.Type.Type.Boolean;
+
+                    var arguments = call.Arguments.ToList();
+                    for (int i = 0; i < arguments.Count; i++)
+                    {
+                        //TODO this loop is inelegant
+                        var e = arguments[i];
+                        if (e is Binding b)
+                        {
+                            var parameterType = schema.Parameters[i].Type;
+                            scope.Bindings[b.Name] = parameterType;
+                            b.Type = parameterType;
+                        }
+                        
+                        scope.Bindings["$"] = schema.Parameters[i].Type;
+                        LinkExpression(program, e);
+                        scope.Bindings.Remove("$");
+                    }
                     break;
                 }
 
                 if (scope.Functions.TryGetValue(call.Functor, out var function))
                 {
+                    foreach (var e in call.Arguments)
+                    {
+                        LinkExpression(program, e);
+                    }
+                    
                     expression.Type = function.Expression.Type;
                     break;
                 }
@@ -151,6 +216,11 @@ public class Linker
                 throw new ResolveException($"unknown functor '{call.Functor}'");
             case Unary unary:
                 LinkExpression(program, unary.Expression);
+                if (unary.Expression.ContainsBinding)
+                {
+                    unary.ContainsBinding = true;
+                    unary.BindingName = unary.Expression.BindingName;
+                }
 
                 switch (unary.Operator)
                 {
@@ -177,10 +247,21 @@ public class Linker
             case Infix infix:
                 LinkExpression(program, infix.Left);
                 LinkExpression(program, infix.Right);
+                //TODO this could be wonky
+                if (infix.Left.ContainsBinding)
+                {
+                    infix.ContainsBinding = true;
+                    infix.BindingName = infix.Left.BindingName;
+                }
+                if (infix.Right.ContainsBinding)
+                {
+                    infix.ContainsBinding = true;
+                    infix.BindingName = infix.Right.BindingName;
+                }
                 
                 if (!infix.Left.Type.Equals(infix.Right.Type))
                 {
-                    throw new ParseException($"mismatched types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
+                    throw new ParseException($"mismatched types '{infix.Left.Type}' and '{infix.Right.Type}' for '{infix.Operator}' infix expression");
                 }
 
                 switch (infix.Operator)
@@ -222,6 +303,14 @@ public class Linker
                     default:
                         throw new ParseException($"unknown infix operator '{infix.Operator}'");
                 }
+                break;
+            case Series series:
+                foreach (var e in series.Expressions)
+                {
+                    LinkExpression(program, e);
+                }
+
+                series.Type = series.Expressions.Last().Type;
                 break;
             default:
                 throw new ParseException($"unknown expression '{expression}'");

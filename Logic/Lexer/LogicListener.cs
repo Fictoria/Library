@@ -114,6 +114,30 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitCallExpression([NotNull] LogicParser.CallExpressionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by the <c>bindingExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBindingExpression([NotNull] LogicParser.BindingExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>bindingExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBindingExpression([NotNull] LogicParser.BindingExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTupleExpression([NotNull] LogicParser.TupleExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTupleExpression([NotNull] LogicParser.TupleExpressionContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>infixExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>
@@ -206,6 +230,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitParenthetical([NotNull] LogicParser.ParentheticalContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.tuple"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterTuple([NotNull] LogicParser.TupleContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.tuple"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitTuple([NotNull] LogicParser.TupleContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.wildcard"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -255,6 +289,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitLiteralFloat([NotNull] LogicParser.LiteralFloatContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBinding([NotNull] LogicParser.BindingContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBinding([NotNull] LogicParser.BindingContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.parameter"/>.
 	/// </summary>

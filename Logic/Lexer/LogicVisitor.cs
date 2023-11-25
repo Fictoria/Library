@@ -82,6 +82,20 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCallExpression([NotNull] LogicParser.CallExpressionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>bindingExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBindingExpression([NotNull] LogicParser.BindingExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTupleExpression([NotNull] LogicParser.TupleExpressionContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>infixExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>
@@ -136,6 +150,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParenthetical([NotNull] LogicParser.ParentheticalContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.tuple"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitTuple([NotNull] LogicParser.TupleContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.wildcard"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -165,6 +185,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitLiteralFloat([NotNull] LogicParser.LiteralFloatContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.binding"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitBinding([NotNull] LogicParser.BindingContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.parameter"/>.
 	/// </summary>

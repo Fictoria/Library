@@ -1,10 +1,10 @@
 namespace Fictoria.Logic.Type;
 
-public class Placeholder : Type
+public class TypePlaceholder : Type
 {
-    public List<Placeholder> PlaceholderParents;
+    public List<TypePlaceholder> PlaceholderParents;
     
-    public Placeholder(string name, List<Placeholder>? parents = null) : base(name, new List<Type>())
+    public TypePlaceholder(string name, List<TypePlaceholder>? parents = null) : base(name, new List<Type>())
     {
         parents ??= new();
         PlaceholderParents = parents;
@@ -22,6 +22,7 @@ public class Type
     public static readonly Type Object    = new("object");
     public static readonly Type Schema    = new("schema");
     public static readonly Type Function  = new("function");
+    public static readonly Type Tuple     = new("tuple");
     public static readonly HashSet<Type> BuiltIns = new()
     {
         Nothing, Anything, Boolean, Int, Float, Symbol, Object, Schema, Function

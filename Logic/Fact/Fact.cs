@@ -2,7 +2,7 @@ namespace Fictoria.Logic.Fact;
 
 public class Fact
 {
-    public Schema Schema { get; }
+    public Schema Schema { get; set; }
     public List<Expression.Expression> Arguments { get; }
 
     public Fact(Schema schema, List<Expression.Expression> arguments)

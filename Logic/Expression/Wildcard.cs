@@ -4,13 +4,9 @@ namespace Fictoria.Logic.Expression;
 
 public class Wildcard : Expression
 {
-    public Type.Type Type
-    {
-        get => Fictoria.Logic.Type.Type.Anything;
-        set => throw new NotImplementedException();
-    }
+    public Wildcard() : base("_", Fictoria.Logic.Type.Type.Anything) {}
 
-    public object Evaluate(Context context)
+    public override object Evaluate(Context context)
     {
         return this;
     }

@@ -26,6 +26,11 @@ public class Context
     {
         Stack.Peek().Bindings[name] = value;
     }
+
+    public void Unbind(string name)
+    {
+        Stack.Peek().Bindings.Remove(name);
+    }
     
     public bool Resolve(string name, out object value)
     {

@@ -2,6 +2,11 @@ using Fictoria.Logic.Type;
 
 namespace Fictoria.Logic.Fact;
 
+public class SchemaPlaceholder : Schema
+{
+    public SchemaPlaceholder(string name) : base(name, new List<Parameter>()) {}
+}
+
 public class Schema
 {
     public string Name { get; }

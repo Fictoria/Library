@@ -6,21 +6,13 @@ public class Parenthetical : Expression
 {
     public Expression Expression { get; }
 
-    public Type.Type Type { get; set; }
-
-    public Parenthetical(Expression expression)
+    public Parenthetical(string text, Expression expression) : base(text)
     {
         Expression = expression;
-        Type = Fictoria.Logic.Type.Type.Nothing;
     }
 
-    public object Evaluate(Context context)
+    public override object Evaluate(Context context)
     {
         return Expression.Evaluate(context);
-    }
-
-    public override string ToString()
-    {
-        return $"({Expression})";
     }
 }

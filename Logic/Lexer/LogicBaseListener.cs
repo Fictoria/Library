@@ -135,6 +135,34 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitCallExpression([NotNull] LogicParser.CallExpressionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by the <c>bindingExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBindingExpression([NotNull] LogicParser.BindingExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>bindingExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBindingExpression([NotNull] LogicParser.BindingExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTupleExpression([NotNull] LogicParser.TupleExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>tupleExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTupleExpression([NotNull] LogicParser.TupleExpressionContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>infixExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
@@ -243,6 +271,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParenthetical([NotNull] LogicParser.ParentheticalContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.tuple"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterTuple([NotNull] LogicParser.TupleContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.tuple"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitTuple([NotNull] LogicParser.TupleContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.wildcard"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -302,6 +342,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitLiteralFloat([NotNull] LogicParser.LiteralFloatContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.binding"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBinding([NotNull] LogicParser.BindingContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.binding"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBinding([NotNull] LogicParser.BindingContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.parameter"/>.
 	/// <para>The default implementation does nothing.</para>

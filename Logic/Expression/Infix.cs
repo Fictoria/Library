@@ -5,21 +5,19 @@ namespace Fictoria.Logic.Expression;
 
 public class Infix : Expression
 {
-    public Type.Type Type { get; set; }
     public Expression Left { get; }
     public Expression Right { get; }
     public string Operator { get; }
 
-    public Infix(Expression left, string op, Expression right)
+    public Infix(string text, Expression left, string op, Expression right) : base(text)
     {
         Left = left;
         Operator = op;
         Right = right;
-        Type = Fictoria.Logic.Type.Type.Nothing;
     }
     
     // TODO this method is long
-    public object Evaluate(Context context)
+    public override object Evaluate(Context context)
     {
         if (Type.Equals(Fictoria.Logic.Type.Type.Int))
         {

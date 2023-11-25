@@ -16,7 +16,7 @@ public class Function
         Expression = expression;
     }
 
-    public object Evaluate(Context context, List<Expression.Expression> arguments)
+    public object Evaluate(Context context, IList<Expression.Expression> arguments)
     {
         context.Push();
         for (var i = 0; i < arguments.Count; i++)

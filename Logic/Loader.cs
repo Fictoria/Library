@@ -41,6 +41,19 @@ public class Loader
         return (Expression.Expression)visitor.Visit(ast);
     }
 
+    public static Fact.Fact LoadFact(string code)
+    {
+        var inputStream = new AntlrInputStream(code);
+        var lexer = new LogicLexer(inputStream);
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new LogicParser(tokens);
+
+        var ast = parser.fact();
+        var visitor = new Parser.Parser();
+        
+        return (Fact.Fact)visitor.Visit(ast);
+    }
+
     public static Program Merge(Program program, string code)
     {
         var scope = program.Scope;

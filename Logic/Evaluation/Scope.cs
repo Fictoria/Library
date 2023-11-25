@@ -4,13 +4,43 @@ namespace Fictoria.Logic.Evaluation;
 
 public class Scope
 {
-    public IDictionary<string, Type.Type> Types { get; } = new Dictionary<string, Type.Type>();
-    public IDictionary<string, Schema> Schemata { get; } = new Dictionary<string, Schema>();
-    public IDictionary<string, ISet<Fact.Fact>> Facts { get; } = new Dictionary<string, ISet<Fact.Fact>>();
-    public IDictionary<string, Type.Type> Instances { get; } = new Dictionary<string, Type.Type>();
-    public IDictionary<string, Function.Function> Functions { get; } = new Dictionary<string, Function.Function>();
-    public IDictionary<string, object> Bindings { get; } = new Dictionary<string, object>();
+    public IDictionary<string, Type.Type> Types { get; private set; }
+    public IDictionary<string, Schema> Schemata { get; private set; }
+    public IDictionary<string, ISet<Fact.Fact>> Facts { get; private set; }
+    public IDictionary<string, Type.Type> Instances { get; private set; }
+    public IDictionary<string, Function.Function> Functions { get; private set; }
+    public IDictionary<string, object> Bindings { get; private set; }
 
+    public Scope()
+    {
+        Types = new Dictionary<string, Type.Type>();
+        Schemata = new Dictionary<string, Schema>();
+        Facts = new Dictionary<string, ISet<Fact.Fact>>();
+        Instances = new Dictionary<string, Type.Type>();
+        Functions = new Dictionary<string, Function.Function>();
+        Bindings = new Dictionary<string, object>();
+    }
+
+    /// <summary>
+    /// Shallow clones the facts from <paramref name="scope"/>, but keeps everything else.
+    /// </summary>
+    /// <param name="scope">The scope from which to clone and copy.</param>
+    public Scope(Scope scope)
+    {
+        Types = scope.Types;
+        Schemata = scope.Schemata;
+        Instances = scope.Instances;
+        Functions = scope.Functions;
+        Bindings = scope.Bindings;
+        
+        var clone = new Dictionary<string, ISet<Fact.Fact>>();
+        foreach (var (schema, set) in scope.Facts)
+        {
+            clone[schema] = new HashSet<Fact.Fact>(set);
+        }
+        Facts = clone;
+    }
+    
     public void DefineType(Type.Type type)
     {
         Types[type.Name] = type;

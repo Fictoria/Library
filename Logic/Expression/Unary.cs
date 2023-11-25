@@ -5,18 +5,16 @@ namespace Fictoria.Logic.Expression;
 
 public class Unary : Expression
 {
-    public Type.Type Type { get; set; }
     public string Operator { get; }
     public Expression Expression { get; }
 
-    public Unary(string op, Expression expression)
+    public Unary(string text, string op, Expression expression) : base(text)
     {
         Operator = op;
         Expression = expression;
-        Type = Fictoria.Logic.Type.Type.Nothing;
     }
     
-    public object Evaluate(Context context)
+    public override object Evaluate(Context context)
     {
         var result = Expression.Evaluate(context);
         

@@ -32,7 +32,7 @@ argument
     ;
 
 function
-    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN EQUALS expression
+    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN EQUALS expression (SEMICOLON expression)*
         PERIOD
     ;
     
@@ -40,15 +40,16 @@ expression
     :   literal                                                         # literalExpression
     |   identifier                                                      # identifierExpression
     |   wildcard                                                        # wildcardExpression
+    |   binding                                                         # bindingExpression
     |   parenthetical                                                   # parenExpression
+    |   tuple                                                           # tupleExpression
     |   call                                                            # callExpression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op=('+' | '-') right=expression                 # infixExpression
     |   left=expression op=('*' | '/') right=expression                 # infixExpression
-    |   left=expression op=('and' | 'or' | 'xor') right=expression      # infixExpression
     |   left=expression op=('>' | '<' | '>=' | '<=') right=expression   # infixExpression
     |   left=expression op=('==' | '!=') right=expression               # infixExpression
-//    |   expression (COMMA expression)+                                  # seriesExpression
+    |   left=expression op=('and' | 'or' | 'xor') right=expression      # infixExpression
     ;
 
 call
@@ -57,6 +58,10 @@ call
 
 parenthetical
     :   OPEN_PAREN expression CLOSE_PAREN
+    ;
+
+tuple
+    :   OPEN_BRACK expression (COMMA expression)+ CLOSE_BRACK
     ;
 
 wildcard
@@ -79,7 +84,13 @@ literalInt
 literalFloat
     :   FLOAT
     ;
-    
+
+binding
+    :   COLON COLON identifier
+//TODO support expressions like _ > 5 instead of a: > 5
+//    |   WILDCARD
+    ;
+
 parameter
     :   identifier COLON identifier
     ;
@@ -93,7 +104,7 @@ IDENTIFIER
     ;
 
 INT
-    :   [1-9] [0-9]*
+    :   [0-9]+
     ;
 
 FLOAT
@@ -119,6 +130,14 @@ OPEN_PAREN
 CLOSE_PAREN
     :   ')'
     ;
+
+OPEN_BRACK
+    :   '['
+    ;
+    
+CLOSE_BRACK
+    :   ']'
+    ;
     
 PIPE
     :   '|'
@@ -126,6 +145,10 @@ PIPE
 
 COLON
     :   ':'
+    ;
+
+SEMICOLON
+    :   ';'
     ;
 
 COMMA
