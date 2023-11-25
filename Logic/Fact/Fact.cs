@@ -4,11 +4,13 @@ public class Fact
 {
     public Schema Schema { get; set; }
     public List<Expression.Expression> Arguments { get; }
+    public bool Negated { get; }
 
-    public Fact(Schema schema, List<Expression.Expression> arguments)
+    public Fact(Schema schema, List<Expression.Expression> arguments, bool negated = false)
     {
         Schema = schema;
         Arguments = arguments;
+        Negated = negated;
     }
 
     public override string ToString()
@@ -16,7 +18,7 @@ public class Fact
         return Schema.Name + "(" + String.Join(", ", Arguments.Select(a => a.ToString())) + ")";
     }
 
-    protected bool Equals(Fact other)
+    private bool Equals(Fact other)
     {
         return Schema.Equals(other.Schema) && Arguments.Equals(other.Arguments);
     }

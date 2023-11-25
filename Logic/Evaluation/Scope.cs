@@ -7,6 +7,7 @@ public class Scope
     public IDictionary<string, Type.Type> Types { get; private set; }
     public IDictionary<string, Schema> Schemata { get; private set; }
     public IDictionary<string, ISet<Fact.Fact>> Facts { get; private set; }
+    public IDictionary<string, ISet<Fact.Fact>> NegatedFacts { get; private set; }
     public IDictionary<string, Type.Type> Instances { get; private set; }
     public IDictionary<string, Function.Function> Functions { get; private set; }
     public IDictionary<string, object> Bindings { get; private set; }
@@ -16,6 +17,7 @@ public class Scope
         Types = new Dictionary<string, Type.Type>();
         Schemata = new Dictionary<string, Schema>();
         Facts = new Dictionary<string, ISet<Fact.Fact>>();
+        NegatedFacts = new Dictionary<string, ISet<Fact.Fact>>();
         Instances = new Dictionary<string, Type.Type>();
         Functions = new Dictionary<string, Function.Function>();
         Bindings = new Dictionary<string, object>();
@@ -39,6 +41,7 @@ public class Scope
             clone[schema] = new HashSet<Fact.Fact>(set);
         }
         Facts = clone;
+        NegatedFacts = new Dictionary<string, ISet<Fact.Fact>>();
     }
     
     public void DefineType(Type.Type type)
@@ -54,6 +57,16 @@ public class Scope
     public void DefineFact(Fact.Fact fact)
     {
         var facts = Facts;
+        if (!facts.ContainsKey(fact.Schema.Name))
+        {
+            facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
+        }
+        facts[fact.Schema.Name].Add(fact);
+    }
+    
+    public void DefineNegatedFact(Fact.Fact fact)
+    {
+        var facts = NegatedFacts;
         if (!facts.ContainsKey(fact.Schema.Name))
         {
             facts[fact.Schema.Name] = new HashSet<Fact.Fact>();

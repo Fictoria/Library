@@ -22,7 +22,7 @@ schema
     ;
     
 fact
-    :   identifier OPEN_PAREN argument (COMMA argument)* CLOSE_PAREN
+    :   TILDE? identifier OPEN_PAREN argument (COMMA argument)* CLOSE_PAREN
         PERIOD
     ;
 
@@ -109,6 +109,10 @@ INT
 
 FLOAT
     :   [0-9]+ PERIOD [0-9]+
+    ;
+
+TILDE
+    :   '~'
     ;
 
 QUESTION

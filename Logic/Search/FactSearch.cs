@@ -9,6 +9,11 @@ public static class FactSearch
 {
     public static bool Search(Context context, Schema schema, IEnumerable<Expression.Expression> args)
     {
+        return FindFirst(context, schema, args, out _);
+    }
+    
+    public static bool FindFirst(Context context, Schema schema, IEnumerable<Expression.Expression> args, out Fact.Fact outbound)
+    {
         var arguments = args.ToList();
         if (arguments.Count != schema.Parameters.Count)
         {
@@ -29,6 +34,11 @@ public static class FactSearch
                     if (memoizer.Value(context, i) is Wildcard)
                     {
                         found = true;
+                    }
+                    else if (arguments[i] is Binding b)
+                    {
+                        found = true;
+                        bindings[b.Name] = value;
                     }
                     else if (value.Equals(memoizer.Value(context, i)) && !(arguments[i].ContainsBinding && value is false))
                     {
@@ -51,7 +61,6 @@ public static class FactSearch
                     {
                         found = false;
                     }
-                    context.Unbind("$");
 
                     if (!found) break;
                 }
@@ -62,11 +71,14 @@ public static class FactSearch
                     {
                         context.Bind(k, v);
                     }
+
+                    outbound = fact;
                     return true;
                 }
             }
         }
-        
+
+        outbound = null;
         return false;
     }
 }

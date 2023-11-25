@@ -22,8 +22,12 @@ public class Memoizer
 
         var result = Arguments[index].Evaluate(context);
         
-        if (Arguments[index] is not Expression.Search)
+        if (!Arguments[index].ContainsBinding)
         {
+            if ($"{result}" == "int")
+            {
+                Console.WriteLine("foo");
+            }
             _results[index] = result;
         }
 
