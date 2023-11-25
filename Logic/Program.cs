@@ -1,5 +1,6 @@
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
+using Fictoria.Logic.Parser;
 using Fictoria.Logic.Search;
 
 namespace Fictoria.Logic;
@@ -17,6 +18,7 @@ public class Program
     {
         var context = new Context(this);
         var expression = Loader.LoadExpression(code);
+        Linker.LinkExpression(this, expression);
         return expression.Evaluate(context);
     }
 

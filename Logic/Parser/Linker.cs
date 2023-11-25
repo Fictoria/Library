@@ -119,7 +119,7 @@ public class Linker
         }
     }
 
-    private static void LinkExpression(Program program, Expression.Expression expression)
+    public static void LinkExpression(Program program, Expression.Expression expression)
     {
         var scope = program.Scope;
         switch (expression)
