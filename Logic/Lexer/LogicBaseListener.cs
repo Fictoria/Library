@@ -367,6 +367,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitParameter([NotNull] LogicParser.ParameterContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.variance"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterVariance([NotNull] LogicParser.VarianceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.variance"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitVariance([NotNull] LogicParser.VarianceContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.identifier"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

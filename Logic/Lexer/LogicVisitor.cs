@@ -198,6 +198,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParameter([NotNull] LogicParser.ParameterContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.variance"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitVariance([NotNull] LogicParser.VarianceContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.identifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -86,13 +86,17 @@ literalFloat
     ;
 
 binding
-    :   COLON COLON identifier
+    :   AT identifier
 //TODO support expressions like _ > 5 instead of a: > 5
 //    |   WILDCARD
     ;
 
 parameter
-    :   identifier COLON identifier
+    :   identifier COLON variance? identifier
+    ;
+    
+variance
+    :   '+' | '-'
     ;
 
 identifier
@@ -109,6 +113,10 @@ INT
 
 FLOAT
     :   [0-9]+ PERIOD [0-9]+
+    ;
+
+AT
+    :   '@'
     ;
 
 TILDE

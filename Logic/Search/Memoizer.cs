@@ -24,10 +24,6 @@ public class Memoizer
         
         if (!Arguments[index].ContainsBinding)
         {
-            if ($"{result}" == "int")
-            {
-                Console.WriteLine("foo");
-            }
             _results[index] = result;
         }
 

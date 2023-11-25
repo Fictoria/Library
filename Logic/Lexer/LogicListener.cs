@@ -310,6 +310,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitParameter([NotNull] LogicParser.ParameterContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.variance"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariance([NotNull] LogicParser.VarianceContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.variance"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariance([NotNull] LogicParser.VarianceContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.identifier"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

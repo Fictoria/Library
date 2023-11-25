@@ -191,7 +191,23 @@ public class Parser : LogicBaseVisitor<object>
     {
         var name = context.identifier()[0].IDENTIFIER().GetText();
         var type = context.identifier()[1].IDENTIFIER().GetText();
+        var varianceContext = context.variance();
+        Variance variance;
+        if (varianceContext is null)
+        {
+            variance = Variance.Invariant;
+        }
+        else
+        {
+            var value = varianceContext.GetText();
+            switch (value)
+            {
+                case "+": variance = Variance.Covariant; break;
+                case "-": variance = Variance.Contravariant; break;
+                default: variance = Variance.Invariant; break;
+            }
+        }
 
-        return new Parameter(name, new TypePlaceholder(type));
+        return new Parameter(name, new TypePlaceholder(type), variance);
     }
 }

@@ -14,14 +14,18 @@ public class Loader
         Linker.LinkAll(program);
         return program;
     }
-    
-    private static Program load(string code)
+
+    private static LogicParser makeParser(string code)
     {
         var inputStream = new AntlrInputStream(code);
         var lexer = new LogicLexer(inputStream);
         var tokens = new CommonTokenStream(lexer);
-        var parser = new LogicParser(tokens);
-
+        return new LogicParser(tokens);
+    }
+    
+    private static Program load(string code)
+    {
+        var parser = makeParser(code);
         var ast = parser.logic();
         var visitor = new Parser.Parser();
         
@@ -30,11 +34,7 @@ public class Loader
 
     public static Expression.Expression LoadExpression(string code)
     {
-        var inputStream = new AntlrInputStream(code);
-        var lexer = new LogicLexer(inputStream);
-        var tokens = new CommonTokenStream(lexer);
-        var parser = new LogicParser(tokens);
-
+        var parser = makeParser(code);
         var ast = parser.expression();
         var visitor = new Parser.Parser();
         
@@ -43,15 +43,20 @@ public class Loader
 
     public static Fact.Fact LoadFact(string code)
     {
-        var inputStream = new AntlrInputStream(code);
-        var lexer = new LogicLexer(inputStream);
-        var tokens = new CommonTokenStream(lexer);
-        var parser = new LogicParser(tokens);
-
+        var parser = makeParser(code);
         var ast = parser.fact();
         var visitor = new Parser.Parser();
         
         return (Fact.Fact)visitor.Visit(ast);
+    }
+
+    public static Call LoadCall(string code)
+    {
+        var parser = makeParser(code);
+        var ast = parser.call();
+        var visitor = new Parser.Parser();
+        
+        return (Call)visitor.Visit(ast);
     }
 
     public static Program Merge(Program program, string code)
