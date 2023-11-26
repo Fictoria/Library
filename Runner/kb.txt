@@ -1,0 +1,38 @@
+// basics
+human: object.
+thing: object.
+resource: thing.
+material: thing.
+building: thing.
+fire: thing.
+
+instance(self, human).
+
+// some types
+tree: resource.
+wood: material.
+campfire: building.
+
+// input/output
+provides(r: +resource, m: +material).
+consumes(b: +building, m: +material).
+contains(b: +building, m: +material).
+
+provides(tree, wood).
+consumes(campfire, wood).
+
+// etc.
+searchable(t: thing).
+location(t: -thing, x: int, y: int).
+carrying(t: -thing).
+warm(h: human).
+
+// the world
+searchable(tree).
+searchable(campfire).
+
+//instance(tree1, tree).
+instance(cf1, campfire).
+
+//location(tree1, 5, 2).
+location(cf1, 2, 3).

@@ -1,10 +1,9 @@
-﻿using Antlr4.Runtime;
-using Fictoria.Logic;
-using Fictoria.Logic.Evaluation;
-using Fictoria.Logic.Expression;
-using Fictoria.Logic.Lexer;
-using Fictoria.Logic.Parser;
-using Parser = Fictoria.Logic.Parser.Parser;
+﻿using Fictoria.Logic;
+using Fictoria.Planning.Action.Campfire;
+using Fictoria.Planning.Action.General;
+using Fictoria.Planning.Action.Homeostasis;
+using Fictoria.Planning.Action.Material;
+using Fictoria.Planning.Action.Tree;
 
 namespace Runner;
 
@@ -12,56 +11,48 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var text = """
-                   thing: object.
-                   action: object.
-                   
-                   resource: thing.
-                   tree: resource.
-                   quarry: resource.
-                   
-                   material: thing.
-                   wood: material.
-                   stone: material.
-                   
-                   building: thing.
-                   fire_pit: building.
-                   
-                   provides(r: resource, m: material).
-                   consumes(b: building, m: material).
-                   
-                   provides(tree, wood).
-                   provides(quarry, stone).
-                   
-                   consumes(fire_pit, wood).
-                   
-                   instance(tree1, tree).
-                   instance(tree2, tree).
-                   instance(fp1, fire_pit).
-                   instance(wood1, wood).
-                   instance(wood2, wood).
-                   
-                   // personal knowledge
-                   location(t: thing, x: int, y: int).
-                   location(tree1, 5, 2).
-                   location(tree2, 3, 4).
-                   location(fp1, 4, 5).
-                   //location(wood1, 5, 2).
-                   location(wood2, 3, 4).
-                   
-                   near(t: thing).
-                   carrying(t: thing).
-                   
-                   can_pick_up(t: thing) = near(t) and !carrying(_).
-                   
-                   near(wood1).
-                   
-                   can_find(t: thing) = location(t, _, _).
-                   //provides_wood(t: thing) = provides(t, wood).
-                   """;
+        var path = "../../../kb.txt";
+        var text = File.ReadAllText(path);
 
         var program = Loader.Load(text);
-        var result = program.Evaluate("can_find(wood)");
-        Console.Out.WriteLine(result);
+        // var result = program.Evaluate("!warm(self)");
+
+        var sf = SearchFactory.Instance.Space(program).First();
+        var sa = SearchFactory.Instance.Create(sf);
+        Console.WriteLine(program.Evaluate(sa.Conditions()));
+        var sp = program.Clone();
+        sa.Perform(sp);
+
+        var cf = ChopFactory.Instance.Space(sp).First();
+        var ca = ChopFactory.Instance.Create(cf);
+        Console.WriteLine(sp.Evaluate(ca.Conditions()));
+        var cp = sp.Clone();
+        ca.Perform(cp);
+
+        var gf = GatherFactory.Instance.Space(cp).First();
+        var ga = GatherFactory.Instance.Create(gf);
+        Console.WriteLine(cp.Evaluate(ga.Conditions()));
+        var gp = cp.Clone();
+        ga.Perform(gp);
+
+        var df = DepositFactory.Instance.Space(gp).First();
+        var da = DepositFactory.Instance.Create(df);
+        Console.WriteLine(gp.Evaluate(da.Conditions()));
+        var dp = gp.Clone();
+        da.Perform(dp);
+
+        var lf = LightFactory.Instance.Space(dp).First();
+        var la = LightFactory.Instance.Create(lf);
+        Console.WriteLine(dp.Evaluate(la.Conditions()));
+        var lp = dp.Clone();
+        la.Perform(lp);
+
+        var wf = WarmFactory.Instance.Space(lp).First();
+        var wa = WarmFactory.Instance.Create(wf);
+        Console.WriteLine(lp.Evaluate(wa.Conditions()));
+        var wp = lp.Clone();
+        wa.Perform(wp);
+        
+        Console.WriteLine();
     }
 }
