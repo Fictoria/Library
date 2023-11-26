@@ -82,6 +82,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFact([NotNull] LogicParser.FactContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.antifact"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAntifact([NotNull] LogicParser.AntifactContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.antifact"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAntifact([NotNull] LogicParser.AntifactContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.argument"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

@@ -97,6 +97,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFact([NotNull] LogicParser.FactContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.antifact"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAntifact([NotNull] LogicParser.AntifactContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.antifact"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAntifact([NotNull] LogicParser.AntifactContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.argument"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>

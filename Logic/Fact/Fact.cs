@@ -4,13 +4,11 @@ public class Fact
 {
     public Schema Schema { get; set; }
     public List<Expression.Expression> Arguments { get; }
-    public bool Negated { get; }
 
-    public Fact(Schema schema, List<Expression.Expression> arguments, bool negated = false)
+    public Fact(Schema schema, List<Expression.Expression> arguments)
     {
         Schema = schema;
         Arguments = arguments;
-        Negated = negated;
     }
 
     public override string ToString()

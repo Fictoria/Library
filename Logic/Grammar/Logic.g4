@@ -8,6 +8,7 @@ statement
     :   type
     |   schema
     |   fact
+    |   antifact
     |   function
     ;
 
@@ -22,7 +23,12 @@ schema
     ;
     
 fact
-    :   TILDE? identifier OPEN_PAREN argument (COMMA argument)* CLOSE_PAREN
+    :   identifier OPEN_PAREN argument (COMMA argument)* CLOSE_PAREN
+        PERIOD
+    ;
+
+antifact
+    :   TILDE? call
         PERIOD
     ;
 

@@ -1,3 +1,4 @@
+using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
@@ -8,18 +9,18 @@ namespace Fictoria.Logic.Parser;
 
 public class Linker
 {
-    public static void LinkAll(Program program)
+    public static void LinkAll(Scope scope)
     {
-        LinkTypes(program);
-        LinkSchemata(program);
-        LinkFacts(program);
-        LinkInstances(program);
-        LinkFunctions(program);
+        LinkTypes(scope);
+        LinkSchemata(scope);
+        LinkFacts(scope);
+        LinkAntifacts(scope);
+        LinkInstances(scope);
+        LinkFunctions(scope);
     }
     
-    private static void LinkTypes(Program program)
+    private static void LinkTypes(Scope scope)
     {
-        var scope = program.Scope;
         foreach (var (_, type) in scope.Types)
         {
             type.Parents = type.Parents.Select(parent =>
@@ -29,6 +30,7 @@ public class Linker
                 var placeholder = (TypePlaceholder)parent;
                 if (scope.Types.TryGetValue(placeholder.Name, out var found))
                 {
+                    LinkParent(scope, type, found);
                     return found;
                 }
 
@@ -36,10 +38,19 @@ public class Linker
             }).ToList();
         }
     }
-    
-    private static void LinkSchemata(Program program)
+
+    private static void LinkParent(Scope scope, Type.Type child, Type.Type parent)
     {
-        var scope = program.Scope;
+        if (!scope.TypesByParent.ContainsKey(parent))
+        {
+            scope.TypesByParent[parent] = new HashSet<Type.Type>();
+        }
+
+        scope.TypesByParent[parent].Add(child);
+    }
+    
+    private static void LinkSchemata(Scope scope)
+    {
         foreach (var (_, schema) in scope.Schemata)
         {
             foreach (var parameter in schema.Parameters)
@@ -58,9 +69,8 @@ public class Linker
         }
     }
 
-    private static void LinkFacts(Program program)
+    private static void LinkFacts(Scope scope)
     {
-        var scope = program.Scope;
         foreach (var (_, facts) in scope.Facts)
         {
             foreach (var fact in facts)
@@ -78,9 +88,16 @@ public class Linker
         }
     }
 
-    private static void LinkInstances(Program program)
+    private static void LinkAntifacts(Scope scope)
     {
-        var scope = program.Scope;
+        foreach (var af in scope.Antifacts)
+        {
+            LinkExpression(scope, af.Matcher);
+        }
+    }
+
+    private static void LinkInstances(Scope scope)
+    {
         foreach (var (name, type) in scope.Instances)
         {
             if (type.GetType() != typeof(TypePlaceholder)) continue;
@@ -96,9 +113,8 @@ public class Linker
         }
     }
     
-    private static void LinkFunctions(Program program)
+    private static void LinkFunctions(Scope scope)
     {
-        var scope = program.Scope;
         foreach (var (_, function) in scope.Functions)
         {
             foreach (var parameter in function.Parameters)
@@ -115,13 +131,12 @@ public class Linker
 
                 throw new ParseException($"unknown predicate parameter type '{placeholder.Name}'");
             }
-            LinkExpression(program, function.Expression);
+            LinkExpression(scope, function.Expression);
         }
     }
 
-    public static void LinkExpression(Program program, Expression.Expression expression)
+    public static void LinkExpression(Scope scope, Expression.Expression expression)
     {
-        var scope = program.Scope;
         switch (expression)
         {
             case Literal _:
@@ -158,7 +173,7 @@ public class Linker
                 
                 throw new ResolveException($"search binding '{binding}' is not valid here");
             case Parenthetical parenthetical:
-                LinkExpression(program, parenthetical);
+                LinkExpression(scope, parenthetical);
                 expression.Type = parenthetical.Type;
                 if (parenthetical.Expression.ContainsBinding)
                 {
@@ -169,7 +184,7 @@ public class Linker
             case Tuple tuple:
                 foreach (var e in tuple.Expressions)
                 {
-                    LinkExpression(program, e);
+                    LinkExpression(scope, e);
                     if (e.ContainsBinding)
                     {
                         tuple.ContainsBinding = true;
@@ -180,7 +195,7 @@ public class Linker
                 break;
             case Assign assign:
                 scope.Bindings[assign.Variable] = Type.Type.Variable;
-                LinkExpression(program, assign.Value);
+                LinkExpression(scope, assign.Value);
                 assign.Type = assign.Value.Type;
                 scope.Bindings[assign.Variable] = assign.Value.Type;
                 break;
@@ -202,7 +217,7 @@ public class Linker
                         }
                         
                         scope.Bindings["$"] = schema.Parameters[i].Type;
-                        LinkExpression(program, e);
+                        LinkExpression(scope, e);
                         scope.Bindings.Remove("$");
                     }
                     break;
@@ -212,7 +227,7 @@ public class Linker
                 {
                     foreach (var e in call.Arguments)
                     {
-                        LinkExpression(program, e);
+                        LinkExpression(scope, e);
                     }
                     
                     expression.Type = function.Expression.Type;
@@ -221,7 +236,7 @@ public class Linker
                 
                 throw new ResolveException($"unknown functor '{call.Functor}'");
             case Unary unary:
-                LinkExpression(program, unary.Expression);
+                LinkExpression(scope, unary.Expression);
                 if (unary.Expression.ContainsBinding)
                 {
                     unary.ContainsBinding = true;
@@ -251,8 +266,8 @@ public class Linker
                 
                 break;
             case Infix infix:
-                LinkExpression(program, infix.Left);
-                LinkExpression(program, infix.Right);
+                LinkExpression(scope, infix.Left);
+                LinkExpression(scope, infix.Right);
                 //TODO this could be wonky
                 if (infix.Left.ContainsBinding)
                 {
@@ -313,7 +328,7 @@ public class Linker
             case Series series:
                 foreach (var e in series.Expressions)
                 {
-                    LinkExpression(program, e);
+                    LinkExpression(scope, e);
                 }
 
                 series.Type = series.Expressions.Last().Type;

@@ -1,5 +1,4 @@
 using Antlr4.Runtime;
-using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Lexer;
 using Fictoria.Logic.Parser;
@@ -11,7 +10,7 @@ public class Loader
     public static Program Load(string code)
     {
         var program = load(code);
-        Linker.LinkAll(program);
+        Linker.LinkAll(program.Scope);
         return program;
     }
 
@@ -59,13 +58,14 @@ public class Loader
         return (Call)visitor.Visit(ast);
     }
 
+    //TODO this probably belongs in Program
     public static Program Merge(Program program, string code)
     {
         var scope = program.Scope;
-        var other = Load(code).Scope;
+        var other = load(code).Scope;
         scope.Merge(other);
         var replacement = new Program(scope);
-        Linker.LinkAll(program);
+        Linker.LinkAll(scope);
         return replacement;
     }
 }

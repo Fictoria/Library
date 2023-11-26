@@ -78,6 +78,35 @@ public static class FactSearch
 
         return results;
     }
+    
+    public static IList<Fact.Fact> FindAllRaw(Context context, Schema schema, IEnumerable<Expression.Expression> args)
+    {
+        var results = new List<Fact.Fact>();
+        var arguments = args.ToList();
+        if (arguments.Count != schema.Parameters.Count)
+        {
+            throw new EvaluateException($"invalid number of arguments passed to {schema.Name}");
+        }
+
+        var memoizer = new Memoizer(arguments);
+        if (context.ResolveFact(schema.Name, out var facts))
+        {
+            foreach (var fact in facts)
+            {
+                if (matches(context, schema, fact, memoizer, arguments, out var bindings, out var values))
+                {
+                    foreach (var (k, v) in bindings)
+                    {
+                        context.Bind(k, v);
+                    }
+
+                    results.Add(fact);
+                }
+            }
+        }
+
+        return results;
+    }
 
     private static bool matches(
         Context context,

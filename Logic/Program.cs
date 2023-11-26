@@ -18,7 +18,7 @@ public class Program
     {
         var context = new Context(this);
         var expression = Loader.LoadExpression(code);
-        Linker.LinkExpression(this, expression);
+        Linker.LinkExpression(Scope, expression);
         return expression.Evaluate(context);
     }
 
@@ -32,5 +32,10 @@ public class Program
         }
 
         throw new EvaluateException($"unrecognized schema '{call.Functor}'");
+    }
+
+    public Program Clone()
+    {
+        return new Program(new Scope(Scope));
     }
 }

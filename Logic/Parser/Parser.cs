@@ -39,6 +39,9 @@ public class Parser : LogicBaseVisitor<object>
                     
                     scope.DefineFact(fact);
                     break;
+                case Antifact antifact:
+                    scope.DefineAntifact(antifact);
+                    break;
                 case Function.Function function:
                     scope.DefineFunction(function);
                     break;
@@ -88,6 +91,12 @@ public class Parser : LogicBaseVisitor<object>
         var arguments = context.argument().Select(a => (Expression.Expression)Visit(a)).ToList();
 
         return new Fact.Fact(new SchemaPlaceholder(identifier), arguments);
+    }
+
+    public override object VisitAntifact(LogicParser.AntifactContext context)
+    {
+        var call = (Call)Visit(context.call());
+        return new Antifact(call);
     }
 
     public override object VisitFunction(LogicParser.FunctionContext context)

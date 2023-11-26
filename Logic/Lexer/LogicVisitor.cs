@@ -63,6 +63,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFact([NotNull] LogicParser.FactContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.antifact"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAntifact([NotNull] LogicParser.AntifactContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.argument"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
