@@ -40,7 +40,7 @@ public class Light : Action
     public override string Conditions()
     {
         return $"""
-                location(@cf, _, _) and //TODO need some way of constraining types; maybe use :: infix search
+                location(@cf :: campfire, _, _);
                 contains(cf, wood)
                 """;
     }
@@ -51,6 +51,7 @@ public class Light : Action
         return $"""
                 instance({name}, fire).
                 location({name}, 0, 0).
+                ~contains({Campfire}, wood).
                 """;
     }
 }

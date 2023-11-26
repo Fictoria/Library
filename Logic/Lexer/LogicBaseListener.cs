@@ -133,6 +133,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitFunction([NotNull] LogicParser.FunctionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.series"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterSeries([NotNull] LogicParser.SeriesContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.series"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitSeries([NotNull] LogicParser.SeriesContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by the <c>callExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>

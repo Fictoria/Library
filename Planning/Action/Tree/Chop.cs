@@ -40,7 +40,8 @@ public class Chop : Action
     public override string Conditions()
     {
         return $"""
-                location({Tree}, _, _)
+                location({Tree}, _, _) and
+                !location(wood, _, _)
                 """;
     }
 

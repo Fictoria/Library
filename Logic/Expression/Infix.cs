@@ -1,5 +1,6 @@
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
+using Fictoria.Logic.Fact;
 
 namespace Fictoria.Logic.Expression;
 
@@ -62,6 +63,14 @@ public class Infix : Expression
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))
         {
+            if (Operator == "::")
+            {
+                var left = Left.Evaluate(context);
+                var right = (Type.Type)Right.Evaluate(context);
+                //TODO no guarantee this is an instance, need a runtime type checker
+                return ((Instance)left).Type.IsA(right);
+            }
+            
             if (Left.Type.Equals(Fictoria.Logic.Type.Type.Int))
             {
                 var left = (long)Left.Evaluate(context);

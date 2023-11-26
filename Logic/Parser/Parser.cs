@@ -103,8 +103,14 @@ public class Parser : LogicBaseVisitor<object>
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
         var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
+        var series = (Series)Visit(context.series());
+        return new Function.Function(identifier, parameters, series);
+    }
+
+    public override object VisitSeries(LogicParser.SeriesContext context)
+    {
         var expressions = context.expression().Select(e => (Expression.Expression)Visit(e)).ToList();
-        return new Function.Function(identifier, parameters, new Series(context.GetText(), expressions));
+        return new Series(context.GetText(), expressions);
     }
 
     public override object VisitLiteralBool(LogicParser.LiteralBoolContext context)

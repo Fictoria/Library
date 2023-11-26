@@ -38,10 +38,14 @@ argument
     ;
 
 function
-    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN EQUALS expression (SEMICOLON expression)*
+    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN EQUALS series
         PERIOD
     ;
-    
+
+series
+    :   expression (SEMICOLON expression)*
+    ;
+
 expression
     :   literal                                                         # literalExpression
     |   identifier                                                      # identifierExpression
@@ -52,6 +56,7 @@ expression
     |   call                                                            # callExpression
     |   assign                                                          # assignExpression
     |   op=('-' | '!') expression                                       # unaryExpression
+    |   left=expression op='::' right=expression                        # infixExpression
     |   left=expression op=('+' | '-') right=expression                 # infixExpression
     |   left=expression op=('*' | '/') right=expression                 # infixExpression
     |   left=expression op=('>' | '<' | '>=' | '<=') right=expression   # infixExpression

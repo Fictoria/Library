@@ -81,6 +81,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitFunction([NotNull] LogicParser.FunctionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.series"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitSeries([NotNull] LogicParser.SeriesContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>callExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>

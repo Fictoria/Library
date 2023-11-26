@@ -112,6 +112,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitFunction([NotNull] LogicParser.FunctionContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.series"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSeries([NotNull] LogicParser.SeriesContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.series"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSeries([NotNull] LogicParser.SeriesContext context);
+	/// <summary>
 	/// Enter a parse tree produced by the <c>callExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>

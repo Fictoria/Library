@@ -1,6 +1,7 @@
 using Fictoria.Logic;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Planning.Action;
+using Fictoria.Planning.Action.Campfire;
 using Fictoria.Planning.Action.Tree;
 
 namespace Fictoria.Planning;
@@ -26,7 +27,6 @@ public class Planner
         while (queue.Count > 0)
         {
             i++;
-            Console.WriteLine($"node {i}");
             if (!queue.TryDequeue(out var state, out var priority)) continue;
             if (state.Evaluate(goal) is true)
             {
@@ -39,7 +39,8 @@ public class Planner
                 foreach (var input in factory.Space(state))
                 {
                     var action = factory.Create(input);
-                    if (state.Evaluate(action.Conditions()) is not true)
+                    var conditions = action.Conditions();
+                    if (state.Evaluate(conditions) is not true)
                     {
                         continue;
                     }

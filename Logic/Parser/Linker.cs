@@ -280,13 +280,20 @@ public class Linker
                     infix.BindingName = infix.Right.BindingName;
                 }
                 
-                if (!infix.Left.Type.Equals(infix.Right.Type))
+                if (!infix.Left.Type.Equals(infix.Right.Type) && infix.Operator != "::")
                 {
                     throw new ParseException($"mismatched types '{infix.Left.Type}' and '{infix.Right.Type}' for '{infix.Operator}' infix expression");
                 }
 
                 switch (infix.Operator)
                 {
+                    case "::":
+                        if (infix.Left is Binding && infix.Right is Identifier)
+                        {
+                            infix.Type = Type.Type.Boolean;
+                            break;
+                        }
+                        throw new ParseException($"invalid types '{infix.Left.GetType()}' and '{infix.Right.GetType()}' for '{infix.Operator}' infix expression");
                     case "+":
                     case "-":
                     case "*":
@@ -294,7 +301,7 @@ public class Linker
                         if (infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
                             infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Float))
                         {
-                            expression.Type = infix.Left.Type;
+                            infix.Type = infix.Left.Type;
                             break;
                         }
                         throw new ParseException($"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");

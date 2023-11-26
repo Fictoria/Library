@@ -40,6 +40,15 @@ public class Loader
         return (Expression.Expression)visitor.Visit(ast);
     }
 
+    public static Series LoadSeries(string code)
+    {
+        var parser = makeParser(code);
+        var ast = parser.series();
+        var visitor = new Parser.Parser();
+        
+        return (Series)visitor.Visit(ast);
+    }
+
     public static Call LoadCall(string code)
     {
         var parser = makeParser(code);

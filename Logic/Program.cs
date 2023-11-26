@@ -17,7 +17,7 @@ public class Program
     public object Evaluate(string code)
     {
         var context = new Context(this);
-        var expression = Loader.LoadExpression(code);
+        var expression = Loader.LoadSeries(code);
         Linker.LinkExpression(Scope, expression);
         return expression.Evaluate(context);
     }

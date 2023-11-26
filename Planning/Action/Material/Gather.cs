@@ -47,6 +47,7 @@ public class Gather : Action
     {
         return $"""
                 carrying({Material}).
+                ~location(wood, _, _).
                 """;
     }
 }
