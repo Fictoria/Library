@@ -1,6 +1,7 @@
 using Fictoria.Logic.Fact;
 using Fictoria.Logic.Parser;
 using Fictoria.Logic.Search;
+using System.Linq;
 
 namespace Fictoria.Logic.Evaluation;
 
@@ -156,5 +157,36 @@ public class Scope
         }
         
         Linker.LinkAll(this);
+    }
+
+    protected bool Equals(Scope other)
+    {
+        var a = Types.Equals(other.Types);
+        var b = Schemata.Equals(other.Schemata);
+        //TODO the two below are janky
+        var c = Facts.Count.Equals(other.Facts.Count);
+        var d = Instances.Count.Equals(other.Instances.Count);
+        var e = Functions.Equals(other.Functions);
+
+        return a && b && c && d && e;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Scope)obj);
+    }
+    
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        Types.ToList().ForEach(t => hashCode.Add(t.Value));
+        Schemata.ToList().ForEach(s => hashCode.Add(s.Value));
+        Facts.ToList().ForEach(fs => fs.Value.ToList().ForEach(hashCode.Add));
+        Instances.ToList().ForEach(i => hashCode.Add(new Instance(i.Key, i.Value)));
+        Functions.ToList().ForEach(f => hashCode.Add((f.Value)));
+        return hashCode.ToHashCode();
     }
 }

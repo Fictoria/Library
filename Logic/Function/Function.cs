@@ -33,4 +33,24 @@ public class Function
     {
         return $"{Name}({String.Join(", ", Parameters.Select(p => p.ToString()))}) = {Expression}";
     }
+
+    protected bool Equals(Function other)
+    {
+        return Name == other.Name && Parameters.Equals(other.Parameters) && Expression.Equals(other.Expression);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Function)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        Parameters.ToList().ForEach(hashCode.Add);
+        return HashCode.Combine(Name, hashCode.ToHashCode(), Expression);
+    }
 }

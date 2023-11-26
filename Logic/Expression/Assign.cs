@@ -19,4 +19,22 @@ public class Assign : Expression
         context.Bind(Variable, result);
         return result;
     }
+
+    protected bool Equals(Assign other)
+    {
+        return Variable == other.Variable && Value.Equals(other.Value);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Assign)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Variable, Value);
+    }
 }

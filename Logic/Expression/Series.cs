@@ -27,4 +27,24 @@ public class Series : Expression
 
         return result;
     }
+
+    protected bool Equals(Series other)
+    {
+        return Expressions.Equals(other.Expressions);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Series)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        Expressions.ToList().ForEach(hashCode.Add);
+        return hashCode.ToHashCode();
+    }
 }

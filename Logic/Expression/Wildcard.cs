@@ -10,4 +10,22 @@ public class Wildcard : Expression
     {
         return this;
     }
+
+    protected bool Equals(Wildcard other)
+    {
+        return true;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Wildcard)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return "_".GetHashCode();
+    }
 }

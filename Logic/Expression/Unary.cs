@@ -34,4 +34,22 @@ public class Unary : Expression
         
         throw new EvaluateException($"invalid type '{Type}' for '{Operator}' unary expression");
     }
+
+    protected bool Equals(Unary other)
+    {
+        return Operator == other.Operator && Expression.Equals(other.Expression);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Unary)obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Operator, Expression);
+    }
 }
