@@ -28,7 +28,7 @@ public class Warm : Action
 
     public override int Cost(Program program)
     {
-        return 0;
+        return 1;
     }
 
     public override string Conditions()
