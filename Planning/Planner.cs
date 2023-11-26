@@ -39,8 +39,7 @@ public class Planner
                 foreach (var input in factory.Space(state))
                 {
                     var action = factory.Create(input);
-                    var conditions = action.Conditions();
-                    if (state.Evaluate(conditions) is not true)
+                    if (state.Evaluate(action.Conditions()) is not true)
                     {
                         continue;
                     }
