@@ -3,18 +3,23 @@ using Fictoria.Logic;
 
 namespace Fictoria.Planning.Action.Tree;
 
-public class ChopFactory : ActionFactory<Chop, string>
+public class ChopFactory : ActionFactory
 {
     public static readonly ChopFactory Instance = new();
     
-    public Chop Create(string input)
+    public Action Create(object input)
     {
-        return new Chop(input);
+        return new Chop((string)input);
     }
 
-    public IEnumerable<string> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
-        return program.Scope.InstancesByType["tree"];
+        if (program.Scope.InstancesByType.TryGetValue("tree", out var found))
+        {
+            return found;
+        }
+
+        return Array.Empty<object>();
     }
 }
 

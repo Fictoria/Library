@@ -9,7 +9,7 @@ public class Loader
 {
     public static Program Load(string code)
     {
-        var program = load(code);
+        var program = LoadUnlinked(code);
         Linker.LinkAll(program.Scope);
         return program;
     }
@@ -22,7 +22,7 @@ public class Loader
         return new LogicParser(tokens);
     }
     
-    private static Program load(string code)
+    public static Program LoadUnlinked(string code)
     {
         var parser = makeParser(code);
         var ast = parser.logic();
@@ -40,15 +40,6 @@ public class Loader
         return (Expression.Expression)visitor.Visit(ast);
     }
 
-    public static Fact.Fact LoadFact(string code)
-    {
-        var parser = makeParser(code);
-        var ast = parser.fact();
-        var visitor = new Parser.Parser();
-        
-        return (Fact.Fact)visitor.Visit(ast);
-    }
-
     public static Call LoadCall(string code)
     {
         var parser = makeParser(code);
@@ -56,16 +47,5 @@ public class Loader
         var visitor = new Parser.Parser();
         
         return (Call)visitor.Visit(ast);
-    }
-
-    //TODO this probably belongs in Program
-    public static Program Merge(Program program, string code)
-    {
-        var scope = program.Scope;
-        var other = load(code).Scope;
-        scope.Merge(other);
-        var replacement = new Program(scope);
-        Linker.LinkAll(scope);
-        return replacement;
     }
 }

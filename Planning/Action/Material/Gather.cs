@@ -2,16 +2,16 @@ using Fictoria.Logic;
 
 namespace Fictoria.Planning.Action.Material;
 
-public class GatherFactory : ActionFactory<Gather, string>
+public class GatherFactory : ActionFactory
 {
     public static readonly GatherFactory Instance = new();
     
-    public Gather Create(string input)
+    public Action Create(object input)
     {
-        return new Gather(input);
+        return new Gather((string)input);
     }
 
-    public IEnumerable<string> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
         var material = program.Scope.Types["material"];
         var materials = program.Scope.GetAllSubtypes(material).Select(m => m.Name);

@@ -3,18 +3,23 @@ using Fictoria.Logic;
 
 namespace Fictoria.Planning.Action.Campfire;
 
-public class LightFactory : ActionFactory<Light, string>
+public class LightFactory : ActionFactory
 {
     public static readonly LightFactory Instance = new();
     
-    public Light Create(string input)
+    public Action Create(object input)
     {
-        return new Light(input);
+        return new Light((string)input);
     }
 
-    public IEnumerable<string> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
-        return program.Scope.InstancesByType["campfire"];
+        if (program.Scope.InstancesByType.TryGetValue("campfire", out var found))
+        {
+            return found;
+        }
+
+        return Array.Empty<object>();
     }
 }
 

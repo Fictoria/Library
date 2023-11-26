@@ -34,6 +34,13 @@ public class Program
         throw new EvaluateException($"unrecognized schema '{call.Functor}'");
     }
 
+    public void Merge(string code)
+    {
+        var other = Loader.LoadUnlinked(code).Scope;
+        Scope.Merge(other);
+        Linker.LinkAll(Scope);
+    }
+
     public Program Clone()
     {
         return new Program(new Scope(Scope));

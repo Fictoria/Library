@@ -3,16 +3,16 @@ using Fictoria.Planning.Utilities;
 
 namespace Fictoria.Planning.Action.General;
 
-public class DepositFactory : ActionFactory<Deposit, Pair<string, string>>
+public class DepositFactory : ActionFactory
 {
     public static readonly DepositFactory Instance = new();
     
-    public Deposit Create(Pair<string, string> input)
+    public Action Create(object input)
     {
-        return new Deposit(input.First, input.Second);
+        return new Deposit((Pair<string, string>)input);
     }
 
-    public IEnumerable<Pair<string, string>> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
         //TODO yikes
         var building = program.Scope.Types["building"];
@@ -29,10 +29,10 @@ public class Deposit : Action
     public string Building { get; }
     public string Material { get; }
 
-    public Deposit(string building, string material)
+    public Deposit(Pair<string, string> both)
     {
-        Building = building;
-        Material = material;
+        Building = both.First;
+        Material = both.Second;
     }
 
     public override int Cost(Program program)

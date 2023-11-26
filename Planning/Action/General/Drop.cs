@@ -2,16 +2,16 @@ using Fictoria.Logic;
 
 namespace Fictoria.Planning.Action.General;
 
-public class DropFactory : ActionFactory<Drop, string>
+public class DropFactory : ActionFactory
 {
     public static readonly DropFactory Instance = new();
     
-    public Drop Create(string input)
+    public Action Create(object input)
     {
-        return new Drop(input);
+        return new Drop((string)input);
     }
 
-    public IEnumerable<string> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
         var results = program.SearchAll("carrying(_)");
         return results.Select(r => ((Type)r.Arguments[0]).Name);
@@ -35,14 +35,14 @@ public class Drop : Action
     public override string Conditions()
     {
         return $"""
-                carrying(_)
+                carrying({Thing})
                 """;
     }
 
     public override string Effects()
     {
         return $"""
-                ~carrying(_).
+                ~carrying({Thing}).
                 """;
     }
 }

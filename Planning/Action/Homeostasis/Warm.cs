@@ -2,18 +2,23 @@ using Fictoria.Logic;
 
 namespace Fictoria.Planning.Action.Homeostasis;
 
-public class WarmFactory : ActionFactory<Warm, string>
+public class WarmFactory : ActionFactory
 {
     public static readonly WarmFactory Instance = new();
     
-    public Warm Create(string input)
+    public Action Create(object input)
     {
-        return new Warm(input);
+        return new Warm((string)input);
     }
 
-    public IEnumerable<string> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
-        return program.Scope.InstancesByType["fire"];
+        if (program.Scope.InstancesByType.TryGetValue("fire", out var found))
+        {
+            return found;
+        }
+
+        return Array.Empty<object>();
     }
 }
 

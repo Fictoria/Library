@@ -4,16 +4,16 @@ using Type = Fictoria.Logic.Type.Type;
 
 namespace Fictoria.Planning.Action.General;
 
-public class SearchFactory : ActionFactory<Search, string>
+public class SearchFactory : ActionFactory
 {
     public static readonly SearchFactory Instance = new();
     
-    public Search Create(string input)
+    public Action Create(object input)
     {
-        return new Search(input);
+        return new Search((string)input);
     }
 
-    public IEnumerable<string> Space(Program program)
+    public IEnumerable<object> Space(Program program)
     {
         var results = program.SearchAll("searchable(_)");
         return results.Select(r => ((Type)r.Arguments[0]).Name);

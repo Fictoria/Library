@@ -13,8 +13,8 @@ public abstract class Action
         return program.Evaluate(Conditions()) is true;
     }
 
-    public Program Perform(Program program)
+    public void Perform(Program program)
     {
-        return Loader.Merge(program, Effects());
+        program.Merge(Effects());
     }
 }
