@@ -24,7 +24,7 @@ dog: animal.
 cat: animal.
 ```
 
-Here, a `dog` is-a `animal`, and a `cat` is-a `animal`.  We're establishing an extremely rudimentary biological taxonomy.
+Here, a `dog` is-a `animal`, and a `cat` is-a `animal`, in the taxonimic sense.  We're establishing an extremely rudimentary biological taxonomy with this example.
 
 The type system can go a bit further. We might specify multiple parent types as well:
 
@@ -40,7 +40,9 @@ bat: mammal, flying.
 dragonfly: insect, flying.
 ```
 
-In an aspect-oriented way, `flying` is a cross-cutting category of `animal`s, meaning we could arrive at `bat` starting from either `mammal` or from `flying` when traversing our taxonomy.  This affords the ability to organize types in a way that isn't strictly a tree but remains a directed acyclic graph.
+Note `flying`, and both `bat` and `dragonfly`.
+
+In an aspect-oriented way, `flying` is a cross-cutting category of `animal`s, meaning we could arrive at `bat` starting from either `mammal` or from `flying` when traversing our taxonomy downward.  This flexibility affords organizing types in a way that isn't strictly a tree but remains a directed acyclic graph.
 
 # Instances
 
@@ -52,14 +54,16 @@ dog: animal.
 cat: animal.
 ```
 
-And now let's say we have two pets, a `cat` and a `dog`.  They can each be defined by a fact:
+And now let's say we have two pets, a `cat` and a `dog`.  They can each be defined by a special fact schema called `instance`:
 
 ```
 instance(fido, dog).
 instance(mittens, cat).
 ```
 
-Here `fido` is a `dog` instance in our world, and `mittens` is a `cat` instance.  It follows that `fido` is-a `dog`, and that `mittens` is-a `cat`, taxonomically.
+More on Schemata later.
+
+Here `fido` is a `dog` instance in our world, and `mittens` is a `cat` instance.  It follows that `fido` is-a `dog`, and that `mittens` is-a `cat`, again taxonomically.
 
 # Schemata
 
@@ -83,11 +87,11 @@ Now imagine that we want to define how many legs animals can have.  To establish
 legs(a: animal, n: int).
 ```
 
-This creates a schema named `legs` with two parameters: `a` of type `animal`, and `n` of type `int`.  The paramater names are currently meaningless.  Semantically though, it affords the ability to store knowledge about how many legs various animals have.
+This creates a schema named `legs` with two parameters: `a` of type `animal`, and `n` of type `int`.  The paramater names are currently meaningless.  Semantically though, it gives structure to knowledge about how many legs various animals have.
 
 # Facts
 
-Similar to how we can instantiate a type, we can instantiate a schema with facts.  This section assumes the program defined in the Schemata section above.  Let's lay down some facts for how many legs our `animal`s have:
+Similar to how we can instantiate a type, we can instantiate a schema using fact definitions.  This section assumes the program defined in the Schemata section above.  Let's lay down some new facts for how many legs our `animal`s have:
 
 ```
 legs(human, 2).
@@ -98,14 +102,18 @@ legs(dragonfly, 6).
 
 Each statement defines a fact of the schema `legs`.
 
-The first argument of each fact must be an `animal` or one of its child types, because that's the type of the first parameter for the schema `legs`.  It follows that the second parameter must be of type `int`.  Semantically we've defined that a `human` has `2` legs, a `dog` has `4`, and so on so forth.
+The first argument of each fact's arguments must be an `animal` or one of its child types, because that's the type of the first parameter for the schema `legs`.  It follows that the second parameter must be of type `int`.
+
+Semantically we've defined that a `human` has `2` legs, a `dog` has `4`, so on so forth.
 
 
-Facts cannot be defined without schemata – but together, they give structure to knowledge in our world.  Worthy of note: facts can be expressed over instances _or_ over types.  See the Variance section for more details.
+A fact cannot be defined without a schema – but together, facts and schemas give structure to knowledge in our little world.
+
+**Note:** facts can be expressed over instances _or_ over types.  See the Variance section for more details.
 
 # Functions
 
-Functions are used to define logical and arithmetic operations over facts, literals, and other functions.  Their "body" is called an expression.
+Functions are used to define logical and arithmetic operations over facts, literals, and other functions.  Their "body" or implementation is called an expression.
 
 Let's start with something simple:
 
@@ -114,7 +122,7 @@ double(x: int) = x * 2.
 square(x: int) = x * x.
 ```
 
-As you would imagine, `double` takes an `int` and multiplies it by `2`, and `square` does the same but multiplies it by itself.  Both functions' return value is of type `int`.
+As you would imagine, the function `double` takes an `int` and multiplies it by `2`, and `square` does the same but multiplies it by itself.  Both functions' return value is of type `int`.
 
 Evaluating `double(2)` would produce `4`, and evaluating `square(4)` would produce `16`.
 
@@ -124,13 +132,13 @@ Furthermore, functions can be composed in expressions, for example:
 double(square(2))
 ```
 
-when evaluated produces `8`.
+...when evaluated produces `8`.
 
 Functions are referred to as predicates when they resolve to a `bool` type.
 
 ### Searching
 
-Facts in a program can be searched for in the body a function using an expression. Let's assume the following program:
+A function can search for facts in its program using an expression. Let's assume the following:
 
 ```
 dog: animal.
@@ -145,13 +153,13 @@ age(fido, 3).
 age(spot, 11).
 ```
 
-And now we'll now define a predicate:
+Now we'll now define a predicate:
 
 ```
 is_three(d: dog) = age(d, 3).
 ```
 
-If we evaluate the expression `is_three(fido)`, which calls our new function, we get `true`, and for `is_three(spot)` we get false.  The former matched a fact, because `fido` is indeed of `age` `3`, while the latter did not match any facts because `spot`'s `age` is not `3`.
+If we evaluate the expression `is_three(fido)`, which calls our new function, we get `true`, and for `is_three(spot)` we get false.  The former matched a fact, because `fido` is indeed of `age` value `3`, while the latter did not match any facts because `spot`'s `age` is not `3`.
 
 Searching can also use wild cards, as in:
 
@@ -167,13 +175,13 @@ Furthermore, we can add conditions when searching fact arguments:
 young(d: dog) = age(d, _ < 5).
 ```
 
-Similar in range to `is_three` from earlier, evaluating `young(fido)` produces `true` while `young(spot)` is `false`.
+Similar in range to `is_three` from earlier, evaluating `young(fido)` produces `true` while `young(spot)` is `false`.  Because `fido`'s age, according to the facts, is `3` which is less than `5` it matches; unfortunately `spot`'s age doesn't match and therefore doesn't qualify her to be be young in this example predicate.
 
 ### Binding
 
 Instead of a wildcard, you can bind a fact search result's arguments to a local variable by prepending `@` to the variable's name in place.
 
-Bindings behave as wildcards, so a naked binding will match anything, and a binding with a predicate (such as `@a < 5`) will match any facts which evaluate to `true` for that expression.
+Bindings behave as wildcards when matching, so a naked binding will match anything, and a binding with an expression (such as `@a < 5`) will match any facts which evaluate to `true` for that argument.
 
 This will bind the age in years to variable `a` locally, though it is discarded:
 
@@ -181,15 +189,13 @@ This will bind the age in years to variable `a` locally, though it is discarded:
 young(d: dog) = age(d, @a < 5).
 ```
 
-Here we've set `a` locally in the scope of function (or predicate) `young`.  In evaluating `young(fido)` the variable `a` would be bound to the literal value `3`, though again it is not used.
+Here we've bound variable `a` locally in the scope of function (or predicate) `young` to its matched fact.  In evaluating `young(fido)` the variable `a` would be bound to the literal value `3`, though again it is not used.
 
 ### Series
 
 A function's definition can include multiple expressions rather than one, called a series.  A series expression is a composite of one or more expressions separated by a `;` delimiter.
 
-The last expression in a series is what the function's type and value will be when evaluated.
-
-For example, assume this program:
+The last expression in a series is what the function's type and value will be when evaluated. For example, assume this program:
 
 ```
 thing: object.
@@ -216,6 +222,23 @@ Let's walk through what evaluating `density(rock)` will do:
 5. The second expression is also done now, moving onto the last
 6. The expression `m / v` is all that's left, so it performs division with a quotient of `2.0`
 7. The last statement in the series resulted in `2.0`, and so the evaluation of `density(rock)` produces `2.0` typed as a `float`
+
+This mechanism allows us to search for facts, extract their values, and compute over them thereafter.  It can be seen as some of the imperative paradigm sneaking in.
+
+### Assignment
+
+While variables can be bound to extracted values from a fact, they can also be assigned directly as the result of an expression.
+
+For example:
+
+```
+f(x: int) =
+    a = 1;
+    b = 2;
+    a + b.
+```
+
+Would evaluate to the `int` value of `3`.  This allows you to compute values once and reuse them across multiple statements.
 
 # Variance
 
