@@ -9,9 +9,9 @@ public class Pair<A, B>
     {
         First = first;
         Second = second;
-    } 
-    
-    protected bool Equals(Pair<A, B> other)
+    }
+
+    private bool Equals(Pair<A, B> other)
     {
         return EqualityComparer<A>.Default.Equals(First, other.First) && EqualityComparer<B>.Default.Equals(Second, other.Second);
     }
@@ -29,4 +29,9 @@ public class Pair<A, B>
         return HashCode.Combine(First, Second);
     }
 
+    public void Deconstruct(out A first, out B second)
+    {
+        first = First;
+        second = Second;
+    }
 }
