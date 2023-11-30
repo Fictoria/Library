@@ -1,5 +1,6 @@
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
+using Fictoria.Logic.Function;
 using Fictoria.Logic.Search;
 
 namespace Fictoria.Logic.Expression;
@@ -7,9 +8,9 @@ namespace Fictoria.Logic.Expression;
 public class Call : Expression
 {
     public string Functor { get; }
-    public IEnumerable<Expression> Arguments { get; }
+    public IList<Expression> Arguments { get; }
 
-    public Call(string text, string functor, IEnumerable<Expression> arguments) : base(text)
+    public Call(string text, string functor, IList<Expression> arguments) : base(text)
     {
         Functor = functor;
         Arguments = arguments;
@@ -24,7 +25,12 @@ public class Call : Expression
 
         if (context.ResolveFunction(Functor, out var function))
         {
-            return function.Evaluate(context, Arguments.ToList());
+            return function.Evaluate(context, Arguments);
+        }
+        
+        if (Builtins.ByName.TryGetValue(Functor, out var builtin))
+        {
+            return builtin.Evaluate(context, Arguments);
         }
 
         throw new EvaluateException($"call expression with functor '{Functor}' is not a schema or function");

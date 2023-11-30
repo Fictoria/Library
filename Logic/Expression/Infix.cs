@@ -40,6 +40,8 @@ public class Infix : Expression
                 case "/":
                     // TODO hmm
                     return left / right;
+                case "^":
+                    return Math.Pow(left, right);
             }
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Float))
@@ -59,6 +61,8 @@ public class Infix : Expression
                 case "/":
                     // TODO hmm
                     return left / right;
+                case "^":
+                    throw new EvaluateException($"exponents are not valid for floats");
             }
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))

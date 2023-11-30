@@ -21,7 +21,7 @@ public static class Program
         var text = File.ReadAllText(path);
 
         var program = Loader.Load(text);
-        var result = program.Evaluate("fib(10)");
+        var result = program.Evaluate("exp(2,3)");
         Console.WriteLine(result);
         // var planner = new Planner(new ActionFactory[]
         // {

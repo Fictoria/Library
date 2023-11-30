@@ -68,8 +68,9 @@ expression
     |   if                                                              # ifExpression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op='::' right=expression                        # infixExpression
-    |   left=expression op=('+' | '-') right=expression                 # infixExpression
+    |   left=expression op='^' right=expression                         # infixExpression
     |   left=expression op=('*' | '/') right=expression                 # infixExpression
+    |   left=expression op=('+' | '-') right=expression                 # infixExpression
     |   left=expression op=('>' | '<' | '>=' | '<=') right=expression   # infixExpression
     |   left=expression op=('==' | '!=') right=expression               # infixExpression
     |   left=expression op=('and' | 'or' | 'xor') right=expression      # infixExpression

@@ -2,6 +2,7 @@ using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
+using Fictoria.Logic.Function;
 using Fictoria.Logic.Type;
 using Tuple = Fictoria.Logic.Expression.Tuple;
 
@@ -187,8 +188,8 @@ public class Linker
                 
                 throw new ResolveException($"search binding '{binding}' is not valid here");
             case Parenthetical parenthetical:
-                LinkExpression(scope, parenthetical);
-                expression.Type = parenthetical.Type;
+                LinkExpression(scope, parenthetical.Expression);
+                parenthetical.Type = parenthetical.Expression.Type;
                 if (parenthetical.Expression.ContainsBinding)
                 {
                     parenthetical.ContainsBinding = true;
@@ -256,6 +257,17 @@ public class Linker
                     expression.Type = function.Expression.Type;
                     break;
                 }
+
+                if (Builtins.ByName.TryGetValue(call.Functor, out var builtin))
+                {
+                    foreach (var e in call.Arguments)
+                    {
+                        LinkExpression(scope, e);
+                    }
+
+                    call.Type = builtin.Type;
+                    break;
+                }
                 
                 throw new ResolveException($"unknown functor '{call.Functor}'");
             case Unary unary:
@@ -321,6 +333,7 @@ public class Linker
                     case "-":
                     case "*":
                     case "/": // hmm
+                    case "^":
                         if (infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
                             infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Float))
                         {

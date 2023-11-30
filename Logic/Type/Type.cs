@@ -18,6 +18,7 @@ public class Type
     public static readonly Type Boolean   = new("bool");
     public static readonly Type Int       = new("int");
     public static readonly Type Float     = new("float");
+    public static readonly Type String    = new("string");
     public static readonly Type Symbol    = new("symbol");
     public static readonly Type Object    = new("object");
     public static readonly Type Schema    = new("schema");
