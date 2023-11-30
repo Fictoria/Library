@@ -210,6 +210,26 @@ public class Parser : LogicBaseVisitor<object>
         return new Assign(context.GetText(), variable, expression);
     }
 
+    public override object VisitIf(LogicParser.IfContext context)
+    {
+        var ifs = new List<If>();
+        foreach (var c in context.condition())
+        {
+            var condition = c.expression().Select(e => (Expression.Expression)Visit(e)).ToList();
+            var body = c.block().expression().Select(e => (Expression.Expression)Visit(e)).ToList();
+            var cx = new Series("condition", condition);
+            var bx = new Series("body", body);
+            ifs.Add(new If(c.GetText(), cx, bx, new List<If>(), null));
+        }
+
+        var main = ifs.First();
+        var rest = ifs.Skip(1).ToList();
+        var _else = context.block().expression().Select(e => (Expression.Expression)Visit(e)).ToList();
+        var ex = new Series("else", _else);
+        
+        return new If(context.GetText(), main.Condition, main.Body, rest, ex);
+    }
+
     public override object VisitParameter(LogicParser.ParameterContext context)
     {
         var name = context.identifier()[0].IDENTIFIER().GetText();

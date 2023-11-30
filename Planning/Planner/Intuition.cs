@@ -30,7 +30,7 @@ public class Intuition
             }
         }
 
-        if (count == 0) return 0.05;
+        if (count <= 0.0) return 0.05;
         return total / count;
     }
 }

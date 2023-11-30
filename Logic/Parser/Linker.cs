@@ -112,11 +112,15 @@ public class Linker
             throw new ParseException($"unknown instance type '{placeholder.Name}'");
         }
     }
-    
+
+    private static string _currentFunctionName = "";
+    private static Function.Function? _currentFunction = null;
     private static void LinkFunctions(Scope scope)
     {
-        foreach (var (_, function) in scope.Functions)
+        foreach (var (name, function) in scope.Functions)
         {
+            _currentFunctionName = name;
+            _currentFunction = function;
             foreach (var parameter in function.Parameters)
             {
                 if (parameter.Type.GetType() != typeof(TypePlaceholder)) continue;
@@ -132,9 +136,19 @@ public class Linker
                 throw new ParseException($"unknown predicate parameter type '{placeholder.Name}'");
             }
             LinkExpression(scope, function.Expression);
+            _currentFunctionName = "";
+            _currentFunction = null;
         }
     }
 
+    public static void ShortCircuitRecursion(Scope scope, Function.Function function)
+    {
+        var series = function.Expression as Series;
+        var last = series!.Expressions.Last();
+        LinkExpression(scope, last);
+        series.Type = last.Type;
+    }
+    
     public static void LinkExpression(Scope scope, Expression.Expression expression)
     {
         switch (expression)
@@ -194,12 +208,21 @@ public class Linker
                 tuple.Type = Type.Type.Tuple;
                 break;
             case Assign assign:
-                scope.Bindings[assign.Variable] = Type.Type.Variable;
+                if (!scope.Bindings.ContainsKey(assign.Variable))
+                {
+                    scope.Bindings[assign.Variable] = Type.Type.Variable;
+                }
+
                 LinkExpression(scope, assign.Value);
                 assign.Type = assign.Value.Type;
                 scope.Bindings[assign.Variable] = assign.Value.Type;
                 break;
             case Call call:
+                if (call.Functor == _currentFunctionName)
+                {
+                    ShortCircuitRecursion(scope, _currentFunction!);
+                }
+                
                 if (scope.Schemata.TryGetValue(call.Functor, out var schema))
                 {
                     expression.Type = Fictoria.Logic.Type.Type.Boolean;
@@ -339,6 +362,13 @@ public class Linker
                 }
 
                 series.Type = series.Expressions.Last().Type;
+                break;
+            case If _if:
+                LinkExpression(scope, _if.Condition);
+                LinkExpression(scope, _if.Body);
+                _if.ElseIfs.ToList().ForEach(e => LinkExpression(scope, e));
+                if (_if.Else is not null) LinkExpression(scope, _if.Else);
+                _if.Type = Type.Type.Boolean;
                 break;
             default:
                 throw new ParseException($"unknown expression '{expression}'");

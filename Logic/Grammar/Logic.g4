@@ -10,6 +10,7 @@ statement
     |   fact
     |   antifact
     |   function
+    |   action
     ;
 
 type
@@ -42,6 +43,15 @@ function
         PERIOD
     ;
 
+action
+    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN OPEN_BRACE
+        'space:' series PERIOD
+        'cost:' series PERIOD
+        'conditions:' series PERIOD
+        'effects:' statement+
+        CLOSE_BRACE PERIOD
+    ;
+
 series
     :   expression (SEMICOLON expression)*
     ;
@@ -55,6 +65,7 @@ expression
     |   tuple                                                           # tupleExpression
     |   call                                                            # callExpression
     |   assign                                                          # assignExpression
+    |   if                                                              # ifExpression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op='::' right=expression                        # infixExpression
     |   left=expression op=('+' | '-') right=expression                 # infixExpression
@@ -64,12 +75,26 @@ expression
     |   left=expression op=('and' | 'or' | 'xor') right=expression      # infixExpression
     ;
 
+if
+    :   IF condition
+        (ELSE IF condition)*
+        (ELSE block)?
+    ;
+
+condition
+    :   OPEN_PAREN expression (SEMICOLON expression)* CLOSE_PAREN block
+    ;
+
+block
+    :   OPEN_BRACE expression (SEMICOLON expression)* CLOSE_BRACE
+    ;
+
 assign
     :   identifier EQUALS expression
     ;
 
 call
-    :   identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
+    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
     ;
 
 parenthetical
@@ -88,6 +113,7 @@ literal
     :   literalBool
     |   literalInt
     |   literalFloat
+    |   literalString
     ;
     
 literalBool
@@ -100,17 +126,25 @@ literalInt
 literalFloat
     :   FLOAT
     ;
-
+    
+literalString
+    :   '"' .*? '"'
+    ;
+    
 binding
     :   AT identifier
-//TODO support expressions like _ > 5 instead of a: > 5
+//TODO support expressions like _ > 5 instead of @a > 5
 //    |   WILDCARD
     ;
 
 parameter
     :   identifier COLON variance? identifier
     ;
-    
+
+many
+    :   AMP
+    ;
+ 
 variance
     :   '+' | '-'
     ;
@@ -119,6 +153,14 @@ identifier
     :   IDENTIFIER
     ;
 
+IF
+    :   'if'
+    ;
+    
+ELSE
+    :   'else'
+    ;
+    
 IDENTIFIER
     :   [a-zA-Z] [a-zA-Z0-9_]*
     ;
@@ -131,8 +173,16 @@ FLOAT
     :   [0-9]+ PERIOD [0-9]+
     ;
 
+ACTS
+    :   '->'
+    ;
+
 AT
     :   '@'
+    ;
+
+AMP
+    :   '&'
     ;
 
 TILDE
@@ -167,6 +217,14 @@ CLOSE_BRACK
     :   ']'
     ;
     
+OPEN_BRACE
+    :   '{'
+    ;
+   
+CLOSE_BRACE
+    :   '}'
+    ;
+   
 PIPE
     :   '|'
     ;

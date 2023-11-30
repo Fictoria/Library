@@ -21,7 +21,8 @@ public class Function
         context.Push();
         for (var i = 0; i < arguments.Count; i++)
         {
-            context.Bind(Parameters[i].Name, arguments[i]);
+            var value = arguments[i].Evaluate(context);
+            context.Bind(Parameters[i].Name, value);
         }
 
         var result = Expression.Evaluate(context);

@@ -31,7 +31,7 @@ public class Search : Action
 
     public override int Cost(Program program)
     {
-        return 100;
+        return 1000;
     }
 
     public override string Conditions()

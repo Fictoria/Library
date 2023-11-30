@@ -45,3 +45,10 @@ searchable(storage).
 
 //location(tree1, 5, 2).
 //location(cf1, 2, 3).
+
+fib(n: int) =
+    if (n == 0) {
+        r = 0
+    } else {
+        r = n + fib(n - 1)
+    }; r.
