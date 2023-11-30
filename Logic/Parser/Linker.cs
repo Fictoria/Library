@@ -149,7 +149,8 @@ public class Linker
         LinkExpression(scope, last);
         series.Type = last.Type;
     }
-    
+
+    private static bool _callMany = false;
     public static void LinkExpression(Scope scope, Expression.Expression expression)
     {
         switch (expression)
@@ -181,8 +182,9 @@ public class Linker
             case Binding binding:
                 if (scope.Bindings.TryGetValue("$", out var found))
                 {
-                    binding.Type = (Type.Type)found;
-                    scope.Bindings[binding.Name] = (Type.Type)found;
+                    var _type = _callMany ? Type.Type.Tuple : (Type.Type)found;
+                    binding.Type = _type;
+                    scope.Bindings[binding.Name] = _type;
                     break;
                 }
                 
@@ -226,6 +228,10 @@ public class Linker
                 
                 if (scope.Schemata.TryGetValue(call.Functor, out var schema))
                 {
+                    if (call.Many)
+                    {
+                        _callMany = true;
+                    }
                     expression.Type = Fictoria.Logic.Type.Type.Boolean;
 
                     var arguments = call.Arguments.ToList();
@@ -244,6 +250,8 @@ public class Linker
                         LinkExpression(scope, e);
                         scope.Bindings.Remove("$");
                     }
+
+                    _callMany = false;
                     break;
                 }
 
@@ -330,13 +338,17 @@ public class Linker
                         }
                         throw new ParseException($"invalid types '{infix.Left.GetType()}' and '{infix.Right.GetType()}' for '{infix.Operator}' infix expression");
                     case "+":
-                    case "-":
                     case "*":
+                    case "~":
+                    case "-":
                     case "/": // hmm
                     case "^":
                         if (infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
-                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Float))
+                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Float) ||
+                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.String) ||
+                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Tuple))
                         {
+                            //TODO ensure left and right types are equal
                             infix.Type = infix.Left.Type;
                             break;
                         }

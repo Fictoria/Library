@@ -21,8 +21,16 @@ public static class Program
         var text = File.ReadAllText(path);
 
         var program = Loader.Load(text);
-        var result = program.Evaluate("exp(2,3)");
-        Console.WriteLine(result);
+        var results = program.Evaluate("locs()") as List<object>;
+        foreach (var r in results)
+        {
+            Console.WriteLine(r);
+            // var result = r as List<object>;
+            // foreach (var x in result)
+            // {
+            //     Console.WriteLine(x);
+            // }
+        }
         // var planner = new Planner(new ActionFactory[]
         // {
         //     SearchFactory.Instance,

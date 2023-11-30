@@ -146,6 +146,13 @@ public class Parser : LogicBaseVisitor<object>
         throw new ParseException($"invalid float literal '{value}'");
     }
 
+    public override object VisitLiteralString(LogicParser.LiteralStringContext context)
+    {
+        var value = context.GetText();
+        var inner = value.Substring(1, value.Length - 2);
+        return new Literal(context.GetText(), inner, Fictoria.Logic.Type.Type.String);
+    }
+
     public override object VisitIdentifier(LogicParser.IdentifierContext context)
     {
         var identifier = context.IDENTIFIER().GetText();
@@ -179,10 +186,11 @@ public class Parser : LogicBaseVisitor<object>
 
     public override object VisitCall(LogicParser.CallContext context)
     {
+        var many = context.many() is not null;
         var identifier = context.identifier().IDENTIFIER().GetText();
         var arguments = context.expression().Select(a => (Expression.Expression)Visit(a)).ToList();
 
-        return new Call(context.GetText(), identifier, arguments);
+        return new Call(context.GetText(), identifier, arguments, many);
     }
 
     public override object VisitUnaryExpression(LogicParser.UnaryExpressionContext context)

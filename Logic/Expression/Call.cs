@@ -7,20 +7,29 @@ namespace Fictoria.Logic.Expression;
 
 public class Call : Expression
 {
+    public bool Many { get; }
     public string Functor { get; }
     public IList<Expression> Arguments { get; }
 
-    public Call(string text, string functor, IList<Expression> arguments) : base(text)
+    public Call(string text, string functor, IList<Expression> arguments, bool many = false) : base(text)
     {
         Functor = functor;
         Arguments = arguments;
+        Many = many;
     }
 
     public override object Evaluate(Context context)
     {
         if (context.ResolveSchema(Functor, out var schema))
         {
-            return FactSearch.Search(context, schema, Arguments);
+            if (Many)
+            {
+                return FactSearch.SearchAll(context, schema, Arguments);
+            }
+            else
+            {
+                return FactSearch.Search(context, schema, Arguments);
+            }
         }
 
         if (context.ResolveFunction(Functor, out var function))

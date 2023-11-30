@@ -40,10 +40,12 @@ searchable(quarry).
 searchable(campfire).
 searchable(storage).
 
-//instance(tree1, tree).
-//instance(cf1, campfire).
+instance(tree1, tree).
+instance(cf1, campfire).
 
-//location(tree1, 5, 2).
-//location(cf1, 2, 3).
+location(tree1, 5, 2).
+location(cf1, 2, 3).
 
-exp(a: int, b: int) = a ^ b.
+locs() =
+    &location(_, @x, @y);
+    x * y.

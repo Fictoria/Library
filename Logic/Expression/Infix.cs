@@ -65,6 +65,46 @@ public class Infix : Expression
                     throw new EvaluateException($"exponents are not valid for floats");
             }
         }
+        else if (Type.Equals(Fictoria.Logic.Type.Type.String))
+        {
+            if (Operator == "+")
+            {
+                var left = (string)Left.Evaluate(context);
+                var right = (string)Right.Evaluate(context);
+                return left + right;
+            }
+
+            throw new EvaluateException($"unknown operator '{Operator}' in string infix expression");
+        }
+        
+        else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Tuple))
+        {
+            var left = (List<object>)Left.Evaluate(context);
+            var right = (List<object>)Right.Evaluate(context);
+
+            switch (Operator)
+            {
+                case "+":
+                    return left.Concat(right).ToList();
+                case "*":
+                    var cartesian = new List<object>();
+                    foreach (var l in left)
+                    {
+                        foreach (var r in right)
+                        {
+                            cartesian.Add(new List<object> { l, r });
+                        }
+                    }
+                    return cartesian;
+                case "~":
+                    var zip = new List<object>();
+                    for (int i = 0; i < left.Count; i++)
+                    {
+                        zip.Add(new List<object> { left[i], right[i] });
+                    }
+                    return zip;
+            }
+        }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))
         {
             if (Operator == "::")

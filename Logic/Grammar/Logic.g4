@@ -69,6 +69,7 @@ expression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op='::' right=expression                        # infixExpression
     |   left=expression op='^' right=expression                         # infixExpression
+    |   left=expression op='~' right=expression                         # infixExpression
     |   left=expression op=('*' | '/') right=expression                 # infixExpression
     |   left=expression op=('+' | '-') right=expression                 # infixExpression
     |   left=expression op=('>' | '<' | '>=' | '<=') right=expression   # infixExpression
@@ -129,9 +130,9 @@ literalFloat
     ;
     
 literalString
-    :   '"' .*? '"'
+    :   STRING
     ;
-    
+  
 binding
     :   AT identifier
 //TODO support expressions like _ > 5 instead of @a > 5
@@ -152,6 +153,10 @@ variance
 
 identifier
     :   IDENTIFIER
+    ;
+
+STRING
+    :   '"' (~'"')* '"'
     ;
 
 IF

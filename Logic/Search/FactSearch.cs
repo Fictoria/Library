@@ -52,6 +52,7 @@ public static class FactSearch
     public static IList<FactResult> FindAll(Context context, Schema schema, IEnumerable<Expression.Expression> args)
     {
         var results = new List<FactResult>();
+        var seriesBindings = new List<(string, object)>();
         var arguments = args.ToList();
         if (arguments.Count != schema.Parameters.Count)
         {
@@ -67,13 +68,25 @@ public static class FactSearch
                 {
                     foreach (var (k, v) in bindings)
                     {
-                        context.Bind(k, v);
+                        seriesBindings.Add((k, v));
+                        // context.Bind(k, v);
                     }
 
                     var result = new FactResult(fact.Schema.Name, values);
                     results.Add(result);
                 }
             }
+        }
+
+        var groupedBindings =
+            seriesBindings
+                .GroupBy(b => b.Item1)
+                .Select(g => 
+                    (g.Key, g.Select(b => b.Item2).ToList())
+                );
+        foreach (var (variable, tuple) in groupedBindings)
+        {
+            context.Bind(variable, tuple);
         }
 
         return results;
