@@ -31,15 +31,22 @@ public static class Program
             WarmFactory.Instance
         });
         
+        // var network = Analyzer.Analyze(program);
+        // network.Save("../../../semnet.json");
         var network = Network.Load("../../../semnet.json");
-        if (planner.ForwardSearch(program, network, "warm(self)", out var plan, out var debug))
+        // if (planner.ForwardSearch(program, "warm(self)", out var plan1, out var debug1))
+        // {
+        //     Console.WriteLine($"raw: {debug1.Count}");
+        // }
+        if (planner.ForwardSearch(program, network, "warm(self)", out var plan2, out var debug2))
         {
-            foreach (var a in plan.Actions)
+            Console.WriteLine($"sem: {debug2.Count}");
+            foreach (var a in plan2.Actions)
             {
                 Console.WriteLine(a.ToString());
             }
             
-            var output = plan.RenderToDOT(debug);
+            var output = plan2.RenderToDOT(debug2);
             File.WriteAllText("../../../debug.dot", output);
             Console.WriteLine("done");
         }

@@ -23,10 +23,9 @@ public class Analyzer
                 var alpha = vocabulary.GetRepresentationFor(first);
                 var beta = vocabulary.GetRepresentationFor(second);
                 var weight = alpha.GetCosineDistanceTo(beta).DistanceValue;
-                if (weight > 0.15)
+                if (weight > 0.10)
                 {
                     network.Add(first, second, weight);
-                    Console.WriteLine(first + "\t" + second + "\t" + weight);
                 }
             }
         }
