@@ -57,4 +57,9 @@ public class Deposit : Action
                 ~carrying(_).
                 """;
     }
+
+    public override string ToString()
+    {
+        return $"deposit({Material}, {Building})";
+    }
 }

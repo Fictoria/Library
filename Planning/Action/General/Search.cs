@@ -49,4 +49,9 @@ public class Search : Action
                location({name}, 0, 0).
                """;
     }
+
+    public override string ToString()
+    {
+        return $"search({Type})";
+    }
 }

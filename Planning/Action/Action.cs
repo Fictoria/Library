@@ -17,4 +17,9 @@ public abstract class Action
     {
         program.Merge(Effects());
     }
+
+    public override string ToString()
+    {
+        return GetType().ToString().Split(".").Last();
+    }
 }

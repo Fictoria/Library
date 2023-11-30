@@ -50,4 +50,9 @@ public class Gather : Action
                 ~location(wood, _, _).
                 """;
     }
+
+    public override string ToString()
+    {
+        return $"gather({Material})";
+    }
 }

@@ -1,10 +1,8 @@
 using Fictoria.Logic;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Planning.Action;
-using Fictoria.Planning.Action.Campfire;
-using Fictoria.Planning.Action.Tree;
 
-namespace Fictoria.Planning;
+namespace Fictoria.Planning.Planner;
 
 public class Planner
 {
@@ -15,11 +13,15 @@ public class Planner
         _factories = factories;
     }
     
-    public void ForwardSearch(Program program, string goal)
+    public bool ForwardSearch(Program program, string goal, out Plan plan, out IList<Plan> debug)
     {
-        var queue = new PriorityQueue<Program, int>();
+        var _debug = new List<Plan>();
+        debug = _debug;
+        
+        var queue = new PriorityQueue<Plan, int>();
         var visited = new HashSet<Scope>();
-        queue.Enqueue(program, 0);
+        var initial = new Plan(program);
+        queue.Enqueue(initial, 0);
         visited.Add(program.Scope);
 
         int i = 0;
@@ -27,11 +29,15 @@ public class Planner
         while (queue.Count > 0)
         {
             i++;
-            if (!queue.TryDequeue(out var state, out var priority)) continue;
+            if (!queue.TryDequeue(out var node, out var priority)) break;
+            
+            _debug.Add(node);
+            
+            var state = node.State;
             if (state.Evaluate(goal) is true)
             {
-                Console.WriteLine("goal achieved");
-                return;
+                plan = node;
+                return true;
             }
 
             foreach (var factory in _factories)
@@ -48,17 +54,19 @@ public class Planner
                     action.Perform(newState);
                     if (!visited.Contains(newState.Scope))
                     {
+                        var newNode = new Plan(newState, node, action);
                         visited.Add(state.Scope);
-                        queue.Enqueue(newState, priority + action.Cost(state));
+                        queue.Enqueue(newNode, priority + action.Cost(state));
                     }
                     else
                     {
-                        Console.WriteLine("duplicate hit");
+                        //Console.WriteLine("duplicate hit");
                     }
                 }
             }
         }
         
-        Console.WriteLine("goal failed");
+        plan = null;
+        return false;
     }
 }

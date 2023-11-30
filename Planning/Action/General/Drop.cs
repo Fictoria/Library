@@ -45,4 +45,9 @@ public class Drop : Action
                 ~carrying({Thing}).
                 """;
     }
+
+    public override string ToString()
+    {
+        return $"drop({Thing})";
+    }
 }

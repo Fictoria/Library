@@ -50,4 +50,9 @@ public class Warm : Action
                 warm(self).
                 """;
     }
+
+    public override string ToString()
+    {
+        return $"warm({Fire})";
+    }
 }

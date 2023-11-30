@@ -10,8 +10,12 @@ instance(self, human).
 
 // some types
 tree: resource.
+quarry: resource.
 wood: material.
+stone: material.
 campfire: building.
+storage: building.
+
 
 // input/output
 provides(r: +resource, m: +material).
@@ -19,7 +23,10 @@ consumes(b: +building, m: +material).
 contains(b: +building, m: +material).
 
 provides(tree, wood).
+provides(quarry, stone).
 consumes(campfire, wood).
+consumes(storage, wood).
+consumes(storage, stone).
 
 // etc.
 searchable(t: thing).
@@ -29,10 +36,12 @@ warm(h: human).
 
 // the world
 searchable(tree).
+searchable(quarry).
 searchable(campfire).
+searchable(storage).
 
 //instance(tree1, tree).
-instance(cf1, campfire).
+//instance(cf1, campfire).
 
 //location(tree1, 5, 2).
-location(cf1, 2, 3).
+//location(cf1, 2, 3).

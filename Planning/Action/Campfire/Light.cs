@@ -54,4 +54,9 @@ public class Light : Action
                 ~contains({Campfire}, wood).
                 """;
     }
+
+    public override string ToString()
+    {
+        return $"light({Campfire})";
+    }
 }
