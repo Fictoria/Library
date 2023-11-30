@@ -11,6 +11,7 @@ public abstract class Expression
     public string BindingName { get; set; }
 
     public abstract object Evaluate(Context context);
+    public abstract IEnumerable<string> Terms();
 
     protected Expression(string text, Type.Type? type = null)
     {

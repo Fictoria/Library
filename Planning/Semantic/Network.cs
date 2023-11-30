@@ -7,7 +7,8 @@ namespace Fictoria.Planning.Semantic;
 [Serializable]
 public class Network
 {
-    public Dictionary<string, double> Weights = new();
+    public Dictionary<string, Dictionary<string, double>> Weights = new ();
+    //TODO replace Pairs by iterating through Weights for DOT rendering
     public HashSet<string> Pairs = new();
     public HashSet<string> Terms = new();
 
@@ -19,18 +20,34 @@ public class Network
 
     public void Add(string first, string second, double weight)
     {
-        var obverse = $"{first}<->{second}";
-        var reverse = $"{second}<->{first}";
-        Weights[obverse] = weight;
-        Weights[reverse] = weight;
-        Pairs.Add(obverse);
+        if (!Weights.ContainsKey(first))
+        {
+            Weights[first] = new Dictionary<string, double>();
+        }
+        if (!Weights.ContainsKey(second))
+        {
+            Weights[second] = new Dictionary<string, double>();
+        }
+
+        Weights[first][second] = weight;
+        Weights[second][first] = weight;
+        Pairs.Add($"{first},{second}");
         Terms.Add(first);
         Terms.Add(second);
     }
 
     public bool TryGet(string first, string second, out double weight)
     {
-        return Weights.TryGetValue($"{first}<->{second}", out weight);
+        if (Weights.TryGetValue(first, out var found))
+        {
+            if (found.TryGetValue(second, out weight))
+            {
+                return true;
+            }
+        }
+
+        weight = 0.0;
+        return false;
     }
 
     public string RenderToDOT()
@@ -43,7 +60,7 @@ public class Network
         }
         foreach (var pair in Pairs)
         {
-            var tokens = pair.Split("<->");
+            var tokens = pair.Split(",");
             var first = tokens[0];
             var second = tokens[1];
             TryGet(first, second, out var weight);

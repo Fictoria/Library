@@ -16,6 +16,11 @@ public class Literal : Expression
         return Value;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string> { Type.Name };
+    }
+
     protected bool Equals(Literal other)
     {
         return Value.Equals(other.Value);

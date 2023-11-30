@@ -37,6 +37,11 @@ public class Identifier : Expression
         throw new ResolveException($"unknown identifier '{Name}'");
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string> { Type.Name };
+    }
+
     protected bool Equals(Identifier other)
     {
         return Name == other.Name;

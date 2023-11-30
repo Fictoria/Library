@@ -30,6 +30,11 @@ public class Call : Expression
         throw new EvaluateException($"call expression with functor '{Functor}' is not a schema or function");
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string>(Arguments.SelectMany(a => a.Terms())) { Functor, Type.Name };
+    }
+
     protected bool Equals(Call other)
     {
         return Functor == other.Functor && Arguments.Equals(other.Arguments);

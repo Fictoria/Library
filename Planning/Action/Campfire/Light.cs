@@ -55,6 +55,11 @@ public class Light : Action
                 """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "light", "fire", "wood", "campfire" };
+    }
+    
     public override string ToString()
     {
         return $"light({Campfire})";

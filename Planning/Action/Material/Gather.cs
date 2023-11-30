@@ -51,6 +51,11 @@ public class Gather : Action
                 """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "gather", "carrying", Material };
+    }
+
     public override string ToString()
     {
         return $"gather({Material})";

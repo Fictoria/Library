@@ -135,6 +135,13 @@ public class Infix : Expression
         throw new EvaluateException($"invalid type '{Type}' for '{Operator}' infix expression");
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        var terms = new HashSet<string>(Left.Terms()) { Type.Name };
+        Right.Terms().ToList().ForEach(t => terms.Add(t));
+        return terms;
+    }
+
     protected bool Equals(Infix other)
     {
         return Left.Equals(other.Left) && Right.Equals(other.Right) && Operator == other.Operator;

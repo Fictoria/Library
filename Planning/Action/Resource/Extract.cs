@@ -58,6 +58,11 @@ public class Extract : Action
                 """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "extract", Resource, Material };
+    }
+
     public override string ToString()
     {
         return $"extract({Resource}, {Material})";

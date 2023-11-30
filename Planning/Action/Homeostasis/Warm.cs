@@ -51,6 +51,11 @@ public class Warm : Action
                 """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "warm", "fire" };
+    }
+
     public override string ToString()
     {
         return $"warm({Fire})";

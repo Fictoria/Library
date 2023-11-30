@@ -58,6 +58,11 @@ public class Deposit : Action
                 """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "deposit", Building, Material };
+    }
+
     public override string ToString()
     {
         return $"deposit({Material}, {Building})";

@@ -16,6 +16,11 @@ public class Tuple : Expression
         return Expressions.Select(e => e.Evaluate(context)).ToList();
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string>(Expressions.SelectMany(e => e.Terms())) { Type.Name };
+    }
+
     protected bool Equals(Tuple other)
     {
         return Expressions.Equals(other.Expressions);

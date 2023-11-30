@@ -11,6 +11,11 @@ public class Wildcard : Expression
         return this;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string> { Type.Name };
+    }
+
     protected bool Equals(Wildcard other)
     {
         return true;

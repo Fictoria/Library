@@ -7,6 +7,7 @@ public abstract class Action
     public abstract int Cost(Program program);
     public abstract string Conditions();
     public abstract string Effects();
+    public abstract IEnumerable<string> Terms();
 
     public bool Possible(Program program)
     {

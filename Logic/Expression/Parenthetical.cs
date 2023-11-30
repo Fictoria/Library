@@ -16,6 +16,11 @@ public class Parenthetical : Expression
         return Expression.Evaluate(context);
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string>(Expression.Terms()) { Type.Name };
+    }
+
     protected bool Equals(Parenthetical other)
     {
         return Expression.Equals(other.Expression);

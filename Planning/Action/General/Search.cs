@@ -50,6 +50,11 @@ public class Search : Action
                """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "search", "location", Type };
+    }
+
     public override string ToString()
     {
         return $"search({Type})";

@@ -30,19 +30,20 @@ public static class Program
             LightFactory.Instance,
             WarmFactory.Instance
         });
-        if (planner.ForwardSearch(program, "warm(self)", out var plan, out var debug))
+        
+        var network = Network.Load("../../../semnet.json");
+        if (planner.ForwardSearch(program, network, "warm(self)", out var plan, out var debug))
         {
             foreach (var a in plan.Actions)
             {
                 Console.WriteLine(a.ToString());
             }
-        
+            
             var output = plan.RenderToDOT(debug);
             File.WriteAllText("../../../debug.dot", output);
             Console.WriteLine("done");
         }
         // var network = Analyzer.Analyze(program);
-        // // var network = Network.Load("../../../semnet.json");
         // var output = network.RenderToDOT();
         // File.WriteAllText("../../../semnet.dot", output);
         // // Console.WriteLine(Directory.GetCurrentDirectory());

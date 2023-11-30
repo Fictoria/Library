@@ -13,6 +13,11 @@ public class Unary : Expression
         Operator = op;
         Expression = expression;
     }
+
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string>(Expression.Terms()) { Type.Name };
+    }
     
     public override object Evaluate(Context context)
     {

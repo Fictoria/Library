@@ -46,6 +46,11 @@ public class Drop : Action
                 """;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new[] { "drop", "carrying", Thing };
+    }
+
     public override string ToString()
     {
         return $"drop({Thing})";

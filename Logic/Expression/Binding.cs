@@ -25,6 +25,11 @@ public class Binding : Expression
         throw new EvaluateException($"conditional search missing binding");
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string> { Type.Name };
+    }
+
     protected bool Equals(Binding other)
     {
         return Name == other.Name;

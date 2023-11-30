@@ -20,6 +20,11 @@ public class Assign : Expression
         return result;
     }
 
+    public override IEnumerable<string> Terms()
+    {
+        return new HashSet<string>(Value.Terms()) { Type.Name };
+    }
+
     protected bool Equals(Assign other)
     {
         return Variable == other.Variable && Value.Equals(other.Value);
