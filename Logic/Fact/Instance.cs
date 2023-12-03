@@ -2,18 +2,22 @@ namespace Fictoria.Logic.Fact;
 
 public class Instance
 {
+    public string Name { get; set; }
+    public Expression.Expression NameExpression { get; }
     public Type.Type Type { get; set; }
-    public string Name { get; }
+    public Expression.Expression TypeExpression { get; }
 
-    public Instance(string name, Type.Type type)
+    public Instance(Expression.Expression nameExpression, Expression.Expression typeExpression, string name = "", Type.Type? type = null)
     {
         Name = name;
-        Type = type;
+        NameExpression = nameExpression;
+        Type = type ?? Fictoria.Logic.Type.Type.Nothing;
+        TypeExpression = typeExpression;
     }
 
     public override string ToString()
     {
-        return Name;
+        return Name.ToString();
     }
 
     protected bool Equals(Instance other)

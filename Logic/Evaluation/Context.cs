@@ -88,8 +88,7 @@ public class Context
     {
         foreach (var container in Stack)
         {
-            if (!container.Instances.TryGetValue(name, out var found)) continue;
-            instance = new Instance(name, found);
+            if (!container.Instances.TryGetValue(name, out instance)) continue;
             return true;
         }
 

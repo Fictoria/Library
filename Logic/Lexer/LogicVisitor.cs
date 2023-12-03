@@ -51,6 +51,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitType([NotNull] LogicParser.TypeContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.instance"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitInstance([NotNull] LogicParser.InstanceContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.schema"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -68,12 +74,6 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitAntifact([NotNull] LogicParser.AntifactContext context);
-	/// <summary>
-	/// Visit a parse tree produced by <see cref="LogicParser.argument"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitArgument([NotNull] LogicParser.ArgumentContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.function"/>.
 	/// </summary>

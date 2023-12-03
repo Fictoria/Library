@@ -21,16 +21,21 @@ public static class Program
         var text = File.ReadAllText(path);
 
         var program = Loader.Load(text);
-        var results = program.Evaluate("locs()") as List<object>;
-        foreach (var r in results)
+        var result = (List<object>)program.Evaluate("&searchable(@all); all");
+        foreach (var x in result)
         {
-            Console.WriteLine(r);
-            // var result = r as List<object>;
-            // foreach (var x in result)
-            // {
-            //     Console.WriteLine(x);
-            // }
+            Console.WriteLine(x);
         }
+        // Console.WriteLine(result);
+        // foreach (var r in results)
+        // {
+        //     Console.WriteLine(r);
+        //     // var result = r as List<object>;
+        //     // foreach (var x in result)
+        //     // {
+        //     //     Console.WriteLine(x);
+        //     // }
+        // }
         // var planner = new Planner(new ActionFactory[]
         // {
         //     SearchFactory.Instance,

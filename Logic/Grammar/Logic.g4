@@ -6,6 +6,7 @@ logic
 
 statement
     :   type
+    |   instance
     |   schema
     |   fact
     |   antifact
@@ -17,14 +18,19 @@ type
     :   identifier COLON identifier (COMMA identifier)*
         PERIOD
     ;
-    
+
+instance
+    :   'instance' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN
+        PERIOD
+    ;
+
 schema
     :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN
         PERIOD
     ;
     
 fact
-    :   identifier OPEN_PAREN argument (COMMA argument)* CLOSE_PAREN
+    :   identifier OPEN_PAREN expression (COMMA expression)* CLOSE_PAREN
         PERIOD
     ;
 
@@ -33,21 +39,17 @@ antifact
         PERIOD
     ;
 
-argument
-    :   literal
-    |   identifier
-    ;
-
 function
     :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN EQUALS series
         PERIOD
     ;
 
 action
-    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN OPEN_BRACE
-        'space:' series PERIOD
-        'cost:' series PERIOD
-        'conditions:' series PERIOD
+    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN ACTS OPEN_BRACE
+        'space:' space=series PERIOD
+        'cost:' cost=series PERIOD
+        'conditions:' conditions=series PERIOD
+        'locals:' local=series PERIOD
         'effects:' statement+
         CLOSE_BRACE PERIOD
     ;

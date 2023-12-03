@@ -73,6 +73,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitType([NotNull] LogicParser.TypeContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.instance"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterInstance([NotNull] LogicParser.InstanceContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.instance"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitInstance([NotNull] LogicParser.InstanceContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.schema"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -108,18 +120,6 @@ public partial class LogicBaseListener : ILogicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAntifact([NotNull] LogicParser.AntifactContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="LogicParser.argument"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterArgument([NotNull] LogicParser.ArgumentContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LogicParser.argument"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitArgument([NotNull] LogicParser.ArgumentContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.function"/>.
 	/// <para>The default implementation does nothing.</para>

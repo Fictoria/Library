@@ -1,21 +1,21 @@
 using Fictoria.Logic.Fact;
 using Fictoria.Logic.Parser;
 using Fictoria.Logic.Search;
-using System.Linq;
 
 namespace Fictoria.Logic.Evaluation;
 
 public class Scope
 {
-    public IDictionary<string, Type.Type> Types { get; private set; }
-    public IDictionary<Type.Type, ISet<Type.Type>> TypesByParent { get; private set; }
-    public IDictionary<string, Schema> Schemata { get; private set; }
-    public IDictionary<string, ISet<Fact.Fact>> Facts { get; private set; }
-    public ISet<Antifact> Antifacts { get; private set; }
-    public IDictionary<string, Type.Type> Instances { get; private set; }
-    public IDictionary<string, ISet<string>> InstancesByType { get; private set; }
-    public IDictionary<string, Function.Function> Functions { get; private set; }
-    public IDictionary<string, object> Bindings { get; private set; }
+    public IDictionary<string, Type.Type> Types { get; }
+    public IDictionary<Type.Type, ISet<Type.Type>> TypesByParent { get; }
+    public IDictionary<string, Schema> Schemata { get; }
+    public IDictionary<string, ISet<Fact.Fact>> Facts { get; }
+    public ISet<Antifact> Antifacts { get; }
+    public IDictionary<string, Instance> Instances { get; }
+    public IDictionary<string, ISet<string>> InstancesByType { get; }
+    public IDictionary<string, Function.Function> Functions { get; }
+    public IDictionary<string, Action.Action> Actions { get; }
+    public IDictionary<string, object> Bindings { get;  }
 
     public Scope()
     {
@@ -24,9 +24,10 @@ public class Scope
         Schemata = new Dictionary<string, Schema>();
         Facts = new Dictionary<string, ISet<Fact.Fact>>();
         Antifacts = new HashSet<Antifact>();
-        Instances = new Dictionary<string, Type.Type>();
+        Instances = new Dictionary<string, Instance>();
         InstancesByType = new Dictionary<string, ISet<string>>();
         Functions = new Dictionary<string, Function.Function>();
+        Actions = new Dictionary<string, Action.Action>();
         Bindings = new Dictionary<string, object>();
     }
 
@@ -42,7 +43,7 @@ public class Scope
         Functions = scope.Functions;
         Bindings = scope.Bindings;
 
-        var instancesClone = new Dictionary<string, Type.Type>();
+        var instancesClone = new Dictionary<string, Instance>();
         foreach (var (name, type) in scope.Instances)
         {
             instancesClone[name] = type;
@@ -121,7 +122,7 @@ public class Scope
         }
 
         instances[instance.Type.Name].Add(instance.Name);
-        Instances[instance.Name] = instance.Type;
+        Instances[instance.Name] = instance;
     }
 
     public void DefineFunction(Function.Function function)
@@ -129,11 +130,16 @@ public class Scope
         Functions[function.Name] = function;
     }
 
+    public void DefineAction(Action.Action action)
+    {
+        Actions[action.Name] = action;
+    }
+
     public void Merge(Scope other)
     {
         foreach (var (i, t) in other.Instances)
         {
-            DefineInstance(new Instance(i, t));
+            DefineInstance(t);
         }
         
         //TODO
@@ -185,8 +191,9 @@ public class Scope
         Types.ToList().ForEach(t => hashCode.Add(t.Value));
         Schemata.ToList().ForEach(s => hashCode.Add(s.Value));
         Facts.ToList().ForEach(fs => fs.Value.ToList().ForEach(hashCode.Add));
-        Instances.ToList().ForEach(i => hashCode.Add(new Instance(i.Key, i.Value)));
+        Instances.ToList().ForEach(i => hashCode.Add(i.Value));
         Functions.ToList().ForEach(f => hashCode.Add((f.Value)));
+        Actions.ToList().ForEach(a => hashCode.Add((a.Value)));
         return hashCode.ToHashCode();
     }
 }

@@ -9,16 +9,17 @@ namespace Fictoria.Logic.Parser;
 
 public class Parser : LogicBaseVisitor<object>
 {
-    private Scope scope = new Scope();
+    private Scope scope = new();
 
     public override object VisitLogic(LogicParser.LogicContext context)
     {
+        var program = new Program(scope);
+        var temp = new Context(program);
+        
         foreach (var type in Type.Type.BuiltIns)
         {
             scope.Types[type.Name] = type;
         }
-
-        scope.Schemata["instance"] = new Schema("instance", new List<Parameter> { new("i", scope.Types["anything"]), new("t", scope.Types["anything"]) });
         
         var statements = context.statement().Select(s => Visit(s));
         foreach (var statement in statements)
@@ -27,6 +28,12 @@ public class Parser : LogicBaseVisitor<object>
             {
                 case Type.Type type:
                     scope.DefineType(type);
+                    break;
+                case Instance instance:
+                    var name = instance.NameExpression.Text;
+                    instance.Name = name;
+                    instance.Type = new TypePlaceholder(instance.TypeExpression.Text);
+                    scope.DefineInstance(instance);
                     break;
                 case Schema schema:
                     scope.DefineSchema(schema);
@@ -44,6 +51,9 @@ public class Parser : LogicBaseVisitor<object>
                     break;
                 case Function.Function function:
                     scope.DefineFunction(function);
+                    break;
+                case Action.Action action:
+                    scope.DefineAction(action);
                     break;
             }
         }
@@ -63,6 +73,13 @@ public class Parser : LogicBaseVisitor<object>
         );
     }
 
+    public override object VisitInstance(LogicParser.InstanceContext context)
+    {
+        var name = (Expression.Expression)Visit(context.name);
+        var type = (Expression.Expression)Visit(context.of);
+        return new Instance(name, type);
+    }
+
     public override object VisitSchema(LogicParser.SchemaContext context)
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
@@ -70,25 +87,11 @@ public class Parser : LogicBaseVisitor<object>
 
         return new Schema(identifier, parameters);
     }
-
+    
     public override object VisitFact(LogicParser.FactContext context)
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
-        
-        if (identifier == "instance")
-        {
-            if (context.argument().Length != 2)
-            {
-                throw new ParseException($"instance facts require exactly 2 arguments");
-            }
-            
-            var instance = context.argument(0).identifier().IDENTIFIER().GetText();
-            var type = context.argument(1).identifier().IDENTIFIER().GetText();
-            scope.DefineInstance(new Instance(instance, new TypePlaceholder(type)));
-            return new Fact.Fact(new SchemaPlaceholder("instance"), new List<Expression.Expression>());
-        }
-        
-        var arguments = context.argument().Select(a => (Expression.Expression)Visit(a)).ToList();
+        var arguments = context.expression().Select(a => (Expression.Expression)Visit(a)).ToList();
 
         return new Fact.Fact(new SchemaPlaceholder(identifier), arguments);
     }
@@ -105,6 +108,21 @@ public class Parser : LogicBaseVisitor<object>
         var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
         var series = (Series)Visit(context.series());
         return new Function.Function(identifier, parameters, series);
+    }
+
+    private bool _inAction = false;
+    public override object VisitAction(LogicParser.ActionContext context)
+    {
+        _inAction = true;
+        var name = context.identifier().IDENTIFIER().GetText();
+        var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
+        var space = (Expression.Expression)Visit(context.space);
+        var cost = (Expression.Expression)Visit(context.cost);
+        var conditions = (Expression.Expression)Visit(context.conditions);
+        var locals = (Expression.Expression)Visit(context.local);
+        var effects = context.statement().Select(Visit).ToList();
+        _inAction = false;
+        return new Action.Action(name, parameters, space, cost, conditions, locals, effects);
     }
 
     public override object VisitSeries(LogicParser.SeriesContext context)

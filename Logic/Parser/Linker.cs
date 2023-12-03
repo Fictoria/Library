@@ -99,14 +99,15 @@ public class Linker
 
     private static void LinkInstances(Scope scope)
     {
-        foreach (var (name, type) in scope.Instances)
+        foreach (var (name, instance) in scope.Instances)
         {
+            var type = instance.Type;
             if (type.GetType() != typeof(TypePlaceholder)) continue;
             
             var placeholder = (TypePlaceholder)type;
             if (scope.Types.TryGetValue(placeholder.Name, out var found))
             {
-                scope.Instances[name] = found;
+                instance.Type = found;
                 continue;
             }
 
@@ -168,7 +169,7 @@ public class Linker
 
                 if (scope.Instances.TryGetValue(identifier.Name, out var instance))
                 {
-                    identifier.Type = instance;
+                    identifier.Type = instance.Type;
                     break;
                 }
 
