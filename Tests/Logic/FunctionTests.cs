@@ -69,4 +69,30 @@ public class FunctionTests
         program.AssertEvaluationResult("f(g(5))", 50);
         program.AssertEvaluationResult("g(f(5))", 100);
     }
+    
+    [Test]
+    public void Recursion()
+    {
+        var code = """
+                   fib(n: int) =
+                       if (n <= 1) {
+                           ret = 1
+                       } else {
+                           ret = fib(n - 1) + fib(n - 2)
+                       }; ret.
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("fib(0)", 1);
+        program.AssertEvaluationResult("fib(1)", 1);
+        program.AssertEvaluationResult("fib(2)", 2);
+        program.AssertEvaluationResult("fib(3)", 3);
+        program.AssertEvaluationResult("fib(4)", 5);
+        program.AssertEvaluationResult("fib(5)", 8);
+        program.AssertEvaluationResult("fib(6)", 13);
+        program.AssertEvaluationResult("fib(7)", 21);
+        program.AssertEvaluationResult("fib(8)", 34);
+        program.AssertEvaluationResult("fib(9)", 55);
+        program.AssertEvaluationResult("fib(10)", 89);
+    }
 }
