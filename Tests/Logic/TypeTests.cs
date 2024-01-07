@@ -5,9 +5,6 @@ namespace Fictoria.Tests.Logic;
 
 public class TypeTests
 {
-    [SetUp]
-    public void Setup() {}
-    
     [Test]
     public void Identity()
     {

@@ -17,11 +17,24 @@ public class Struct : Expression
 
     public override object Evaluate(Context context)
     {
-        throw new NotImplementedException();
+        var result = new Dictionary<string, object>();
+        foreach (var (key, value) in Value)
+        {
+            if (value.Expression != null)
+            {
+                var temp = value.Expression.Evaluate(context);
+                result[key] = temp;
+            }
+            else
+            {
+                result[key] = value.Statements!;
+            }
+        }
+        return result;
     }
 
     public override IEnumerable<string> Terms()
     {
-        throw new NotImplementedException();
+        return Array.Empty<string>();
     }
 }

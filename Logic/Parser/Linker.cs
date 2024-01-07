@@ -396,6 +396,16 @@ public class Linker
                 if (_if.Else is not null) LinkExpression(scope, _if.Else);
                 _if.Type = Type.Type.Boolean;
                 break;
+            case Struct _struct:
+                var fields = _struct.Value.Values.ToList();
+                foreach (var field in fields)
+                {
+                    if (field.Expression != null)
+                    {
+                        LinkExpression(scope, field.Expression);
+                    }
+                }
+                break;
             default:
                 throw new ParseException($"unknown expression '{expression}'");
         }
