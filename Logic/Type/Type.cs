@@ -42,6 +42,8 @@ public class Type
 
     public bool IsA(Type other)
     {
+        // ReSharper disable once PossibleUnintendedReferenceComparison
+        if (this == Anything) return true;
         if (Name == other.Name) return true;
         if (Name != "nothing" && other.Name == "anything") return true;
 

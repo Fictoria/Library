@@ -215,6 +215,14 @@ public class Parser : LogicBaseVisitor<object>
         return new Infix(context.GetText(), left, op, right);
     }
 
+    public override object VisitIndexExpression(LogicParser.IndexExpressionContext context)
+    {
+        var left = (Expression.Expression)Visit(context.left);
+        var right = (Expression.Expression)Visit(context.right);
+
+        return new Accessor(context.GetText(), left, right);
+    }
+
     public override object VisitAssign(LogicParser.AssignContext context)
     {
         var variable = context.identifier().IDENTIFIER().GetText();

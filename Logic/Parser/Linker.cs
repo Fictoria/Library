@@ -406,6 +406,10 @@ public class Linker
                     }
                 }
                 break;
+            case Accessor accessor:
+                LinkExpression(scope, accessor.Structure);
+                LinkExpression(scope, accessor.Indexer);
+                break;
             default:
                 throw new ParseException($"unknown expression '{expression}'");
         }

@@ -190,4 +190,155 @@ public class ExpressionTests
         
         program.AssertEvaluationResult("f()", -1);
     }
+    
+    [Test]
+    public void TypeIsA()
+    {
+        var code = """
+                   thing: object.
+                   animal: thing.
+                   plant: thing.
+                   instance(foo, thing).
+                   instance(bar, animal).
+                   
+                   exists(o: object).
+                   exists(foo).
+                   exists(bar).
+                   
+                   f() = exists(@b :: animal).
+                   g() = exists(@b :: plant).
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("f()", true);
+        program.AssertEvaluationResult("g()", false);
+    }
+    
+    [Test]
+    public void Exponent()
+    {
+        var code = """
+                   f() = 2^3.
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("f()", 8);
+    }
+    
+    [Test]
+    public void Zip()
+    {
+        var code = """
+                   f() = [1, 2, 3] ~ ["a", "b", "c"].
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("f()", new List<object>
+        {
+            new List<object> { 1, "a" },
+            new List<object> { 2, "b" },
+            new List<object> { 3, "c" },
+        });
+    }
+    
+    [Test]
+    public void Cartesian()
+    {
+        var code = """
+                   f() = [1, 2, 3] * ["a", "b", "c"].
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("f()", new List<object>
+        {
+            new List<object> { 1, "a" },
+            new List<object> { 1, "b" },
+            new List<object> { 1, "c" },
+            new List<object> { 2, "a" },
+            new List<object> { 2, "b" },
+            new List<object> { 2, "c" },
+            new List<object> { 3, "a" },
+            new List<object> { 3, "b" },
+            new List<object> { 3, "c" },
+        });
+    }
+    
+    [Test]
+    public void Math()
+    {
+        var code = """
+                   f(x: int) = x + 1 - 1 * 1 / 1.
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("f(2)", 2);
+    }
+    
+    [Test]
+    public void Comparison()
+    {
+        var code = """
+                   eq(a: int, b: int) = a == b.
+                   ne(a: int, b: int) = a != b.
+                   gt(a: int, b: int) = a > b.
+                   gte(a: int, b: int) = a >= b.
+                   lt(a: int, b: int) = a < b.
+                   lte(a: int, b: int) = a <= b.
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("eq(1, 1)", true);
+        program.AssertEvaluationResult("eq(1, 2)", false);
+        program.AssertEvaluationResult("ne(1, 1)", false);
+        program.AssertEvaluationResult("ne(1, 2)", true);
+        program.AssertEvaluationResult("gt(1, 1)", false);
+        program.AssertEvaluationResult("gt(1, 2)", false);
+        program.AssertEvaluationResult("gt(2, 1)", true);
+        program.AssertEvaluationResult("gte(1, 1)", true);
+        program.AssertEvaluationResult("gte(1, 2)", false);
+        program.AssertEvaluationResult("gte(2, 1", true);
+        program.AssertEvaluationResult("lt(1, 1)", false);
+        program.AssertEvaluationResult("lt(1, 2)", true);
+        program.AssertEvaluationResult("lt(2, 1)", false);
+        program.AssertEvaluationResult("lte(1, 1)", true);
+        program.AssertEvaluationResult("lte(1, 2)", true);
+        program.AssertEvaluationResult("lte(2, 1", false);
+    }
+    
+    [Test]
+    public void Boolean()
+    {
+        var code = """
+                   a(x: bool, y: bool) = x and y.
+                   o(x: bool, y: bool) = x or y.
+                   xo(x: bool, y: bool) = x xor y.
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("a(true, true)", true);
+        program.AssertEvaluationResult("a(true, false)", false);
+        program.AssertEvaluationResult("a(false, true)", false);
+        program.AssertEvaluationResult("a(false, false)", false);
+        
+        program.AssertEvaluationResult("o(true, true)", true);
+        program.AssertEvaluationResult("o(true, false)", true);
+        program.AssertEvaluationResult("o(false, true)", true);
+        program.AssertEvaluationResult("o(false, false)", false);
+        
+        program.AssertEvaluationResult("xo(true, true)", false);
+        program.AssertEvaluationResult("xo(true, false)", true);
+        program.AssertEvaluationResult("xo(false, true)", true);
+        program.AssertEvaluationResult("xo(false, false)", false);
+    }
+    
+    [Test]
+    public void Index()
+    {
+        var code = """
+                   f(key: string) = { "foo": "bar". }[key].
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("""f("foo")""", "bar");
+    }
 }
