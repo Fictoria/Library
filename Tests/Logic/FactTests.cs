@@ -3,7 +3,7 @@ using Type = Fictoria.Logic.Type.Type;
 
 namespace Fictoria.Tests.Logic;
 
-public class TypeTests
+public class FactTests
 {
     [SetUp]
     public void Setup() {}
