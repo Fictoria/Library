@@ -15,8 +15,7 @@ public class TypeTests
     public void Anything()
     {
         Assert.True(Type.Object.IsA(Type.Anything));
-        // TODO there may be a reason to consider changing this semantic
-        Assert.False(Type.Anything.IsA(Type.Object));
+        Assert.True(Type.Anything.IsA(Type.Object));
     }
     
     [Test]
