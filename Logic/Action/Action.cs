@@ -1,3 +1,4 @@
+using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Type;
 
 namespace Fictoria.Logic.Action;
@@ -10,7 +11,7 @@ public class Action
     public Expression.Expression Cost { get; }
     public Expression.Expression Conditions { get; }
     public Expression.Expression Locals { get; }
-    public IList<object> Effects { get; } //TODO generalize statements?
+    public Scope Effects { get; } //TODO generalize statements?
 
     public Action(
         string name,
@@ -19,7 +20,7 @@ public class Action
         Expression.Expression cost,
         Expression.Expression conditions,
         Expression.Expression locals,
-        IList<object> effects)
+        Scope effects)
     {
         Name = name;
         Parameters = parameters;

@@ -1,4 +1,3 @@
-using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
@@ -9,54 +8,10 @@ namespace Fictoria.Logic.Parser;
 
 public class Parser : LogicBaseVisitor<object>
 {
-    private Scope scope = new();
-
     public override object VisitLogic(LogicParser.LogicContext context)
     {
-        var program = new Program(scope);
-        var temp = new Context(program);
-        
-        foreach (var type in Type.Type.BuiltIns)
-        {
-            scope.Types[type.Name] = type;
-        }
-        
-        var statements = context.statement().Select(s => Visit(s));
-        foreach (var statement in statements)
-        {
-            switch (statement)
-            {
-                case Type.Type type:
-                    scope.DefineType(type);
-                    break;
-                case Instance instance:
-                    var name = instance.NameExpression.Text;
-                    instance.Name = name;
-                    instance.Type = new TypePlaceholder(instance.TypeExpression.Text);
-                    scope.DefineInstance(instance);
-                    break;
-                case Schema schema:
-                    scope.DefineSchema(schema);
-                    break;
-                case Fact.Fact fact:
-                    if (fact.Schema.Name == "instance")
-                    {
-                        continue;
-                    }
-                    
-                    scope.DefineFact(fact);
-                    break;
-                case Antifact antifact:
-                    scope.DefineAntifact(antifact);
-                    break;
-                case Function.Function function:
-                    scope.DefineFunction(function);
-                    break;
-                case Action.Action action:
-                    scope.DefineAction(action);
-                    break;
-            }
-        }
+        var statements = context.statement().Select(Visit);
+        var scope = Builder.FromStatements(statements);
 
         return new Program(scope);
     }
@@ -110,19 +65,51 @@ public class Parser : LogicBaseVisitor<object>
         return new Function.Function(identifier, parameters, series);
     }
 
-    private bool _inAction = false;
     public override object VisitAction(LogicParser.ActionContext context)
     {
-        _inAction = true;
         var name = context.identifier().IDENTIFIER().GetText();
         var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
-        var space = (Expression.Expression)Visit(context.space);
-        var cost = (Expression.Expression)Visit(context.cost);
-        var conditions = (Expression.Expression)Visit(context.conditions);
-        var locals = (Expression.Expression)Visit(context.local);
-        var effects = context.statement().Select(Visit).ToList();
-        _inAction = false;
-        return new Action.Action(name, parameters, space, cost, conditions, locals, effects);
+        var @struct = (Struct)Visit(context.@struct());
+        var space = @struct.Value["space"].Expression!;
+        var cost = @struct.Value["cost"].Expression!;
+        var conditions = @struct.Value["conditions"].Expression!;
+        var locals = @struct.Value["locals"].Expression!;
+        var effects = @struct.Value["effects"].Statements!;
+
+        return new Action.Action(
+            name,
+            parameters,
+            space,
+            cost,
+            conditions,
+            locals,
+            effects
+        );
+    }
+
+    public override object VisitStruct(LogicParser.StructContext context)
+    {
+        var fields = context.field().Select(f => ((string, Field))Visit(f));
+        return new Struct(context.GetText(), fields);
+    }
+
+    public override object VisitField(LogicParser.FieldContext context)
+    {
+        var key = (Literal)Visit(context.literalString());
+        var statements = context.statement()?.Select(Visit).ToList();
+        if (statements?.Count > 0)
+        {
+            var scope = Builder.FromStatements(statements);
+            return ((string)key.Value, new Field(scope));
+        }
+
+        var expression = (Expression.Expression)Visit(context.series());
+        if (expression != null)
+        {
+            return ((string)key.Value, new Field(expression));
+        }
+
+        throw new ParseException($"invalid field entry '{context.GetText()}'");
     }
 
     public override object VisitSeries(LogicParser.SeriesContext context)

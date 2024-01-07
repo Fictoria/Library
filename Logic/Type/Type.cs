@@ -21,6 +21,7 @@ public class Type
     public static readonly Type String    = new("string");
     public static readonly Type Symbol    = new("symbol");
     public static readonly Type Object    = new("object");
+    public static readonly Type Struct    = new("struct");
     public static readonly Type Schema    = new("schema");
     public static readonly Type Function  = new("function");
     public static readonly Type Variable  = new("variable");

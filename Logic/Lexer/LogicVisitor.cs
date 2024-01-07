@@ -87,11 +87,44 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitAction([NotNull] LogicParser.ActionContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.struct"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStruct([NotNull] LogicParser.StructContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.field"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitField([NotNull] LogicParser.FieldContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.series"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSeries([NotNull] LogicParser.SeriesContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>assignExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitAssignExpression([NotNull] LogicParser.AssignExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>identifierExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifierExpression([NotNull] LogicParser.IdentifierExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>parenExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenExpression([NotNull] LogicParser.ParenExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>callExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
@@ -106,6 +139,13 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitBindingExpression([NotNull] LogicParser.BindingExpressionContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>structExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStructExpression([NotNull] LogicParser.StructExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>tupleExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
@@ -128,26 +168,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>assignExpression</c>
+	/// Visit a parse tree produced by the <c>indexExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitAssignExpression([NotNull] LogicParser.AssignExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>identifierExpression</c>
-	/// labeled alternative in <see cref="LogicParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIdentifierExpression([NotNull] LogicParser.IdentifierExpressionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>parenExpression</c>
-	/// labeled alternative in <see cref="LogicParser.expression"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitParenExpression([NotNull] LogicParser.ParenExpressionContext context);
+	Result VisitIndexExpression([NotNull] LogicParser.IndexExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>literalExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.

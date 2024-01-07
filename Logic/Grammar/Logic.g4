@@ -45,13 +45,17 @@ function
     ;
 
 action
-    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN ACTS OPEN_BRACE
-        'space:' space=series PERIOD
-        'cost:' cost=series PERIOD
-        'conditions:' conditions=series PERIOD
-        'locals:' local=series PERIOD
-        'effects:' statement+
-        CLOSE_BRACE PERIOD
+    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN ARROW struct PERIOD
+    ;
+    
+struct
+    :   OPEN_BRACE
+        field*
+        CLOSE_BRACE
+    ;
+    
+field
+    :   literalString COLON (statement+ | series PERIOD)
     ;
 
 series
@@ -68,6 +72,7 @@ expression
     |   call                                                            # callExpression
     |   assign                                                          # assignExpression
     |   if                                                              # ifExpression
+    |   struct                                                          # structExpression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op='::' right=expression                        # infixExpression
     |   left=expression op='^' right=expression                         # infixExpression
@@ -77,6 +82,7 @@ expression
     |   left=expression op=('>' | '<' | '>=' | '<=') right=expression   # infixExpression
     |   left=expression op=('==' | '!=') right=expression               # infixExpression
     |   left=expression op=('and' | 'or' | 'xor') right=expression      # infixExpression
+    |   left=expression OPEN_BRACK right=expression CLOSE_BRACK         # indexExpression
     ;
 
 if
@@ -181,7 +187,7 @@ FLOAT
     :   [0-9]+ PERIOD [0-9]+
     ;
 
-ACTS
+ARROW
     :   '->'
     ;
 

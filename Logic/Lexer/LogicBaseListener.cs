@@ -145,6 +145,30 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitAction([NotNull] LogicParser.ActionContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.struct"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStruct([NotNull] LogicParser.StructContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.struct"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStruct([NotNull] LogicParser.StructContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.field"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterField([NotNull] LogicParser.FieldContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.field"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitField([NotNull] LogicParser.FieldContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.series"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -156,6 +180,48 @@ public partial class LogicBaseListener : ILogicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSeries([NotNull] LogicParser.SeriesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>assignExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterAssignExpression([NotNull] LogicParser.AssignExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>assignExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitAssignExpression([NotNull] LogicParser.AssignExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>identifierExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterIdentifierExpression([NotNull] LogicParser.IdentifierExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>identifierExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitIdentifierExpression([NotNull] LogicParser.IdentifierExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>parenExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterParenExpression([NotNull] LogicParser.ParenExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>parenExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitParenExpression([NotNull] LogicParser.ParenExpressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>callExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
@@ -184,6 +250,20 @@ public partial class LogicBaseListener : ILogicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitBindingExpression([NotNull] LogicParser.BindingExpressionContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>structExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterStructExpression([NotNull] LogicParser.StructExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>structExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitStructExpression([NotNull] LogicParser.StructExpressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>tupleExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
@@ -227,47 +307,19 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitWildcardExpression([NotNull] LogicParser.WildcardExpressionContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by the <c>assignExpression</c>
+	/// Enter a parse tree produced by the <c>indexExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterAssignExpression([NotNull] LogicParser.AssignExpressionContext context) { }
+	public virtual void EnterIndexExpression([NotNull] LogicParser.IndexExpressionContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by the <c>assignExpression</c>
+	/// Exit a parse tree produced by the <c>indexExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitAssignExpression([NotNull] LogicParser.AssignExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>identifierExpression</c>
-	/// labeled alternative in <see cref="LogicParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterIdentifierExpression([NotNull] LogicParser.IdentifierExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>identifierExpression</c>
-	/// labeled alternative in <see cref="LogicParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitIdentifierExpression([NotNull] LogicParser.IdentifierExpressionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>parenExpression</c>
-	/// labeled alternative in <see cref="LogicParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterParenExpression([NotNull] LogicParser.ParenExpressionContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>parenExpression</c>
-	/// labeled alternative in <see cref="LogicParser.expression"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitParenExpression([NotNull] LogicParser.ParenExpressionContext context) { }
+	public virtual void ExitIndexExpression([NotNull] LogicParser.IndexExpressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>literalExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.

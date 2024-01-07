@@ -1,0 +1,107 @@
+// general
+search(t: thing) -> {
+    "cost": 1000.
+    "terms": ["location", type(t)].
+    "space":
+        &searchable(@all); all.
+    "conditions":
+        !location(t, _, _).
+    "locals":
+        name = str(t) + "_" + id().
+    "effects":
+        instance(name, t).
+        location(name, 0, 0).
+}.
+
+deposit(b: building, m: material) -> {
+    "cost": 1.
+    "terms": [type(b), type(m)].
+    "space":
+        subtypes(building) * subtypes(material).
+    "conditions":
+        location(b, _, _) and
+        consumes(b, m) and
+        !contains(b, m) and
+        carrying(m).
+    "locals": _.
+    "effects":
+        contains(b, m).
+        ~carrying(_).
+}.
+
+drop(t: thing) -> {
+    "cost": 1.
+    "terms": ["carrying", type(t)].
+    "space":
+        &carrying(@c); c.
+    "conditions":
+        carrying(t).
+    "locals": _.
+    "effects":
+        ~carrying(t).
+        //TODO thing should now be at current location
+}.
+
+// campfire
+light(c: campfire) -> {
+    "cost": 2.
+    "terms": ["campfire", "wood", "fire"].
+    "space":
+        &instance(@all, campfire); all.
+    "conditions":
+        location(@cf :: campfire, _, _); //TODO use and
+        contains(cf, wood).
+    "locals":
+        name = str(c) + "_" + id().
+    "effects";
+        instance(c, fire).
+        location(c, 0, 0).
+        ~contains(c, wood).
+        //TODO need to destroy the wood instance and facts
+}.
+
+// homeostasis
+warm(f: fire) -> {
+    "cost": 1. //TODO distance
+    "terms": ["fire"].
+    "space":
+        &instance(@all, fire); all.
+    "conditions":
+        !warm(self) and
+        location(fire, _, _).
+    "locals": _.
+    "effects":
+        warm(self).
+}.
+
+// material
+gather(m: material) -> {
+    "cost": 2. //TODO distance
+    "terms": ["carrying", type(m)].
+    "space":
+        subtypes(material).
+    "conditions":
+        !carrying(_) and
+        location(m, _, _).
+    "locals": _.
+    "effects":
+        carrying(m).
+        ~location(wood, _, _).
+}.
+
+// extract
+extract(r: resource, m: material) -> {
+    "cost": 20. //TODO distance
+    "terms": [type(r), type(m)].
+    "space":
+        subtypes(building) * subtypes(material).
+    "conditions":
+        provides(r, m) and
+        location(r, _, _) and
+        !location(m, _, _)
+    "locals":
+        name = str(c) + "_" + id().
+    "effects":
+        instance(name, m).
+        location(name, 0, 0).
+}.

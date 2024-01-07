@@ -46,14 +46,3 @@ instance(cf1, campfire).
 location(tree1, 5, 2).
 location(cf1, 2, 3).
 
-search(t: thing) -> {
-    space: &searchable(@all); all.
-    cost: 1000.
-    conditions:
-        !location(t, _, _).
-    locals:
-        name = str(t) + "_" + id().
-    effects:
-        instance(name, t).
-        location(name, 0, 0).
-}.
