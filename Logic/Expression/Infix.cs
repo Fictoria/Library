@@ -76,33 +76,57 @@ public class Infix : Expression
 
             throw new EvaluateException($"unknown operator '{Operator}' in string infix expression");
         }
-        
         else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Tuple))
         {
-            var left = (List<object>)Left.Evaluate(context);
-            var right = (List<object>)Right.Evaluate(context);
-
-            switch (Operator)
+            if (Left is Binding binding)
             {
-                case "+":
-                    return left.Concat(right).ToList();
-                case "*":
-                    var cartesian = new List<object>();
-                    foreach (var l in left)
+                if (Operator != "::")
+                {
+                    throw new EvaluateException($"unknown infix binding filter operator '{Operator}'");
+                }
+                
+                if (context.Resolve("$", out var found))
+                {
+                    if (found is Instance instance)
                     {
-                        foreach (var r in right)
+                        context.ResolveType(((Identifier)Right).Name, out var type);
+                        return instance.Type.IsA(type);
+                    }
+                    
+                    throw new EvaluateException("skolem binding missing for search filter");
+                }
+
+                throw new EvaluateException("skolem binding missing for search filter");
+            }
+            else
+            {
+                var left = (List<object>)Left.Evaluate(context);
+                var right = (List<object>)Right.Evaluate(context);
+
+                switch (Operator)
+                {
+                    case "+":
+                        return left.Concat(right).ToList();
+                    case "*":
+                        var cartesian = new List<object>();
+                        foreach (var l in left)
                         {
-                            cartesian.Add(new List<object> { l, r });
+                            foreach (var r in right)
+                            {
+                                cartesian.Add(new List<object> { l, r });
+                            }
                         }
-                    }
-                    return cartesian;
-                case "~":
-                    var zip = new List<object>();
-                    for (int i = 0; i < left.Count; i++)
-                    {
-                        zip.Add(new List<object> { left[i], right[i] });
-                    }
-                    return zip;
+
+                        return cartesian;
+                    case "~":
+                        var zip = new List<object>();
+                        for (int i = 0; i < left.Count; i++)
+                        {
+                            zip.Add(new List<object> { left[i], right[i] });
+                        }
+
+                        return zip;
+                }
             }
         }
         else if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))
