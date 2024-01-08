@@ -160,7 +160,7 @@ public static class FactSearch
             {
                 found = true;
             }
-            else if (schema.Parameters[i].Variance == Variance.Contravariant &&memoizer.Value(context, i) is Type.Type t2 && value is Instance i2 && i2.Type.IsA(t2))
+            else if (schema.Parameters[i].Variance == Variance.Contravariant &&memoizer.Value(context, i) is Type.Type t2 && ((value is Instance i2 && i2.Type.IsA(t2)) || (value is Type.Type x2 && x2.IsA(t2))))
             {
                 found = true;
             }

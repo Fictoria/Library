@@ -262,6 +262,20 @@ public class ExpressionTests
             new List<object> { 3, "c" },
         });
     }
+
+    [Test]
+    public void Append()
+    {
+        var code = """
+                   f() = [1, 2, 3] + ["a", "b", "c"].
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("f()", new List<object>
+        {
+            1, 2, 3, "a", "b", "c"
+        });
+    }
     
     [Test]
     public void Math()
@@ -340,5 +354,16 @@ public class ExpressionTests
         var program = Loader.Load(code);
         
         program.AssertEvaluationResult("""f("foo")""", "bar");
+    }
+    
+    [Test]
+    public void Concatenate()
+    {
+        var code = """
+                   concat(a: string, b: string) = a + b.
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("""concat("foo", "bar")""", "foobar");
     }
 }

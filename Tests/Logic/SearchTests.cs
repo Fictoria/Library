@@ -167,4 +167,54 @@ public class SearchTests
         
         program.AssertEvaluationResult("exists(knife)", true);
     }
+
+    [Test]
+    public void MatchCovariantInstance()
+    {
+        var code = """
+                   thing: object.
+                   tool: thing.
+                   knife: tool.
+                   instance(knife_1, knife).
+
+                   exists(o: +object).
+                   exists(tool).
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("exists(knife_1)", true);
+    }
+
+    [Test]
+    public void MatchContravariant()
+    {
+        var code = """
+                   thing: object.
+                   tool: thing.
+                   knife: tool.
+
+                   carrying(o: -object).
+                   carrying(knife).
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("carrying(tool)", true);
+    }
+
+    [Test]
+    public void MatchContravariantInstance()
+    {
+        var code = """
+                   thing: object.
+                   tool: thing.
+                   knife: tool.
+                   instance(knife_1, knife).
+
+                   carrying(o: -object).
+                   carrying(knife_1).
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("carrying(tool)", true);
+    }
 }
