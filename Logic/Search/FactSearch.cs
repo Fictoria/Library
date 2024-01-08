@@ -156,7 +156,7 @@ public static class FactSearch
                 found = true;
                 bindingsResult[arguments[i].BindingName] = value;
             }
-            else if (schema.Parameters[i].Variance == Variance.Covariant && value is Type.Type t1 && memoizer.Value(context, i) is Instance i1 && i1.Type.IsA(t1))
+            else if (schema.Parameters[i].Variance == Variance.Covariant && value is Type.Type t1 && ((memoizer.Value(context, i) is Instance i1 && i1.Type.IsA(t1)) || (memoizer.Value(context, i) is Type.Type x1 && x1.IsA(t1))))
             {
                 found = true;
             }

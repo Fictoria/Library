@@ -134,4 +134,37 @@ public class SearchTests
             foo, bar
         });
     }
+
+    [Test]
+    public void MatchInvariant()
+    {
+        var code = """
+                   thing: object.
+                   tool: thing.
+                   knife: tool.
+
+                   exists(o: object).
+                   exists(knife).
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("exists(knife)", true);
+        program.AssertEvaluationResult("exists(tool)", false);
+    }
+
+    [Test]
+    public void MatchCovariant()
+    {
+        var code = """
+                   thing: object.
+                   tool: thing.
+                   knife: tool.
+
+                   exists(o: +object).
+                   exists(tool).
+                   """;
+        var program = Loader.Load(code);
+        
+        program.AssertEvaluationResult("exists(knife)", true);
+    }
 }
