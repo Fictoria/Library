@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 
 namespace Fictoria.Logic.Expression;
@@ -21,11 +22,13 @@ public class Parenthetical : Expression
         return new HashSet<string>(Expression.Terms()) { Type.Name };
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Parenthetical other)
     {
         return Expression.Equals(other.Expression);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -34,6 +37,7 @@ public class Parenthetical : Expression
         return Equals((Parenthetical)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return Expression.GetHashCode();

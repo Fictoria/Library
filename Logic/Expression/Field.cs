@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 
 namespace Fictoria.Logic.Expression;
@@ -39,5 +40,26 @@ public class Field
 
         statements = null!;
         return false;
+    }
+
+    [ExcludeFromCodeCoverage]
+    protected bool Equals(Field other)
+    {
+        return Equals(Expression, other.Expression) && Equals(Statements, other.Statements);
+    }
+
+    [ExcludeFromCodeCoverage]
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Field)obj);
+    }
+
+    [ExcludeFromCodeCoverage]
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Expression, Statements);
     }
 }

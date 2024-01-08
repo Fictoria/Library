@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 
 namespace Fictoria.Logic.Expression;
@@ -36,5 +37,26 @@ public class Struct : Expression
     public override IEnumerable<string> Terms()
     {
         return Array.Empty<string>();
+    }
+
+    [ExcludeFromCodeCoverage]
+    protected bool Equals(Struct other)
+    {
+        return Value.Equals(other.Value);
+    }
+
+    [ExcludeFromCodeCoverage]
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
+        return Equals((Struct)obj);
+    }
+
+    [ExcludeFromCodeCoverage]
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
     }
 }

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fictoria.Logic.Fact;
 
 public class Instance
@@ -15,16 +17,19 @@ public class Instance
         TypeExpression = typeExpression;
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return Name.ToString();
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Instance other)
     {
         return Name == other.Name;
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -33,6 +38,7 @@ public class Instance
         return Equals((Instance)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return Name.GetHashCode();

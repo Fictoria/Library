@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Fact;
@@ -210,11 +211,13 @@ public class Infix : Expression
         return terms;
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Infix other)
     {
         return Left.Equals(other.Left) && Right.Equals(other.Right) && Operator == other.Operator;
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -223,6 +226,7 @@ public class Infix : Expression
         return Equals((Infix)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return HashCode.Combine(Left, Right, Operator);

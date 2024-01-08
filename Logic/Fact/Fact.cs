@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fictoria.Logic.Fact;
 
 public class Fact
@@ -11,16 +13,19 @@ public class Fact
         Arguments = arguments;
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return Schema.Name + "(" + String.Join(", ", Arguments.Select(a => a.ToString())) + ")";
     }
 
+    [ExcludeFromCodeCoverage]
     private bool Equals(Fact other)
     {
         return Schema.Equals(other.Schema) && Arguments.Equals(other.Arguments);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -29,6 +34,7 @@ public class Fact
         return Equals((Fact)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return HashCode.Combine(Schema, Arguments);

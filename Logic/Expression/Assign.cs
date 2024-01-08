@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 
 namespace Fictoria.Logic.Expression;
@@ -25,11 +26,13 @@ public class Assign : Expression
         return new HashSet<string>(Value.Terms()) { Type.Name };
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Assign other)
     {
         return Variable == other.Variable && Value.Equals(other.Value);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -38,6 +41,7 @@ public class Assign : Expression
         return Equals((Assign)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return HashCode.Combine(Variable, Value);

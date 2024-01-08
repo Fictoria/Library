@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 
@@ -42,11 +43,13 @@ public class Identifier : Expression
         return new HashSet<string> { Type.Name };
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Identifier other)
     {
         return Name == other.Name;
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -55,6 +58,7 @@ public class Identifier : Expression
         return Equals((Identifier)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return Name.GetHashCode();

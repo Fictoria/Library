@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 
 namespace Fictoria.Logic.Expression;
@@ -21,6 +22,7 @@ public abstract class Expression
         BindingName = "";
     }
     
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return Text;

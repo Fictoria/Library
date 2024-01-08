@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Function;
@@ -50,11 +51,13 @@ public class Call : Expression
         return new HashSet<string>(Arguments.SelectMany(a => a.Terms())) { Functor, Type.Name };
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Call other)
     {
         return Functor == other.Functor && Arguments.Equals(other.Arguments);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -63,6 +66,7 @@ public class Call : Expression
         return Equals((Call)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return HashCode.Combine(Functor, Arguments);

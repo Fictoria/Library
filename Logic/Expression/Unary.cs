@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 
@@ -40,11 +41,13 @@ public class Unary : Expression
         throw new EvaluateException($"invalid type '{Type}' for '{Operator}' unary expression");
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Unary other)
     {
         return Operator == other.Operator && Expression.Equals(other.Expression);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -53,6 +56,7 @@ public class Unary : Expression
         return Equals((Unary)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return HashCode.Combine(Operator, Expression);

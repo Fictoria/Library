@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fictoria.Logic.Type;
 
 public class Parameter
@@ -13,16 +15,19 @@ public class Parameter
         Variance = variance;
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return $"{Name}: {Type.Name}";
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Parameter other)
     {
         return Name == other.Name && Type.Equals(other.Type) && Variance == other.Variance;
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -31,6 +36,7 @@ public class Parameter
         return Equals((Parameter)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return HashCode.Combine(Name, Type, (int)Variance);

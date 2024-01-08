@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Fictoria.Logic.Type;
 
 public class TypePlaceholder : Type
@@ -50,16 +52,19 @@ public class Type
         return Parents.Any(t => t.IsA(other));
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return Name + (Parents.Count > 0 ? (": " + System.String.Join(", ", Parents.Select(t => t.Name))) : "");
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Type other)
     {
         return Name == other.Name;
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -68,6 +73,7 @@ public class Type
         return Equals((Type)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         return Name.GetHashCode();

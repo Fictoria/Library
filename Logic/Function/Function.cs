@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Type;
 
@@ -30,16 +31,19 @@ public class Function
         return result;
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return $"{Name}({String.Join(", ", Parameters.Select(p => p.ToString()))}) = {Expression}";
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Function other)
     {
         return Name == other.Name && Parameters.Equals(other.Parameters) && Expression.Equals(other.Expression);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -48,6 +52,7 @@ public class Function
         return Equals((Function)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         var hashCode = new HashCode();

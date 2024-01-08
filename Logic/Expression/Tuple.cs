@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 
 namespace Fictoria.Logic.Expression;
@@ -21,11 +22,13 @@ public class Tuple : Expression
         return new HashSet<string>(Expressions.SelectMany(e => e.Terms())) { Type.Name };
     }
 
+    [ExcludeFromCodeCoverage]
     protected bool Equals(Tuple other)
     {
         return Expressions.Equals(other.Expressions);
     }
 
+    [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
@@ -34,6 +37,7 @@ public class Tuple : Expression
         return Equals((Tuple)obj);
     }
 
+    [ExcludeFromCodeCoverage]
     public override int GetHashCode()
     {
         var hashCode = new HashCode();
