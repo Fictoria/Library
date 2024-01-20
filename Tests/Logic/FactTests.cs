@@ -48,4 +48,23 @@ public class FactTests
         Assert.That(((Literal)cat.Arguments[1]).Value, Is.EqualTo(4));
         Assert.That(((Literal)dragonfly.Arguments[1]).Value, Is.EqualTo(6));
     }
+
+    [Test]
+    public void Antifact()
+    {
+        var code = """
+                   animal: object.
+                   instance(dog, animal).
+                   alive(a: animal).
+                   alive(dog).
+                   """;
+        var program = Loader.Load(code);
+        var facts = program.Scope.Facts["alive"];
+        Assert.That(facts, Has.Count.EqualTo(1));
+        
+        var antifact = "~alive(dog).";
+        program.Merge(antifact);
+        var facts2 = program.Scope.Facts["alive"];
+        Assert.That(facts2, Has.Count.EqualTo(0));
+    }
 }

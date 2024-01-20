@@ -185,10 +185,14 @@ public class ExpressionTests
     {
         var code = """
                    f() = -1.
+                   g() = -1.0.
+                   h() = !true.
                    """;
         var program = Loader.Load(code);
         
         program.AssertEvaluationResult("f()", -1);
+        program.AssertEvaluationResult("g()", -1.0);
+        program.AssertEvaluationResult("h()", false);
     }
     
     [Test]

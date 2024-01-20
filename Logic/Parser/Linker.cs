@@ -234,8 +234,12 @@ public class Linker
                         _callMany = true;
                     }
                     expression.Type = Fictoria.Logic.Type.Type.Boolean;
-
                     var arguments = call.Arguments.ToList();
+                    if (arguments.Count != schema.Parameters.Count)
+                    {
+                        throw new LinkException($"schema '{schema.Name}' takes {schema.Parameters.Count} parameters but {arguments.Count} arguments were provided");
+                    }
+                    
                     for (int i = 0; i < arguments.Count; i++)
                     {
                         //TODO this loop is inelegant

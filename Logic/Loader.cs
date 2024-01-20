@@ -14,6 +14,18 @@ public class Loader
         return program;
     }
 
+    public static Program LoadAll(string directory)
+    {
+        var files = Directory.EnumerateFiles(
+            directory,
+            "*.fk",
+            SearchOption.AllDirectories
+        );
+        var code = string.Join("\n", files.Select(File.ReadAllText));
+
+        return Load(code);
+    }
+
     private static LogicParser makeParser(string code)
     {
         var inputStream = new AntlrInputStream(code);
@@ -21,13 +33,13 @@ public class Loader
         var tokens = new CommonTokenStream(lexer);
         return new LogicParser(tokens);
     }
-    
+
     public static Program LoadUnlinked(string code)
     {
         var parser = makeParser(code);
         var ast = parser.logic();
         var visitor = new Parser.Parser();
-        
+
         return (Program)visitor.Visit(ast);
     }
 
@@ -36,7 +48,7 @@ public class Loader
         var parser = makeParser(code);
         var ast = parser.expression();
         var visitor = new Parser.Parser();
-        
+
         return (Expression.Expression)visitor.Visit(ast);
     }
 
@@ -45,7 +57,7 @@ public class Loader
         var parser = makeParser(code);
         var ast = parser.series();
         var visitor = new Parser.Parser();
-        
+
         return (Series)visitor.Visit(ast);
     }
 
@@ -54,7 +66,7 @@ public class Loader
         var parser = makeParser(code);
         var ast = parser.call();
         var visitor = new Parser.Parser();
-        
+
         return (Call)visitor.Visit(ast);
     }
 }

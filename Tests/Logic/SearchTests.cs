@@ -1,4 +1,5 @@
 using Fictoria.Logic;
+using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Fact;
 using Fictoria.Tests.Utilities;
 
@@ -216,5 +217,18 @@ public class SearchTests
         var program = Loader.Load(code);
         
         program.AssertEvaluationResult("carrying(tool)", true);
+    }
+
+    [Test]
+    public void InvalidArguments()
+    {
+        var code = """
+                   thing: object.
+                   instance(tool, thing).
+                   carrying(o: object).
+                   """;
+        var program = Loader.Load(code);
+
+        Assert.Throws<LinkException>(() => program.Evaluate("carrying(true, true)"));
     }
 }
