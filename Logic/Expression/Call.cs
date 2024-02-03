@@ -23,7 +23,12 @@ public class Call : Expression
     {
         if (Functor == "instance")
         {
-            // TODO do search and many search just like facts
+            if (Many)
+            {
+                return InstanceSearch.SearchAll(context, Arguments[0], Arguments[1]);
+            }
+
+            return InstanceSearch.Search(context, Arguments[0], Arguments[1]);
         }
 
         if (context.ResolveSchema(Functor, out var schema))

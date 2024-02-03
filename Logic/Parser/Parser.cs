@@ -92,7 +92,7 @@ public class Parser : LogicBaseVisitor<object>
 
     public override object VisitStruct(LogicParser.StructContext context)
     {
-        var fields = context.field().Select(f => ((string, Field))Visit(f));
+        var fields = context.field().Select(f => ((string, Field))Visit(f)).ToList();
         return new Struct(context.GetText(), fields);
     }
 

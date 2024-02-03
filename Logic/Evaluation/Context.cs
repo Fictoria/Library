@@ -129,6 +129,27 @@ public class Context
         return false;
     }
 
+    public bool ResolveInstances(Type.Type type, out List<Instance> instances)
+    {
+        var results = new List<Instance>();
+
+        foreach (var container in Stack)
+        {
+            if (container.InstancesByType.TryGetValue(type.Name, out var found))
+            {
+                // TODO this is awful, why is InstancesByType only strings?
+                results.AddRange(found.Select(i =>
+                {
+                    ResolveInstance(i, out var instance);
+                    return instance;
+                }));
+            }
+        }
+
+        instances = results;
+        return true;
+    }
+
     public bool ResolveFunction(string name, out Function.Function function)
     {
         foreach (var scope in Stack)

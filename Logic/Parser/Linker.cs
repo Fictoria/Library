@@ -274,6 +274,12 @@ public class Linker
                     ShortCircuitRecursion(scope, _currentFunction!);
                 }
 
+                if (call.Functor == "instance")
+                {
+                    call.Type = Type.Type.Boolean;
+                    break;
+                }
+
                 if (scope.Schemata.TryGetValue(call.Functor, out var schema))
                 {
                     if (call.Many)

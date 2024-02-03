@@ -49,7 +49,7 @@ light(c: campfire) -> {
     "space":
         &instance(@all, campfire); all.
     "conditions":
-        location(@cf :: campfire, _, _);  use and
+        location(@cf :: campfire, _, _);  // use and
         contains(cf, wood).
     "locals":
         name = str(c) + "_" + id().
@@ -79,7 +79,7 @@ gather(m: material) -> {
     "cost": 2. // TODO distance
     "terms": ["carrying", str(m)].
     "space":
-        subtypes(material).
+        true; subtypes(material).
     "conditions":
         !carrying(_) and
         location(m, _, _).

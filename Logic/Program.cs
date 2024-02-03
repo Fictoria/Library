@@ -38,7 +38,6 @@ public class Program
         foreach (var (k, v) in bindings)
         {
             context.Bind(k, v);
-            Scope.Bindings[k] = v;
         }
 
         Linker.LinkExpression(Scope, expression);
