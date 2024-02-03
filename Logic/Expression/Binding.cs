@@ -6,14 +6,14 @@ namespace Fictoria.Logic.Expression;
 
 public class Binding : Expression
 {
-    public string Name { get; }
-
     public Binding(string text, string name) : base(text)
     {
         Name = name;
         ContainsBinding = true;
         BindingName = name;
     }
+
+    public string Name { get; }
 
     public override object Evaluate(Context context)
     {
@@ -22,7 +22,7 @@ public class Binding : Expression
             return found;
         }
 
-        throw new EvaluateException($"conditional search missing binding");
+        throw new EvaluateException("conditional search missing binding");
     }
 
     public override IEnumerable<string> Terms()
@@ -39,9 +39,21 @@ public class Binding : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Binding)obj);
     }
 

@@ -5,7 +5,7 @@ namespace Fictoria.Logic.Expression;
 
 public class Wildcard : Expression
 {
-    public Wildcard() : base("_", Fictoria.Logic.Type.Type.Anything) {}
+    public Wildcard() : base("_", Logic.Type.Type.Anything) { }
 
     public override object Evaluate(Context context)
     {
@@ -26,9 +26,21 @@ public class Wildcard : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Wildcard)obj);
     }
 

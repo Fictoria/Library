@@ -5,8 +5,6 @@ namespace Fictoria.Logic.Expression;
 
 public class Struct : Expression
 {
-    public IDictionary<string, Field> Value { get; }
-    
     public Struct(string text, IEnumerable<(string, Field)> fields) : base(text, Logic.Type.Type.Struct)
     {
         Value = new Dictionary<string, Field>();
@@ -15,6 +13,8 @@ public class Struct : Expression
             Value[key] = value;
         }
     }
+
+    public IDictionary<string, Field> Value { get; }
 
     public override object Evaluate(Context context)
     {
@@ -31,6 +31,7 @@ public class Struct : Expression
                 result[key] = value.Statements!;
             }
         }
+
         return result;
     }
 
@@ -48,9 +49,21 @@ public class Struct : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Struct)obj);
     }
 

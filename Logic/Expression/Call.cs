@@ -8,10 +8,6 @@ namespace Fictoria.Logic.Expression;
 
 public class Call : Expression
 {
-    public bool Many { get; }
-    public string Functor { get; }
-    public IList<Expression> Arguments { get; }
-
     public Call(string text, string functor, IList<Expression> arguments, bool many = false) : base(text)
     {
         Functor = functor;
@@ -19,25 +15,32 @@ public class Call : Expression
         Many = many;
     }
 
+    public bool Many { get; }
+    public string Functor { get; }
+    public IList<Expression> Arguments { get; }
+
     public override object Evaluate(Context context)
     {
+        if (Functor == "instance")
+        {
+            // TODO do search and many search just like facts
+        }
+
         if (context.ResolveSchema(Functor, out var schema))
         {
             if (Many)
             {
                 return FactSearch.SearchAll(context, schema, Arguments);
             }
-            else
-            {
-                return FactSearch.Search(context, schema, Arguments);
-            }
+
+            return FactSearch.Search(context, schema, Arguments);
         }
 
         if (context.ResolveFunction(Functor, out var function))
         {
             return function.Evaluate(context, Arguments);
         }
-        
+
         if (Builtins.ByName.TryGetValue(Functor, out var builtin))
         {
             return builtin.Evaluate(context, Arguments);
@@ -60,9 +63,21 @@ public class Call : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Call)obj);
     }
 

@@ -10,6 +10,11 @@ namespace Fictoria.Logic.Parser;
 
 public class Linker
 {
+    private static string _currentFunctionName = "";
+    private static Function.Function? _currentFunction;
+
+    private static bool _callMany;
+
     public static void LinkAll(Scope scope)
     {
         LinkTypes(scope);
@@ -19,20 +24,29 @@ public class Linker
         LinkInstances(scope);
         LinkFunctions(scope);
     }
-    
+
     private static void LinkTypes(Scope scope)
     {
         foreach (var (_, type) in scope.Types)
         {
             type.Parents = type.Parents.Select(parent =>
             {
-                if (parent.GetType() != typeof(TypePlaceholder)) return parent;
-                
+                if (parent.GetType() != typeof(TypePlaceholder))
+                {
+                    return parent;
+                }
+
                 var placeholder = (TypePlaceholder)parent;
                 if (scope.Types.TryGetValue(placeholder.Name, out var found))
                 {
                     LinkParent(scope, type, found);
                     return found;
+                }
+
+                if (scope.Bindings.TryGetValue(placeholder.Name, out var binding))
+                {
+                    LinkParent(scope, type, (Type.Type)binding);
+                    return (Type.Type)binding;
                 }
 
                 throw new ParseException($"unknown parent type '{placeholder.Name}'");
@@ -49,43 +63,53 @@ public class Linker
 
         scope.TypesByParent[parent].Add(child);
     }
-    
+
     private static void LinkSchemata(Scope scope)
     {
         foreach (var (_, schema) in scope.Schemata)
+        foreach (var parameter in schema.Parameters)
         {
-            foreach (var parameter in schema.Parameters)
+            if (parameter.Type.GetType() != typeof(TypePlaceholder))
             {
-                if (parameter.Type.GetType() != typeof(TypePlaceholder)) continue;
-                
-                var placeholder = (TypePlaceholder)parameter.Type;
-                if (scope.Types.TryGetValue(placeholder.Name, out var found))
-                {
-                    parameter.Type = found;
-                    continue;
-                }
-
-                throw new ParseException($"unknown schema parameter type '{placeholder.Name}'");
+                continue;
             }
+
+            var placeholder = (TypePlaceholder)parameter.Type;
+            if (scope.Types.TryGetValue(placeholder.Name, out var found))
+            {
+                parameter.Type = found;
+                continue;
+            }
+
+            if (scope.Bindings.TryGetValue(placeholder.Name, out var binding))
+            {
+                parameter.Type = (Type.Type)binding;
+                continue;
+            }
+
+            throw new ParseException($"unknown schema parameter type '{placeholder.Name}'");
         }
     }
 
     private static void LinkFacts(Scope scope)
     {
         foreach (var (_, facts) in scope.Facts)
+        foreach (var fact in facts)
         {
-            foreach (var fact in facts)
+            if (fact.Schema.GetType() != typeof(SchemaPlaceholder))
             {
-                if (fact.Schema.GetType() != typeof(SchemaPlaceholder)) continue;
-            
-                if (scope.Schemata.TryGetValue(fact.Schema.Name, out var found))
-                {
-                    fact.Schema = found;
-                    continue;
-                }
-
-                throw new ParseException($"unknown schema '{fact.Schema.Name}'");
+                continue;
             }
+
+            if (scope.Schemata.TryGetValue(fact.Schema.Name, out var found))
+            {
+                fact.Schema = found;
+                fact.Arguments.ForEach(a => LinkExpression(scope, a));
+                continue;
+            }
+            // TODO allow schema bindings?
+
+            throw new ParseException($"unknown schema '{fact.Schema.Name}'");
         }
     }
 
@@ -99,11 +123,14 @@ public class Linker
 
     private static void LinkInstances(Scope scope)
     {
-        foreach (var (name, instance) in scope.Instances)
+        foreach (var (_, instance) in scope.Instances)
         {
             var type = instance.Type;
-            if (type.GetType() != typeof(TypePlaceholder)) continue;
-            
+            if (type.GetType() != typeof(TypePlaceholder))
+            {
+                continue;
+            }
+
             var placeholder = (TypePlaceholder)type;
             if (scope.Types.TryGetValue(placeholder.Name, out var found))
             {
@@ -111,12 +138,16 @@ public class Linker
                 continue;
             }
 
+            if (scope.Bindings.TryGetValue(placeholder.Name, out var binding))
+            {
+                instance.Type = (Type.Type)binding;
+                continue;
+            }
+
             throw new ParseException($"unknown instance type '{placeholder.Name}'");
         }
     }
 
-    private static string _currentFunctionName = "";
-    private static Function.Function? _currentFunction = null;
     private static void LinkFunctions(Scope scope)
     {
         foreach (var (name, function) in scope.Functions)
@@ -125,8 +156,11 @@ public class Linker
             _currentFunction = function;
             foreach (var parameter in function.Parameters)
             {
-                if (parameter.Type.GetType() != typeof(TypePlaceholder)) continue;
-                
+                if (parameter.Type.GetType() != typeof(TypePlaceholder))
+                {
+                    continue;
+                }
+
                 var placeholder = (TypePlaceholder)parameter.Type;
                 if (scope.Types.TryGetValue(placeholder.Name, out var found))
                 {
@@ -135,8 +169,16 @@ public class Linker
                     continue;
                 }
 
+                if (scope.Bindings.TryGetValue(placeholder.Name, out var binding))
+                {
+                    parameter.Type = (Type.Type)binding;
+                    scope.Bindings[parameter.Name] = (Type.Type)binding;
+                    continue;
+                }
+
                 throw new ParseException($"unknown predicate parameter type '{placeholder.Name}'");
             }
+
             LinkExpression(scope, function.Expression);
             _currentFunctionName = "";
             _currentFunction = null;
@@ -151,7 +193,6 @@ public class Linker
         series.Type = last.Type;
     }
 
-    private static bool _callMany = false;
     public static void LinkExpression(Scope scope, Expression.Expression expression)
     {
         switch (expression)
@@ -163,7 +204,11 @@ public class Linker
             case Identifier identifier:
                 if (scope.Bindings.TryGetValue(identifier.Name, out var variable))
                 {
-                    identifier.Type = (Type.Type)variable;
+                    if (variable is Type.Type type_)
+                    {
+                        identifier.Type = type_;
+                    }
+
                     break;
                 }
 
@@ -188,7 +233,7 @@ public class Linker
                     scope.Bindings[binding.Name] = _type;
                     break;
                 }
-                
+
                 throw new ResolveException($"search binding '{binding}' is not valid here");
             case Parenthetical parenthetical:
                 LinkExpression(scope, parenthetical.Expression);
@@ -198,6 +243,7 @@ public class Linker
                     parenthetical.ContainsBinding = true;
                     parenthetical.BindingName = parenthetical.Expression.BindingName;
                 }
+
                 break;
             case Tuple tuple:
                 foreach (var e in tuple.Expressions)
@@ -209,6 +255,7 @@ public class Linker
                         tuple.BindingName = e.BindingName;
                     }
                 }
+
                 tuple.Type = Type.Type.Tuple;
                 break;
             case Assign assign:
@@ -226,23 +273,25 @@ public class Linker
                 {
                     ShortCircuitRecursion(scope, _currentFunction!);
                 }
-                
+
                 if (scope.Schemata.TryGetValue(call.Functor, out var schema))
                 {
                     if (call.Many)
                     {
                         _callMany = true;
                     }
-                    expression.Type = Fictoria.Logic.Type.Type.Boolean;
+
+                    expression.Type = Type.Type.Boolean;
                     var arguments = call.Arguments.ToList();
                     if (arguments.Count != schema.Parameters.Count)
                     {
-                        throw new LinkException($"schema '{schema.Name}' takes {schema.Parameters.Count} parameters but {arguments.Count} arguments were provided");
+                        throw new LinkException(
+                            $"schema '{schema.Name}' takes {schema.Parameters.Count} parameters but {arguments.Count} arguments were provided");
                     }
-                    
-                    for (int i = 0; i < arguments.Count; i++)
+
+                    for (var i = 0; i < arguments.Count; i++)
                     {
-                        //TODO this loop is inelegant
+                        // TODO this loop is inelegant
                         var e = arguments[i];
                         if (e is Binding b)
                         {
@@ -250,7 +299,7 @@ public class Linker
                             scope.Bindings[b.Name] = parameterType;
                             b.Type = parameterType;
                         }
-                        
+
                         scope.Bindings["$"] = schema.Parameters[i].Type;
                         LinkExpression(scope, e);
                         scope.Bindings.Remove("$");
@@ -266,7 +315,7 @@ public class Linker
                     {
                         LinkExpression(scope, e);
                     }
-                    
+
                     expression.Type = function.Expression.Type;
                     break;
                 }
@@ -281,7 +330,7 @@ public class Linker
                     call.Type = builtin.Type;
                     break;
                 }
-                
+
                 throw new ResolveException($"unknown functor '{call.Functor}'");
             case Unary unary:
                 LinkExpression(scope, unary.Expression);
@@ -294,43 +343,49 @@ public class Linker
                 switch (unary.Operator)
                 {
                     case "-":
-                        if (unary.Expression.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
-                            unary.Expression.Type.Equals(Fictoria.Logic.Type.Type.Float))
+                        if (unary.Expression.Type.Equals(Type.Type.Int) ||
+                            unary.Expression.Type.Equals(Type.Type.Float))
                         {
                             expression.Type = unary.Expression.Type;
                             break;
                         }
-                        throw new ParseException($"invalid type '{unary.Expression.Type}' for unary operator '{unary.Operator}'");
+
+                        throw new ParseException(
+                            $"invalid type '{unary.Expression.Type}' for unary operator '{unary.Operator}'");
                     case "!":
-                        if (unary.Expression.Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+                        if (unary.Expression.Type.Equals(Type.Type.Boolean))
                         {
-                            expression.Type = Fictoria.Logic.Type.Type.Boolean;
+                            expression.Type = Type.Type.Boolean;
                             break;
                         }
-                        throw new ParseException($"invalid type '{unary.Expression.Type}' for unary operator '{unary.Operator}'");
+
+                        throw new ParseException(
+                            $"invalid type '{unary.Expression.Type}' for unary operator '{unary.Operator}'");
                     default:
                         throw new ParseException($"unknown unary operator '{unary.Operator}'");
                 }
-                
+
                 break;
             case Infix infix:
                 LinkExpression(scope, infix.Left);
                 LinkExpression(scope, infix.Right);
-                //TODO this could be wonky
+                // TODO this could be wonky
                 if (infix.Left.ContainsBinding)
                 {
                     infix.ContainsBinding = true;
                     infix.BindingName = infix.Left.BindingName;
                 }
+
                 if (infix.Right.ContainsBinding)
                 {
                     infix.ContainsBinding = true;
                     infix.BindingName = infix.Right.BindingName;
                 }
-                
+
                 if (!infix.Left.Type.Equals(infix.Right.Type) && infix.Operator != "::")
                 {
-                    throw new ParseException($"mismatched types '{infix.Left.Type}' and '{infix.Right.Type}' for '{infix.Operator}' infix expression");
+                    throw new ParseException(
+                        $"mismatched types '{infix.Left.Type}' and '{infix.Right.Type}' for '{infix.Operator}' infix expression");
                 }
 
                 switch (infix.Operator)
@@ -341,23 +396,27 @@ public class Linker
                             infix.Type = Type.Type.Boolean;
                             break;
                         }
-                        throw new ParseException($"invalid types '{infix.Left.GetType()}' and '{infix.Right.GetType()}' for '{infix.Operator}' infix expression");
+
+                        throw new ParseException(
+                            $"invalid types '{infix.Left.GetType()}' and '{infix.Right.GetType()}' for '{infix.Operator}' infix expression");
                     case "+":
                     case "*":
                     case "~":
                     case "-":
                     case "/": // hmm
                     case "^":
-                        if (infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
-                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Float) ||
-                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.String) ||
-                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Tuple))
+                        if (infix.Left.Type.Equals(Type.Type.Int) ||
+                            infix.Left.Type.Equals(Type.Type.Float) ||
+                            infix.Left.Type.Equals(Type.Type.String) ||
+                            infix.Left.Type.Equals(Type.Type.Tuple))
                         {
-                            //TODO ensure left and right types are equal
+                            // TODO ensure left and right types are equal
                             infix.Type = infix.Left.Type;
                             break;
                         }
-                        throw new ParseException($"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
+
+                        throw new ParseException(
+                            $"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
                     case ">":
                     case "<":
                     case ">=":
@@ -365,25 +424,30 @@ public class Linker
                     case "==":
                     case "!=":
                         // TODO isA instead of equals?
-                        if (infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Int) ||
-                            infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Float))
+                        if (infix.Left.Type.Equals(Type.Type.Int) ||
+                            infix.Left.Type.Equals(Type.Type.Float))
                         {
-                            expression.Type = Fictoria.Logic.Type.Type.Boolean;
+                            expression.Type = Type.Type.Boolean;
                             break;
                         }
-                        throw new ParseException($"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
+
+                        throw new ParseException(
+                            $"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
                     case "and":
                     case "or":
                     case "xor":
-                        if (infix.Left.Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+                        if (infix.Left.Type.Equals(Type.Type.Boolean))
                         {
-                            expression.Type = Fictoria.Logic.Type.Type.Boolean;
+                            expression.Type = Type.Type.Boolean;
                             break;
                         }
-                        throw new ParseException($"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
+
+                        throw new ParseException(
+                            $"invalid types '{infix.Left}' and '{infix.Right}' for '{infix.Operator}' infix expression");
                     default:
                         throw new ParseException($"unknown infix operator '{infix.Operator}'");
                 }
+
                 break;
             case Series series:
                 foreach (var e in series.Expressions)
@@ -397,7 +461,11 @@ public class Linker
                 LinkExpression(scope, _if.Condition);
                 LinkExpression(scope, _if.Body);
                 _if.ElseIfs.ToList().ForEach(e => LinkExpression(scope, e));
-                if (_if.Else is not null) LinkExpression(scope, _if.Else);
+                if (_if.Else is not null)
+                {
+                    LinkExpression(scope, _if.Else);
+                }
+
                 _if.Type = Type.Type.Boolean;
                 break;
             case Struct _struct:
@@ -409,6 +477,7 @@ public class Linker
                         LinkExpression(scope, field.Expression);
                     }
                 }
+
                 break;
             case Accessor accessor:
                 LinkExpression(scope, accessor.Structure);

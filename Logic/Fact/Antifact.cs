@@ -5,12 +5,12 @@ namespace Fictoria.Logic.Fact;
 
 public class Antifact
 {
-    public Call Matcher { get; }
-
     public Antifact(Call matcher)
     {
         Matcher = matcher;
     }
+
+    public Call Matcher { get; set; }
 
     [ExcludeFromCodeCoverage]
     public override string ToString()
@@ -27,9 +27,21 @@ public class Antifact
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Antifact)obj);
     }
 

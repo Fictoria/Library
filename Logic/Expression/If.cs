@@ -5,18 +5,19 @@ namespace Fictoria.Logic.Expression;
 
 public class If : Expression
 {
-    public Expression Condition { get; }
-    public Expression Body { get; }
-    public IList<If> ElseIfs { get; }
-    public Expression? Else { get; }
-
-    public If(string text, Expression condition, Expression body, IList<If> elseIfs, Expression? _else) : base(text, Logic.Type.Type.Boolean)
+    public If(string text, Expression condition, Expression body, IList<If> elseIfs, Expression? _else) : base(text,
+        Logic.Type.Type.Boolean)
     {
         Condition = condition;
         Body = body;
         ElseIfs = elseIfs;
         Else = _else;
     }
+
+    public Expression Condition { get; }
+    public Expression Body { get; }
+    public IList<If> ElseIfs { get; }
+    public Expression? Else { get; }
 
     public override object Evaluate(Context context)
     {
@@ -54,15 +55,28 @@ public class If : Expression
     [ExcludeFromCodeCoverage]
     protected bool Equals(If other)
     {
-        return Condition.Equals(other.Condition) && Body.Equals(other.Body) && ElseIfs.Equals(other.ElseIfs) && Equals(Else, other.Else);
+        return Condition.Equals(other.Condition) && Body.Equals(other.Body) && ElseIfs.Equals(other.ElseIfs) &&
+               Equals(Else, other.Else);
     }
 
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((If)obj);
     }
 

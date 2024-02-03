@@ -1,18 +1,16 @@
 using Fictoria.Logic.Evaluation;
-using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Parser;
-using Fictoria.Logic.Search;
 
 namespace Fictoria.Logic;
 
 public class Program
 {
-    public Scope Scope { get; }
-
     public Program(Scope scope)
     {
         Scope = scope;
     }
+
+    public Scope Scope { get; }
 
     public object Evaluate(string code)
     {
@@ -22,22 +20,43 @@ public class Program
         return expression.Evaluate(context);
     }
 
-    public IList<FactResult> SearchAll(string code)
+    public object Evaluate(Expression.Expression expression)
     {
         var context = new Context(this);
-        var call = Loader.LoadCall(code);
-        if (context.ResolveSchema(call.Functor, out var schema))
+        Linker.LinkExpression(Scope, expression);
+        return expression.Evaluate(context);
+    }
+
+    public object Evaluate(Expression.Expression expression, Dictionary<string, object> bindings)
+    {
+        var context = new Context(this);
+        return Evaluate(context, expression, bindings);
+    }
+
+    public object Evaluate(Context context, Expression.Expression expression, Dictionary<string, object> bindings)
+    {
+        foreach (var (k, v) in bindings)
         {
-            return FactSearch.SearchAll(context, schema, call.Arguments);
+            context.Bind(k, v);
+            Scope.Bindings[k] = v;
         }
 
-        throw new EvaluateException($"unrecognized schema '{call.Functor}'");
+        Linker.LinkExpression(Scope, expression);
+        return expression.Evaluate(context);
     }
 
     public void Merge(string code)
     {
         var other = Loader.LoadUnlinked(code).Scope;
         Scope.Merge(other);
+        Linker.LinkAll(Scope);
+    }
+
+    public void Merge(Scope other, Dictionary<string, object> bindings)
+    {
+        var clone = new Scope(other);
+        // TODO
+        Scope.Merge(clone);
         Linker.LinkAll(Scope);
     }
 

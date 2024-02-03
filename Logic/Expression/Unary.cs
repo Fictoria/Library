@@ -6,38 +6,40 @@ namespace Fictoria.Logic.Expression;
 
 public class Unary : Expression
 {
-    public string Operator { get; }
-    public Expression Expression { get; }
-
     public Unary(string text, string op, Expression expression) : base(text)
     {
         Operator = op;
         Expression = expression;
     }
 
+    public string Operator { get; }
+    public Expression Expression { get; }
+
     public override IEnumerable<string> Terms()
     {
         return new HashSet<string>(Expression.Terms()) { Type.Name };
     }
-    
+
     public override object Evaluate(Context context)
     {
         var result = Expression.Evaluate(context);
-        
+
         // TODO this assumes one operator per type
-        if (Type.Equals(Fictoria.Logic.Type.Type.Int))
+        if (Type.Equals(Logic.Type.Type.Int))
         {
             return (long)result * -1;
         }
-        if (Type.Equals(Fictoria.Logic.Type.Type.Float))
+
+        if (Type.Equals(Logic.Type.Type.Float))
         {
             return (double)result * -1.0;
         }
-        if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+
+        if (Type.Equals(Logic.Type.Type.Boolean))
         {
             return !(bool)result;
         }
-        
+
         throw new EvaluateException($"invalid type '{Type}' for '{Operator}' unary expression");
     }
 
@@ -50,9 +52,21 @@ public class Unary : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Unary)obj);
     }
 

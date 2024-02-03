@@ -1,13 +1,4 @@
-﻿using System.Diagnostics;
-using Fictoria.Logic;
-using Fictoria.Logic.Evaluation;
-using Fictoria.Planning;
-using Fictoria.Planning.Action;
-using Fictoria.Planning.Action.Campfire;
-using Fictoria.Planning.Action.General;
-using Fictoria.Planning.Action.Homeostasis;
-using Fictoria.Planning.Action.Material;
-using Fictoria.Planning.Action.Resource;
+﻿using Fictoria.Logic;
 using Fictoria.Planning.Planner;
 using Fictoria.Planning.Semantic;
 
@@ -17,15 +8,34 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var path = "../../../kb.txt";
-        var text = File.ReadAllText(path);
+        var path = "../../../kb/";
+        var program = Loader.LoadAll(path);
 
-        var program = Loader.Load(text);
-        var result = (List<object>)program.Evaluate("&searchable(@all); all");
-        foreach (var x in result)
+        var planner = new Planner(program);
+        var network = Network.Load("../../../semnet.json");
+        if (planner.ForwardSearch(program, network, "warm(self)", out var plan, out var debug))
         {
-            Console.WriteLine(x);
+            Console.WriteLine($"plan: {plan.Steps.Count}");
+            Console.WriteLine($"sem:  {debug.Count}");
         }
+        // foreach (var a in plan2.Actions)
+        // {
+        //     Console.WriteLine(a.ToString());
+        // }
+        // 
+        // var output = plan2.RenderToDOT(debug2);
+        // File.WriteAllText("../../../debug.dot", output);
+        // Console.WriteLine("done");
+        // var path = "../../../kb.txt";
+        // var text = File.ReadAllText(path);
+        //
+        // var program = Loader.Load(text);
+        // var result = (List<object>)program.Evaluate("&searchable(@all); all");
+        // foreach (var x in result)
+        // {
+        //     Console.WriteLine(x);
+        // }
+
         // Console.WriteLine(result);
         // foreach (var r in results)
         // {

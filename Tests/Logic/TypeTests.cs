@@ -10,14 +10,14 @@ public class TypeTests
     {
         Assert.True(Type.Object.IsA(Type.Object));
     }
-    
+
     [Test]
     public void Anything()
     {
         Assert.True(Type.Object.IsA(Type.Anything));
         Assert.True(Type.Anything.IsA(Type.Object));
     }
-    
+
     [Test]
     public void Nothing()
     {
@@ -33,7 +33,7 @@ public class TypeTests
                    """;
         var program = Loader.Load(code);
         var thing = program.Scope.Types["thing"];
-        
+
         Assert.True(thing.IsA(Type.Object));
         Assert.False(thing.IsA(Type.Struct));
     }
@@ -47,7 +47,7 @@ public class TypeTests
                    """;
         var program = Loader.Load(code);
         var rock = program.Scope.Types["rock"];
-        
+
         Assert.True(rock.IsA(Type.Object));
         Assert.False(Type.Object.IsA(rock));
     }
@@ -62,11 +62,11 @@ public class TypeTests
                    """;
         var program = Loader.Load(code);
         var igneous = program.Scope.Types["igneous"];
-        
+
         Assert.True(igneous.IsA(Type.Object));
         Assert.False(Type.Object.IsA(igneous));
     }
-    
+
     [Test]
     public void MultipleIsA()
     {
@@ -80,13 +80,13 @@ public class TypeTests
         var walking = program.Scope.Types["walking"];
         var flying = program.Scope.Types["flying"];
         var bird = program.Scope.Types["bird"];
-        
+
         Assert.True(bird.IsA(walking));
         Assert.False(walking.IsA(bird));
         Assert.True(bird.IsA(flying));
         Assert.False(flying.IsA(bird));
     }
-    
+
     [Test]
     public void ParentMultipleIsA()
     {
@@ -102,7 +102,7 @@ public class TypeTests
         var flying = program.Scope.Types["flying"];
         var bird = program.Scope.Types["bird"];
         var sparrow = program.Scope.Types["sparrow"];
-        
+
         Assert.True(sparrow.IsA(bird));
         Assert.False(bird.IsA(sparrow));
         Assert.True(sparrow.IsA(walking));
@@ -116,8 +116,8 @@ public class TypeTests
     {
         var code = """
                    dog: object.
-                   instance(spot, dog).
-                   instance(fido, dog).
+                   instantiate(spot, dog).
+                   instantiate(fido, dog).
                    """;
         var program = Loader.Load(code);
         var dog = program.Scope.Types["dog"];

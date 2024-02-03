@@ -1,7 +1,7 @@
 // general
 search(t: thing) -> {
     "cost": 1000.
-    "terms": ["location", type(t)].
+    "terms": ["location", str(t)].
     "space":
         &searchable(@all); all.
     "conditions":
@@ -9,13 +9,13 @@ search(t: thing) -> {
     "locals":
         name = str(t) + "_" + id().
     "effects":
-        instance(name, t).
+        instantiate(name, t).
         location(name, 0, 0).
 }.
 
 deposit(b: building, m: material) -> {
     "cost": 1.
-    "terms": [type(b), type(m)].
+    "terms": [str(b), str(m)].
     "space":
         subtypes(building) * subtypes(material).
     "conditions":
@@ -31,15 +31,15 @@ deposit(b: building, m: material) -> {
 
 drop(t: thing) -> {
     "cost": 1.
-    "terms": ["carrying", type(t)].
+    "terms": ["carrying", str(t)].
     "space":
         &carrying(@c); c.
     "conditions":
-        carrying(t).
+        true; carrying(t). // TODO just `carrying(t)` is ambiguous...probably need to tweak the grammar
     "locals": _.
     "effects":
         ~carrying(t).
-        //TODO thing should now be at current location
+         // thing should now be at current location
 }.
 
 // campfire
@@ -49,20 +49,20 @@ light(c: campfire) -> {
     "space":
         &instance(@all, campfire); all.
     "conditions":
-        location(@cf :: campfire, _, _); //TODO use and
+        location(@cf :: campfire, _, _);  use and
         contains(cf, wood).
     "locals":
         name = str(c) + "_" + id().
-    "effects";
-        instance(c, fire).
+    "effects":
+        instantiate(c, fire).
         location(c, 0, 0).
         ~contains(c, wood).
-        //TODO need to destroy the wood instance and facts
+        // TODO need to destroy the wood instance and facts
 }.
 
 // homeostasis
 warm(f: fire) -> {
-    "cost": 1. //TODO distance
+    "cost": 1. // TODO distance
     "terms": ["fire"].
     "space":
         &instance(@all, fire); all.
@@ -76,8 +76,8 @@ warm(f: fire) -> {
 
 // material
 gather(m: material) -> {
-    "cost": 2. //TODO distance
-    "terms": ["carrying", type(m)].
+    "cost": 2. // TODO distance
+    "terms": ["carrying", str(m)].
     "space":
         subtypes(material).
     "conditions":
@@ -91,17 +91,17 @@ gather(m: material) -> {
 
 // extract
 extract(r: resource, m: material) -> {
-    "cost": 20. //TODO distance
-    "terms": [type(r), type(m)].
+    "cost": 20. // TODO distance
+    "terms": [str(r), str(m)].
     "space":
         subtypes(building) * subtypes(material).
     "conditions":
         provides(r, m) and
         location(r, _, _) and
-        !location(m, _, _)
+        !location(m, _, _).
     "locals":
         name = str(c) + "_" + id().
     "effects":
-        instance(name, m).
+        instantiate(name, m).
         location(name, 0, 0).
 }.

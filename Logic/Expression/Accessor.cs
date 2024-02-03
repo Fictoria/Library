@@ -5,14 +5,14 @@ namespace Fictoria.Logic.Expression;
 
 public class Accessor : Expression
 {
-    public Expression Structure { get; }
-    public Expression Indexer { get; }
-    
     public Accessor(string text, Expression structure, Expression indexer) : base(text, Logic.Type.Type.Anything)
     {
         Structure = structure;
         Indexer = indexer;
     }
+
+    public Expression Structure { get; }
+    public Expression Indexer { get; }
 
     public override object Evaluate(Context context)
     {
@@ -36,9 +36,21 @@ public class Accessor : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Accessor)obj);
     }
 

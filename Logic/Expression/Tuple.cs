@@ -5,12 +5,12 @@ namespace Fictoria.Logic.Expression;
 
 public class Tuple : Expression
 {
-    public IList<Expression> Expressions { get; }
-
-    public Tuple(string text, IList<Expression> expressions) : base(text)
+    public Tuple(string text, IList<Expression> expressions) : base(text, Logic.Type.Type.Tuple)
     {
         Expressions = expressions;
     }
+
+    public IList<Expression> Expressions { get; }
 
     public override object Evaluate(Context context)
     {
@@ -31,9 +31,21 @@ public class Tuple : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Tuple)obj);
     }
 

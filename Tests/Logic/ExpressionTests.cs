@@ -1,5 +1,4 @@
 using Fictoria.Logic;
-using Fictoria.Logic.Fact;
 using Fictoria.Tests.Utilities;
 
 namespace Fictoria.Tests.Logic;
@@ -16,13 +15,13 @@ public class ExpressionTests
                    d() = "foobar".
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("a()", 1);
         program.AssertEvaluationResult("b()", 1.1);
         program.AssertEvaluationResult("c()", true);
         program.AssertEvaluationResult("d()", "foobar");
     }
-    
+
     [Test]
     public void Identifier()
     {
@@ -30,16 +29,16 @@ public class ExpressionTests
                    f(x: int) = x.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(123)", 123);
     }
-    
+
     [Test]
     public void Search()
     {
         var code = """
                    thing: object.
-                   instance(dog, thing).
+                   instantiate(dog, thing).
 
                    legs(t: thing, n: int).
                    legs(dog, 4).
@@ -47,18 +46,18 @@ public class ExpressionTests
                    f(x: int) = legs(dog, x).
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(3)", false);
         program.AssertEvaluationResult("f(4)", true);
         program.AssertEvaluationResult("f(5)", false);
     }
-    
+
     [Test]
     public void Wildcard()
     {
         var code = """
                    thing: object.
-                   instance(dog, thing).
+                   instantiate(dog, thing).
 
                    legs(t: thing, n: int).
                    legs(dog, 4).
@@ -66,18 +65,18 @@ public class ExpressionTests
                    f(x: int) = legs(_, x).
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(3)", false);
         program.AssertEvaluationResult("f(4)", true);
         program.AssertEvaluationResult("f(5)", false);
     }
-    
+
     [Test]
     public void Binding()
     {
         var code = """
                    thing: object.
-                   instance(dog, thing).
+                   instantiate(dog, thing).
 
                    legs(t: thing, n: int).
                    legs(dog, 4).
@@ -86,10 +85,10 @@ public class ExpressionTests
                    """;
         var program = Loader.Load(code);
         var dog = program.Scope.Instances["dog"];
-        
+
         program.AssertEvaluationResult("f(4)", dog);
     }
-    
+
     [Test]
     public void Parenthetical()
     {
@@ -97,10 +96,10 @@ public class ExpressionTests
                    f(x: int) = x + (x - x) * x.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(4)", 4);
     }
-    
+
     [Test]
     public void Tuple()
     {
@@ -108,10 +107,10 @@ public class ExpressionTests
                    f(x: int) = [1, 2, 3, x].
                    """;
         var program = Loader.Load(code);
-        
-        program.AssertEvaluationResult("f(4)", new List<object> {1, 2, 3, 4});
+
+        program.AssertEvaluationResult("f(4)", new List<object> { 1, 2, 3, 4 });
     }
-    
+
     [Test]
     public void Call()
     {
@@ -120,10 +119,10 @@ public class ExpressionTests
                    cube(n: int) = pow(n, 3).
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("cube(5)", 125);
     }
-    
+
     [Test]
     public void Assign()
     {
@@ -134,10 +133,10 @@ public class ExpressionTests
                        double_that.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(5)", 20);
     }
-    
+
     [Test]
     public void If()
     {
@@ -153,14 +152,14 @@ public class ExpressionTests
                        }; r.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(-1)", -1);
         program.AssertEvaluationResult("f(0)", 0);
         program.AssertEvaluationResult("f(4)", 8);
         program.AssertEvaluationResult("f(5)", 10);
         program.AssertEvaluationResult("f(15)", 45);
     }
-    
+
     [Test]
     public void Struct()
     {
@@ -174,12 +173,13 @@ public class ExpressionTests
                        }.
                    """;
         var program = Loader.Load(code);
-        
-        program.AssertEvaluationResult("f()", new Dictionary<string, object> {
+
+        program.AssertEvaluationResult("f()", new Dictionary<string, object>
+        {
             { "foo", new Dictionary<string, object> { { "bar", "baz" } } }
         });
     }
-    
+
     [Test]
     public void Unary()
     {
@@ -189,12 +189,12 @@ public class ExpressionTests
                    h() = !true.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", -1);
         program.AssertEvaluationResult("g()", -1.0);
         program.AssertEvaluationResult("h()", false);
     }
-    
+
     [Test]
     public void TypeIsA()
     {
@@ -202,22 +202,22 @@ public class ExpressionTests
                    thing: object.
                    animal: thing.
                    plant: thing.
-                   instance(foo, thing).
-                   instance(bar, animal).
-                   
+                   instantiate(foo, thing).
+                   instantiate(bar, animal).
+
                    exists(o: object).
                    exists(foo).
                    exists(bar).
-                   
+
                    f() = exists(@b :: animal).
                    g() = exists(@b :: plant).
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", true);
         program.AssertEvaluationResult("g()", false);
     }
-    
+
     [Test]
     public void Exponent()
     {
@@ -225,10 +225,10 @@ public class ExpressionTests
                    f() = 2^3.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", 8);
     }
-    
+
     [Test]
     public void Zip()
     {
@@ -236,15 +236,15 @@ public class ExpressionTests
                    f() = [1, 2, 3] ~ ["a", "b", "c"].
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", new List<object>
         {
             new List<object> { 1, "a" },
             new List<object> { 2, "b" },
-            new List<object> { 3, "c" },
+            new List<object> { 3, "c" }
         });
     }
-    
+
     [Test]
     public void Cartesian()
     {
@@ -252,7 +252,7 @@ public class ExpressionTests
                    f() = [1, 2, 3] * ["a", "b", "c"].
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", new List<object>
         {
             new List<object> { 1, "a" },
@@ -263,7 +263,7 @@ public class ExpressionTests
             new List<object> { 2, "c" },
             new List<object> { 3, "a" },
             new List<object> { 3, "b" },
-            new List<object> { 3, "c" },
+            new List<object> { 3, "c" }
         });
     }
 
@@ -274,13 +274,13 @@ public class ExpressionTests
                    f() = [1, 2, 3] + ["a", "b", "c"].
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", new List<object>
         {
             1, 2, 3, "a", "b", "c"
         });
     }
-    
+
     [Test]
     public void Math()
     {
@@ -288,10 +288,10 @@ public class ExpressionTests
                    f(x: int) = x + 1 - 1 * 1 / 1.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(2)", 2);
     }
-    
+
     [Test]
     public void Comparison()
     {
@@ -304,7 +304,7 @@ public class ExpressionTests
                    lte(a: int, b: int) = a <= b.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("eq(1, 1)", true);
         program.AssertEvaluationResult("eq(1, 2)", false);
         program.AssertEvaluationResult("ne(1, 1)", false);
@@ -322,7 +322,7 @@ public class ExpressionTests
         program.AssertEvaluationResult("lte(1, 2)", true);
         program.AssertEvaluationResult("lte(2, 1", false);
     }
-    
+
     [Test]
     public void Boolean()
     {
@@ -332,23 +332,23 @@ public class ExpressionTests
                    xo(x: bool, y: bool) = x xor y.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("a(true, true)", true);
         program.AssertEvaluationResult("a(true, false)", false);
         program.AssertEvaluationResult("a(false, true)", false);
         program.AssertEvaluationResult("a(false, false)", false);
-        
+
         program.AssertEvaluationResult("o(true, true)", true);
         program.AssertEvaluationResult("o(true, false)", true);
         program.AssertEvaluationResult("o(false, true)", true);
         program.AssertEvaluationResult("o(false, false)", false);
-        
+
         program.AssertEvaluationResult("xo(true, true)", false);
         program.AssertEvaluationResult("xo(true, false)", true);
         program.AssertEvaluationResult("xo(false, true)", true);
         program.AssertEvaluationResult("xo(false, false)", false);
     }
-    
+
     [Test]
     public void Index()
     {
@@ -356,10 +356,10 @@ public class ExpressionTests
                    f(key: string) = { "foo": "bar". }[key].
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("""f("foo")""", "bar");
     }
-    
+
     [Test]
     public void Concatenate()
     {
@@ -367,7 +367,7 @@ public class ExpressionTests
                    concat(a: string, b: string) = a + b.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("""concat("foo", "bar")""", "foobar");
     }
 }

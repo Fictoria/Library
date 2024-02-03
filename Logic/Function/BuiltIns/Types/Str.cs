@@ -13,12 +13,20 @@ public class Str : BuiltIn
     {
         new("input", Logic.Type.Type.Anything)
     };
-    
+
     public object Evaluate(Context context, IList<Expression.Expression> arguments)
     {
-        if (arguments.Count != 1) throw new EvaluateException($"built-in function `{Name}` takes exactly 1 argument");
+        if (arguments.Count != 1)
+        {
+            throw new EvaluateException($"built-in function `{Name}` takes exactly 1 argument");
+        }
 
         var value = arguments[0].Evaluate(context);
+        if (value is Type.Type type)
+        {
+            return type.Name;
+        }
+
         return value.ToString() ?? "null";
     }
 }

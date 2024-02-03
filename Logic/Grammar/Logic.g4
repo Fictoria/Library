@@ -20,7 +20,7 @@ type
     ;
 
 instance
-    :   'instance' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN
+    :   'instantiate' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN
         PERIOD
     ;
 
@@ -45,7 +45,7 @@ function
     ;
 
 action
-    :   identifier OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN ARROW struct PERIOD
+    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN ARROW struct PERIOD
     ;
     
 struct
@@ -112,7 +112,7 @@ parenthetical
     ;
 
 tuple
-    :   OPEN_BRACK expression (COMMA expression)+ CLOSE_BRACK
+    :   OPEN_BRACK expression (COMMA expression)* CLOSE_BRACK
     ;
 
 wildcard
@@ -143,7 +143,7 @@ literalString
   
 binding
     :   AT identifier
-//TODO support expressions like _ > 5 instead of @a > 5
+// TODO support expressions like _ > 5 instead of @a > 5
 //    |   WILDCARD
     ;
 

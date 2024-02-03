@@ -6,7 +6,7 @@ material: thing.
 building: thing.
 fire: thing.
 
-instance(self, human).
+instantiate(self, human).
 
 // some types
 tree: resource.
@@ -40,9 +40,8 @@ searchable(quarry).
 searchable(campfire).
 searchable(storage).
 
-instance(tree1, tree).
-instance(cf1, campfire).
+instantiate(tree1, tree).
+instantiate(cf1, campfire).
 
 location(tree1, 5, 2).
 location(cf1, 2, 3).
-

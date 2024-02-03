@@ -6,13 +6,13 @@ namespace Fictoria.Logic.Expression;
 
 public class Identifier : Expression
 {
-    public string Name { get; }
-
     public Identifier(string text, string name) : base(text)
     {
         Name = name;
     }
-    
+
+    public string Name { get; }
+
     public override object Evaluate(Context context)
     {
         if (context.Resolve(Name, out var variable))
@@ -22,6 +22,7 @@ public class Identifier : Expression
             {
                 return ((Expression)variable).Evaluate(context);
             }
+
             return variable;
         }
 
@@ -52,9 +53,21 @@ public class Identifier : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Identifier)obj);
     }
 

@@ -6,16 +6,16 @@ namespace Fictoria.Logic.Function;
 
 public class Function
 {
-    public string Name { get; }
-    public List<Parameter> Parameters { get; }
-    public Expression.Expression Expression { get; }
-
     public Function(string name, List<Parameter> parameters, Expression.Expression expression)
     {
         Name = name;
         Parameters = parameters;
         Expression = expression;
     }
+
+    public string Name { get; }
+    public List<Parameter> Parameters { get; }
+    public Expression.Expression Expression { get; }
 
     public object Evaluate(Context context, IList<Expression.Expression> arguments)
     {
@@ -34,7 +34,7 @@ public class Function
     [ExcludeFromCodeCoverage]
     public override string ToString()
     {
-        return $"{Name}({String.Join(", ", Parameters.Select(p => p.ToString()))}) = {Expression}";
+        return $"{Name}({string.Join(", ", Parameters.Select(p => p.ToString()))}) = {Expression}";
     }
 
     [ExcludeFromCodeCoverage]
@@ -46,9 +46,21 @@ public class Function
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Function)obj);
     }
 

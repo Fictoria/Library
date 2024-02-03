@@ -6,17 +6,6 @@ namespace Fictoria.Logic.Evaluation;
 
 public class Scope
 {
-    public IDictionary<string, Type.Type> Types { get; }
-    public IDictionary<Type.Type, ISet<Type.Type>> TypesByParent { get; }
-    public IDictionary<string, Schema> Schemata { get; }
-    public IDictionary<string, ISet<Fact.Fact>> Facts { get; }
-    public ISet<Antifact> Antifacts { get; }
-    public IDictionary<string, Instance> Instances { get; }
-    public IDictionary<string, ISet<string>> InstancesByType { get; }
-    public IDictionary<string, Function.Function> Functions { get; }
-    public IDictionary<string, Action.Action> Actions { get; }
-    public IDictionary<string, object> Bindings { get;  }
-
     public Scope()
     {
         Types = new Dictionary<string, Type.Type>();
@@ -32,7 +21,7 @@ public class Scope
     }
 
     /// <summary>
-    /// Shallow clones the facts from <paramref name="scope"/>, but keeps everything else.
+    ///     Shallow clones the facts from <paramref name="scope" />, but keeps everything else.
     /// </summary>
     /// <param name="scope">The scope from which to clone and copy.</param>
     public Scope(Scope scope)
@@ -42,12 +31,14 @@ public class Scope
         Schemata = scope.Schemata;
         Functions = scope.Functions;
         Bindings = scope.Bindings;
+        Actions = scope.Actions;
 
         var instancesClone = new Dictionary<string, Instance>();
         foreach (var (name, type) in scope.Instances)
         {
             instancesClone[name] = type;
         }
+
         Instances = instancesClone;
 
         var instancesByTypeClone = new Dictionary<string, ISet<string>>();
@@ -55,16 +46,29 @@ public class Scope
         {
             instancesByTypeClone[key] = new HashSet<string>(value);
         }
+
         InstancesByType = instancesByTypeClone;
-        
+
         var factsClone = new Dictionary<string, ISet<Fact.Fact>>();
         foreach (var (schema, set) in scope.Facts)
         {
             factsClone[schema] = new HashSet<Fact.Fact>(set);
         }
+
         Facts = factsClone;
         Antifacts = new HashSet<Antifact>();
     }
+
+    public IDictionary<string, Type.Type> Types { get; }
+    public IDictionary<Type.Type, ISet<Type.Type>> TypesByParent { get; }
+    public IDictionary<string, Schema> Schemata { get; }
+    public IDictionary<string, ISet<Fact.Fact>> Facts { get; }
+    public ISet<Antifact> Antifacts { get; }
+    public IDictionary<string, Instance> Instances { get; }
+    public IDictionary<string, ISet<string>> InstancesByType { get; }
+    public IDictionary<string, Function.Function> Functions { get; }
+    public IDictionary<string, Action.Action> Actions { get; }
+    public IDictionary<string, object> Bindings { get; }
 
     public IList<Type.Type> GetAllSubtypes(Type.Type type)
     {
@@ -81,17 +85,17 @@ public class Scope
 
         return results;
     }
-    
+
     public void DefineType(Type.Type type)
     {
         Types[type.Name] = type;
     }
-    
+
     public void DefineSchema(Schema schema)
     {
         Schemata[schema.Name] = schema;
     }
-    
+
     public void DefineFact(Fact.Fact fact)
     {
         var facts = Facts;
@@ -99,6 +103,7 @@ public class Scope
         {
             facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
         }
+
         facts[fact.Schema.Name].Add(fact);
     }
 
@@ -107,12 +112,12 @@ public class Scope
         var schema = fact.Schema.Name;
         Facts[schema].Remove(fact);
     }
-    
+
     public void DefineAntifact(Antifact fact)
     {
         Antifacts.Add(fact);
     }
-    
+
     public void DefineInstance(Instance instance)
     {
         var instances = InstancesByType;
@@ -141,8 +146,8 @@ public class Scope
         {
             DefineInstance(t);
         }
-        
-        //TODO
+
+        // TODO
         foreach (var fs in other.Facts)
         {
             foreach (var f in fs.Value)
@@ -161,7 +166,7 @@ public class Scope
                 UndefineFact(f);
             }
         }
-        
+
         Linker.LinkAll(this);
     }
 
@@ -169,7 +174,7 @@ public class Scope
     {
         var a = Types.Equals(other.Types);
         var b = Schemata.Equals(other.Schemata);
-        //TODO the two below are janky
+        // TODO the two below are very janky
         var c = Facts.Count.Equals(other.Facts.Count);
         var d = Instances.Count.Equals(other.Instances.Count);
         var e = Functions.Equals(other.Functions);
@@ -179,12 +184,24 @@ public class Scope
 
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Scope)obj);
     }
-    
+
     public override int GetHashCode()
     {
         var hashCode = new HashCode();
@@ -192,8 +209,8 @@ public class Scope
         Schemata.ToList().ForEach(s => hashCode.Add(s.Value));
         Facts.ToList().ForEach(fs => fs.Value.ToList().ForEach(hashCode.Add));
         Instances.ToList().ForEach(i => hashCode.Add(i.Value));
-        Functions.ToList().ForEach(f => hashCode.Add((f.Value)));
-        Actions.ToList().ForEach(a => hashCode.Add((a.Value)));
+        Functions.ToList().ForEach(f => hashCode.Add(f.Value));
+        Actions.ToList().ForEach(a => hashCode.Add(a.Value));
         return hashCode.ToHashCode();
     }
 }

@@ -3,6 +3,7 @@ using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
 using Fictoria.Logic.Lexer;
 using Fictoria.Logic.Type;
+using Tuple = Fictoria.Logic.Expression.Tuple;
 
 namespace Fictoria.Logic.Parser;
 
@@ -23,7 +24,7 @@ public class Parser : LogicBaseVisitor<object>
         var parents = identifiers.Skip(1).ToList();
 
         return new Type.Type(
-            type.IDENTIFIER().GetText(), 
+            type.IDENTIFIER().GetText(),
             parents.Select(p => (Type.Type)new TypePlaceholder(p.IDENTIFIER().GetText())).ToList()
         );
     }
@@ -42,7 +43,7 @@ public class Parser : LogicBaseVisitor<object>
 
         return new Schema(identifier, parameters);
     }
-    
+
     public override object VisitFact(LogicParser.FactContext context)
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
@@ -74,6 +75,7 @@ public class Parser : LogicBaseVisitor<object>
         var cost = @struct.Value["cost"].Expression!;
         var conditions = @struct.Value["conditions"].Expression!;
         var locals = @struct.Value["locals"].Expression!;
+        var terms = @struct.Value["terms"].Expression!;
         var effects = @struct.Value["effects"].Statements!;
 
         return new Action.Action(
@@ -83,6 +85,7 @@ public class Parser : LogicBaseVisitor<object>
             cost,
             conditions,
             locals,
+            terms,
             effects
         );
     }
@@ -123,7 +126,7 @@ public class Parser : LogicBaseVisitor<object>
         var value = context.GetText();
         if (bool.TryParse(value, out var b))
         {
-            return new Literal(context.GetText(), b, Fictoria.Logic.Type.Type.Boolean);
+            return new Literal(context.GetText(), b, Type.Type.Boolean);
         }
 
         throw new ParseException($"invalid boolean literal '{value}'");
@@ -134,18 +137,18 @@ public class Parser : LogicBaseVisitor<object>
         var value = context.GetText();
         if (long.TryParse(value, out var b))
         {
-            return new Literal(context.GetText(), b, Fictoria.Logic.Type.Type.Int);
+            return new Literal(context.GetText(), b, Type.Type.Int);
         }
 
         throw new ParseException($"invalid integer literal '{value}'");
     }
-    
+
     public override object VisitLiteralFloat(LogicParser.LiteralFloatContext context)
     {
         var value = context.GetText();
         if (double.TryParse(value, out var b))
         {
-            return new Literal(context.GetText(), b, Fictoria.Logic.Type.Type.Float);
+            return new Literal(context.GetText(), b, Type.Type.Float);
         }
 
         throw new ParseException($"invalid float literal '{value}'");
@@ -155,7 +158,7 @@ public class Parser : LogicBaseVisitor<object>
     {
         var value = context.GetText();
         var inner = value.Substring(1, value.Length - 2);
-        return new Literal(context.GetText(), inner, Fictoria.Logic.Type.Type.String);
+        return new Literal(context.GetText(), inner, Type.Type.String);
     }
 
     public override object VisitIdentifier(LogicParser.IdentifierContext context)
@@ -186,7 +189,7 @@ public class Parser : LogicBaseVisitor<object>
     public override object VisitTuple(LogicParser.TupleContext context)
     {
         var expressions = context.expression().Select(e => (Expression.Expression)Visit(e)).ToList();
-        return new Expression.Tuple(context.GetText(), expressions);
+        return new Tuple(context.GetText(), expressions);
     }
 
     public override object VisitCall(LogicParser.CallContext context)
@@ -227,7 +230,7 @@ public class Parser : LogicBaseVisitor<object>
     {
         var variable = context.identifier().IDENTIFIER().GetText();
         var expression = (Expression.Expression)Visit(context.expression());
-        
+
         return new Assign(context.GetText(), variable, expression);
     }
 
@@ -247,7 +250,7 @@ public class Parser : LogicBaseVisitor<object>
         var rest = ifs.Skip(1).ToList();
         var _else = context.block().expression().Select(e => (Expression.Expression)Visit(e)).ToList();
         var ex = new Series("else", _else);
-        
+
         return new If(context.GetText(), main.Condition, main.Body, rest, ex);
     }
 
@@ -266,9 +269,15 @@ public class Parser : LogicBaseVisitor<object>
             var value = varianceContext.GetText();
             switch (value)
             {
-                case "+": variance = Variance.Covariant; break;
-                case "-": variance = Variance.Contravariant; break;
-                default: variance = Variance.Invariant; break;
+                case "+":
+                    variance = Variance.Covariant;
+                    break;
+                case "-":
+                    variance = Variance.Contravariant;
+                    break;
+                default:
+                    variance = Variance.Invariant;
+                    break;
             }
         }
 

@@ -7,10 +7,10 @@ namespace Fictoria.Planning.Semantic;
 [Serializable]
 public class Network
 {
-    public Dictionary<string, Dictionary<string, double>> Weights = new ();
-    //TODO replace Pairs by iterating through Weights for DOT rendering
+    // TODO replace Pairs by iterating through Weights for DOT rendering
     public HashSet<string> Pairs = new();
     public HashSet<string> Terms = new();
+    public Dictionary<string, Dictionary<string, double>> Weights = new();
 
     public static Network Load(string path)
     {
@@ -24,6 +24,7 @@ public class Network
         {
             Weights[first] = new Dictionary<string, double>();
         }
+
         if (!Weights.ContainsKey(second))
         {
             Weights[second] = new Dictionary<string, double>();
@@ -58,6 +59,7 @@ public class Network
         {
             output.AppendLine($"  {t} [label={t}];");
         }
+
         foreach (var pair in Pairs)
         {
             var tokens = pair.Split(",");
@@ -68,13 +70,14 @@ public class Network
             var renderWeight = weight.ToString(CultureInfo.InvariantCulture)[..4];
             output.AppendLine($"  {first} -- {second} [label={renderWeight} penwidth={width}];");
         }
+
         output.AppendLine("}");
         return output.ToString();
     }
 
     public void Save(string path)
     {
-        string json = JsonConvert.SerializeObject(this);
+        var json = JsonConvert.SerializeObject(this);
         File.WriteAllText(path, json);
     }
 }

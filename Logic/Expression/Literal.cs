@@ -5,13 +5,13 @@ namespace Fictoria.Logic.Expression;
 
 public class Literal : Expression
 {
-    public object Value { get; }
-
     public Literal(string text, object value, Type.Type type) : base(text, type)
     {
         Value = value;
     }
-    
+
+    public object Value { get; }
+
     public override object Evaluate(Context context)
     {
         return Value;
@@ -31,9 +31,21 @@ public class Literal : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Literal)obj);
     }
 

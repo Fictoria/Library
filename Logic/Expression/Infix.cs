@@ -7,25 +7,25 @@ namespace Fictoria.Logic.Expression;
 
 public class Infix : Expression
 {
-    public Expression Left { get; }
-    public Expression Right { get; }
-    public string Operator { get; }
-
     public Infix(string text, Expression left, string op, Expression right) : base(text)
     {
         Left = left;
         Operator = op;
         Right = right;
     }
-    
+
+    public Expression Left { get; }
+    public Expression Right { get; }
+    public string Operator { get; }
+
     // TODO this method is long
     public override object Evaluate(Context context)
     {
-        if (Type.Equals(Fictoria.Logic.Type.Type.Int))
+        if (Type.Equals(Logic.Type.Type.Int))
         {
             var leftRaw = Left.Evaluate(context);
             var rightRaw = Right.Evaluate(context);
-            
+
             // TODO this is inelegant and slow
             var left = long.Parse(leftRaw.ToString());
             var right = long.Parse(rightRaw.ToString());
@@ -45,7 +45,7 @@ public class Infix : Expression
                     return Math.Pow(left, right);
             }
         }
-        else if (Type.Equals(Fictoria.Logic.Type.Type.Float))
+        else if (Type.Equals(Logic.Type.Type.Float))
         {
             // TODO this is inelegant and slow
             var left = double.Parse(Left.Evaluate(context).ToString());
@@ -63,10 +63,10 @@ public class Infix : Expression
                     // TODO hmm
                     return left / right;
                 case "^":
-                    throw new EvaluateException($"exponents are not valid for floats");
+                    throw new EvaluateException("exponents are not valid for floats");
             }
         }
-        else if (Type.Equals(Fictoria.Logic.Type.Type.String))
+        else if (Type.Equals(Logic.Type.Type.String))
         {
             if (Operator == "+")
             {
@@ -77,7 +77,7 @@ public class Infix : Expression
 
             throw new EvaluateException($"unknown operator '{Operator}' in string infix expression");
         }
-        else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Tuple))
+        else if (Left.Type.Equals(Logic.Type.Type.Tuple))
         {
             if (Left is Binding binding)
             {
@@ -85,7 +85,7 @@ public class Infix : Expression
                 {
                     throw new EvaluateException($"unknown infix binding filter operator '{Operator}'");
                 }
-                
+
                 if (context.Resolve("$", out var found))
                 {
                     if (found is Instance instance)
@@ -93,58 +93,56 @@ public class Infix : Expression
                         context.ResolveType(((Identifier)Right).Name, out var type);
                         return instance.Type.IsA(type);
                     }
-                    
+
                     throw new EvaluateException("skolem binding missing for search filter");
                 }
 
                 throw new EvaluateException("skolem binding missing for search filter");
             }
-            else
+
+            var left = (List<object>)Left.Evaluate(context);
+            var right = (List<object>)Right.Evaluate(context);
+
+            switch (Operator)
             {
-                var left = (List<object>)Left.Evaluate(context);
-                var right = (List<object>)Right.Evaluate(context);
-
-                switch (Operator)
-                {
-                    case "+":
-                        return left.Concat(right).ToList();
-                    case "*":
-                        var cartesian = new List<object>();
-                        foreach (var l in left)
+                case "+":
+                    return left.Concat(right).ToList();
+                case "*":
+                    var cartesian = new List<object>();
+                    foreach (var l in left)
+                    {
+                        foreach (var r in right)
                         {
-                            foreach (var r in right)
-                            {
-                                cartesian.Add(new List<object> { l, r });
-                            }
+                            cartesian.Add(new List<object> { l, r });
                         }
+                    }
 
-                        return cartesian;
-                    case "~":
-                        var zip = new List<object>();
-                        for (int i = 0; i < left.Count; i++)
-                        {
-                            zip.Add(new List<object> { left[i], right[i] });
-                        }
+                    return cartesian;
+                case "~":
+                    var zip = new List<object>();
+                    for (var i = 0; i < left.Count; i++)
+                    {
+                        zip.Add(new List<object> { left[i], right[i] });
+                    }
 
-                        return zip;
-                }
+                    return zip;
             }
         }
-        else if (Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+        else if (Type.Equals(Logic.Type.Type.Boolean))
         {
             if (Operator == "::")
             {
                 var left = Left.Evaluate(context);
                 var right = (Type.Type)Right.Evaluate(context);
-                //TODO no guarantee this is an instance, need a runtime type checker
+                // TODO no guarantee this is an instance, need a runtime type checker
                 return ((Instance)left).Type.IsA(right);
             }
-            
-            if (Left.Type.Equals(Fictoria.Logic.Type.Type.Int))
+
+            if (Left.Type.Equals(Logic.Type.Type.Int))
             {
                 var left = (long)Left.Evaluate(context);
                 var right = (long)Right.Evaluate(context);
-                
+
                 switch (Operator)
                 {
                     case ">":
@@ -161,11 +159,11 @@ public class Infix : Expression
                         return left != right;
                 }
             }
-            else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Float))
+            else if (Left.Type.Equals(Logic.Type.Type.Float))
             {
                 var left = (double)Left.Evaluate(context);
                 var right = (double)Right.Evaluate(context);
-                
+
                 switch (Operator)
                 {
                     case ">":
@@ -184,7 +182,7 @@ public class Infix : Expression
                         return left != right;
                 }
             }
-            else if (Left.Type.Equals(Fictoria.Logic.Type.Type.Boolean))
+            else if (Left.Type.Equals(Logic.Type.Type.Boolean))
             {
                 var left = (bool)Left.Evaluate(context);
                 var right = (bool)Right.Evaluate(context);
@@ -220,9 +218,21 @@ public class Infix : Expression
     [ExcludeFromCodeCoverage]
     public override bool Equals(object? obj)
     {
-        if (ReferenceEquals(null, obj)) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != this.GetType()) return false;
+        if (ReferenceEquals(null, obj))
+        {
+            return false;
+        }
+
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj.GetType() != GetType())
+        {
+            return false;
+        }
+
         return Equals((Infix)obj);
     }
 

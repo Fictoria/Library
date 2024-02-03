@@ -9,11 +9,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Lexer\" />
+        <Folder Include="Lexer\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
     </ItemGroup>
 
 </Project>
