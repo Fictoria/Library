@@ -11,8 +11,13 @@ public class Network
     public HashSet<string> Pairs = new();
     public HashSet<string> Terms = new();
     public Dictionary<string, Dictionary<string, double>> Weights = new();
-
-    public static Network Load(string path)
+    
+    public static Network LoadFromString(string json)
+    {
+        return JsonConvert.DeserializeObject<Network>(json);
+    }
+    
+    public static Network LoadFromFile(string path)
     {
         var json = File.ReadAllText(path);
         return JsonConvert.DeserializeObject<Network>(json);
