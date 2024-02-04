@@ -53,11 +53,11 @@ dog: animal.
 cat: animal.
 ```
 
-And now we'll say we have two pets, a `cat` and a `dog`.  They need names though.  So let's define each with a special fact schema called `instance`:
+And now we'll say we have two pets, a `cat` and a `dog`.  They need names though.  So let's define each with a special fact schema called `instantiate`:
 
 ```
-instance(fido, dog).
-instance(mittens, cat).
+instantiate(fido, dog).
+instantiate(mittens, cat).
 ```
 
 Here `fido` is a `dog` instance in our world (our pet), and `mittens` is a `cat` instance (our other pet).  It follows that `fido` is-a `dog`, and that `mittens` is-a `cat`, again taxonomically.
@@ -78,7 +78,7 @@ spider: insect.
 dragonfly: insect.
 ```
 
-Now imagine that we want to describe how many legs animals can have.  To establish that this idea is even knowable in the first place, we can write:
+Now imagine that we want to describe how many legs animals can have.  To establish that this idea is even knowable in the first place, we write:
 
 ```
 legs(a: animal, n: int).
@@ -140,12 +140,12 @@ A function can search for facts in its program using an expression. Let's look a
 ```
 animal: object.
 dog: animal.
-instance(fido, dog).
+instantiate(fido, dog).
 age(d: dog, years: int).
 
-instance(fido, dog).
-instance(spot, dog).
-instance(rex,  dog).
+instantiate(fido, dog).
+instantiate(spot, dog).
+instantiate(rex,  dog).
 
 age(fido, 3).
 age(spot, 11).
@@ -199,7 +199,7 @@ For example, consider this program:
 
 ```
 thing: object.
-instance(rock, thing).
+instantiate(rock, thing).
 
 mass(t: thing, m: float).
 volume(t: thing, v: float).
@@ -268,8 +268,8 @@ Let's dive into covariance.  It's indicated by a `+` prepended to the type of a 
 ```
 animal: object.
 mammal: animal.
-instance(dog, mammal).
-instance(bat, mammal).
+instantiate(dog, mammal).
+instantiate(bat, mammal).
 
 can_fly(a: +animal).
 can_fly(bat).
@@ -285,8 +285,8 @@ bag: thing.
 tote_bag: bag.
 carrying(b: -thing).
 
-instance(b1, bag).
-instance(b2, bag).
+instantiate(b1, bag).
+instantiate(b2, bag).
 
 carrying(b1).
 ```
