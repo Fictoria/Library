@@ -19,6 +19,7 @@ public class Scope
         Functions = new Dictionary<string, Function.Function>();
         Actions = new Dictionary<string, Action.Action>();
         Bindings = new Dictionary<string, object>();
+        Queries = new List<Query>();
     }
 
     /// <summary>
@@ -58,6 +59,7 @@ public class Scope
 
         Facts = factsClone;
         Antifacts = new HashSet<Antifact>();
+        Queries = new List<Query>();
     }
 
     public IDictionary<string, Type.Type> Types { get; }
@@ -70,6 +72,7 @@ public class Scope
     public IDictionary<string, Function.Function> Functions { get; }
     public IDictionary<string, Action.Action> Actions { get; }
     public IDictionary<string, object> Bindings { get; }
+    public IList<Query> Queries { get; }
 
     public void Resolve(Context context)
     {
@@ -189,8 +192,34 @@ public class Scope
         Actions[action.Name] = action;
     }
 
+    public void DefineQuery(Query query)
+    {
+        Queries.Add(query);
+    }
+
     public void Merge(Scope other)
     {
+        foreach (var (_, t) in other.Types)
+        {
+            DefineType(t);
+        }
+
+        foreach (var (_, s) in other.Schemata)
+        {
+            DefineSchema(s);
+        }
+        // TODO functions and actions
+
+        foreach (var (_, f) in other.Functions)
+        {
+            DefineFunction(f);
+        }
+
+        foreach (var (_, a) in other.Actions)
+        {
+            DefineAction(a);
+        }
+
         foreach (var (i, t) in other.Instances)
         {
             DefineInstance(t);
@@ -213,6 +242,21 @@ public class Scope
             foreach (var f in facts)
             {
                 UndefineFact(f);
+            }
+        }
+
+        foreach (var (k, v) in other.TypesByParent)
+        {
+            if (!TypesByParent.ContainsKey(k))
+            {
+                TypesByParent[k] = v;
+            }
+            else
+            {
+                foreach (var t in v)
+                {
+                    TypesByParent[k].Add(t);
+                }
             }
         }
 

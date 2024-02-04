@@ -1,3 +1,4 @@
+using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
@@ -15,6 +16,12 @@ public class Parser : LogicBaseVisitor<object>
         var scope = Builder.FromStatements(statements);
 
         return new Program(scope);
+    }
+
+    public override object VisitQuery(LogicParser.QueryContext context)
+    {
+        var expression = (Expression.Expression)Visit(context.expression());
+        return new Query(expression);
     }
 
     public override object VisitType(LogicParser.TypeContext context)

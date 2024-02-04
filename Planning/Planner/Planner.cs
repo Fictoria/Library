@@ -1,6 +1,5 @@
 using Fictoria.Logic;
 using Fictoria.Logic.Evaluation;
-using Fictoria.Logic.Expression;
 using Fictoria.Planning.Semantic;
 using Action = Fictoria.Logic.Action.Action;
 
@@ -126,7 +125,7 @@ public class Planner
                 var newState = state.Clone();
                 var effects = new Scope(action.Effects);
                 effects.Resolve(context);
-                newState.Merge(effects, bindings);
+                newState.Merge(effects);
                 if (!visited.Contains(newState.Scope))
                 {
                     var newNode = new Plan(newState, node, step);

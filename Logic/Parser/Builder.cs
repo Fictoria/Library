@@ -9,12 +9,12 @@ public class Builder
     public static Scope FromStatements(IEnumerable<object> statements)
     {
         var scope = new Scope();
-        
+
         foreach (var type in Type.Type.BuiltIns)
         {
             scope.Types[type.Name] = type;
         }
-        
+
         foreach (var statement in statements)
         {
             switch (statement)
@@ -36,7 +36,7 @@ public class Builder
                     {
                         continue;
                     }
-                    
+
                     scope.DefineFact(fact);
                     break;
                 case Antifact antifact:
@@ -47,6 +47,9 @@ public class Builder
                     break;
                 case Action.Action action:
                     scope.DefineAction(action);
+                    break;
+                case Query query:
+                    scope.DefineQuery(query);
                     break;
             }
         }

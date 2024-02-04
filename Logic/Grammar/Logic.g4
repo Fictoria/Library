@@ -12,6 +12,11 @@ statement
     |   antifact
     |   function
     |   action
+    |   query
+    ;
+
+query
+    :   expression QUESTION
     ;
 
 type

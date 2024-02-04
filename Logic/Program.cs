@@ -52,11 +52,10 @@ public class Program
         Linker.LinkAll(Scope);
     }
 
-    public void Merge(Scope other, Dictionary<string, object> bindings)
+    public void Merge(Scope other)
     {
         var clone = new Scope(other);
         Scope.Merge(clone);
-        Linker.LinkAll(Scope);
     }
 
     public Program Clone()

@@ -5,15 +5,17 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>Fictoria.Runner</RootNamespace>
+        <AssemblyName>Fictoria.Runner</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Logic\Logic.csproj" />
-      <ProjectReference Include="..\Planning\Planning.csproj" />
+        <ProjectReference Include="..\Logic\Logic.csproj"/>
+        <ProjectReference Include="..\Planning\Planning.csproj"/>
     </ItemGroup>
 
 </Project>

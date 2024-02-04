@@ -45,6 +45,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] LogicParser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.query"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitQuery([NotNull] LogicParser.QueryContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.type"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

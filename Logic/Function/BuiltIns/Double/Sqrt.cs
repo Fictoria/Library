@@ -13,12 +13,15 @@ public class Sqrt : BuiltIn
     {
         new("input", Logic.Type.Type.Float)
     };
-    
+
     public object Evaluate(Context context, IList<Expression.Expression> arguments)
     {
-        if (arguments.Count != 1) throw new EvaluateException($"built-in function `{Name}` takes exactly 1 argument");
+        if (arguments.Count != 1)
+        {
+            throw new EvaluateException($"built-in function `{Name}` takes exactly 1 argument");
+        }
 
-        var value = (double)arguments[0].Evaluate(context);
+        var value = double.Parse(arguments[0].Evaluate(context).ToString()!);
         return Math.Sqrt(value);
     }
 }
