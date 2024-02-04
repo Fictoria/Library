@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
+using Fictoria.Logic.Exceptions;
 
 namespace Fictoria.Logic.Expression;
 
@@ -13,7 +14,7 @@ public abstract class Expression
         BindingName = "";
     }
 
-    public string Text { get; }
+    public string Text { get; set; }
 
     public Type.Type Type { get; set; }
 
@@ -23,6 +24,11 @@ public abstract class Expression
 
     public abstract object Evaluate(Context context);
     public abstract IEnumerable<string> Terms();
+
+    public virtual Expression Clone()
+    {
+        throw new ResolveException(GetType().Name + " expression isn't expected to be cloned");
+    }
 
     [ExcludeFromCodeCoverage]
     public override string ToString()

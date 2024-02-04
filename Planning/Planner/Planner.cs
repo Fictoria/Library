@@ -1,5 +1,6 @@
 using Fictoria.Logic;
 using Fictoria.Logic.Evaluation;
+using Fictoria.Logic.Expression;
 using Fictoria.Planning.Semantic;
 using Action = Fictoria.Logic.Action.Action;
 
@@ -87,7 +88,6 @@ public class Planner
 
         while (queue.Count > 0)
         {
-            i++;
             if (!queue.TryDequeue(out var node, out var priority))
             {
                 break;
@@ -109,6 +109,7 @@ public class Planner
                 var bindings =
                     action.Parameters.Zip(values).ToDictionary(b => b.First.Name, b => b.Second);
                 var step = new Step(action, bindings);
+
                 if (state.Evaluate(action.Conditions, bindings) is not true)
                 {
                     continue;
@@ -118,15 +119,14 @@ public class Planner
                 state.Evaluate(context, action.Locals, bindings);
                 foreach (var (k, v) in context.Stack.Peek().Bindings)
                 {
-                    // TODO need type and value –
-                    //      type by switching on the object's type?
-                    //      type by managing another dict of binding types in scope/context?
                     // TODO fix how built-in Str() works (can't ToString types)
                     bindings[k] = v;
                 }
 
                 var newState = state.Clone();
-                newState.Merge(action.Effects, bindings);
+                var effects = new Scope(action.Effects);
+                effects.Resolve(context);
+                newState.Merge(effects, bindings);
                 if (!visited.Contains(newState.Scope))
                 {
                     var newNode = new Plan(newState, node, step);

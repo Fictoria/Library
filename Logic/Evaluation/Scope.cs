@@ -1,6 +1,7 @@
 using Fictoria.Logic.Fact;
 using Fictoria.Logic.Parser;
 using Fictoria.Logic.Search;
+using Fictoria.Logic.Type;
 
 namespace Fictoria.Logic.Evaluation;
 
@@ -34,9 +35,9 @@ public class Scope
         Actions = scope.Actions;
 
         var instancesClone = new Dictionary<string, Instance>();
-        foreach (var (name, type) in scope.Instances)
+        foreach (var (name, instance) in scope.Instances)
         {
-            instancesClone[name] = type;
+            instancesClone[name] = new Instance(instance);
         }
 
         Instances = instancesClone;
@@ -52,7 +53,7 @@ public class Scope
         var factsClone = new Dictionary<string, ISet<Fact.Fact>>();
         foreach (var (schema, set) in scope.Facts)
         {
-            factsClone[schema] = new HashSet<Fact.Fact>(set);
+            factsClone[schema] = new HashSet<Fact.Fact>(set.Select(f => new Fact.Fact(f)));
         }
 
         Facts = factsClone;
@@ -69,6 +70,54 @@ public class Scope
     public IDictionary<string, Function.Function> Functions { get; }
     public IDictionary<string, Action.Action> Actions { get; }
     public IDictionary<string, object> Bindings { get; }
+
+    public void Resolve(Context context)
+    {
+        var originalInstances = new Dictionary<string, Instance>(Instances);
+        // TODO this function is definitely incomplete
+        foreach (var (_, instance) in originalInstances)
+        {
+            var previousName = instance.Name;
+            var previousType = instance.Type;
+            instance.Resolve(context);
+            if (instance.Name != previousName)
+            {
+                Instances.Remove(previousName);
+                Instances[instance.Name] = instance;
+            }
+
+            if (!instance.Type.Equals(previousType))
+            {
+                InstancesByType[previousType.Name].Remove(previousName);
+                if (!InstancesByType.ContainsKey(instance.Type.Name))
+                {
+                    InstancesByType[instance.Type.Name] = new HashSet<string>();
+                }
+
+                InstancesByType[instance.Type.Name].Add(instance.Name);
+            }
+
+            if (instance.Type is TypePlaceholder type)
+            {
+                if (context.ResolveType(type.Name, out var found))
+                {
+                    // NOTE: this is also linking basically
+                    instance.Type = found;
+                }
+            }
+        }
+
+        foreach (var (schema, facts) in Facts)
+        {
+            foreach (var fact in facts)
+            {
+                foreach (var arg in fact.Arguments)
+                {
+                    Resolution.Resolve(context, arg);
+                }
+            }
+        }
+    }
 
     public IList<Type.Type> GetAllSubtypes(Type.Type type)
     {

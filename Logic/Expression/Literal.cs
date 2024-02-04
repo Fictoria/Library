@@ -22,6 +22,11 @@ public class Literal : Expression
         return new HashSet<string> { Type.Name };
     }
 
+    public override Expression Clone()
+    {
+        return new Literal(Text, Value, Type);
+    }
+
     [ExcludeFromCodeCoverage]
     protected bool Equals(Literal other)
     {

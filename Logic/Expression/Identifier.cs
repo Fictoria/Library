@@ -11,13 +11,13 @@ public class Identifier : Expression
         Name = name;
     }
 
-    public string Name { get; }
+    public string Name { get; set; }
 
     public override object Evaluate(Context context)
     {
         if (context.Resolve(Name, out var variable))
         {
-            // if (variable.GetType().IsAssignableFrom(typeof(Expression))) 
+            // TODO i don't remember what this was supposed to do, but it seems suspicious
             if (typeof(Expression).IsAssignableFrom(variable.GetType()))
             {
                 return ((Expression)variable).Evaluate(context);
@@ -42,6 +42,11 @@ public class Identifier : Expression
     public override IEnumerable<string> Terms()
     {
         return new HashSet<string> { Type.Name };
+    }
+
+    public override Expression Clone()
+    {
+        return new Identifier(Text, Name);
     }
 
     [ExcludeFromCodeCoverage]

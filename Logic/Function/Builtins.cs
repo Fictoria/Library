@@ -11,6 +11,7 @@ public class Builtins
     {
         new Str(),
         new Subtypes(),
+        new Instances(),
         new Id(),
         new Sqrt()
     };

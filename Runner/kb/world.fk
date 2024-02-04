@@ -20,7 +20,7 @@ storage: building.
 // input/output
 provides(r: +resource, m: +material).
 consumes(b: +building, m: +material).
-contains(b: +building, m: +material).
+contains(b: +building, m: -material).
 
 provides(tree, wood).
 provides(quarry, stone).

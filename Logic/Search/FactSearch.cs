@@ -98,6 +98,18 @@ public static class FactSearch
                     context.Bind(b.Name, new List<object>());
                 }
             }
+
+            if (a is Infix { Left: Binding b2 })
+            {
+                if (groupedBindings.TryGetValue(b2.Name, out var found))
+                {
+                    context.Bind(b2.Name, found);
+                }
+                else
+                {
+                    context.Bind(b2.Name, new List<object>());
+                }
+            }
         }
 
         return results;
@@ -147,6 +159,7 @@ public static class FactSearch
         for (var i = 0; i < fact.Arguments.Count; i++)
         {
             var value = fact.Arguments[i].Evaluate(context);
+
             valuesResult.Add(value);
             context.Bind("$", value);
             if (memoizer.Value(context, i) is Wildcard)

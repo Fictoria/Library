@@ -38,6 +38,7 @@ public class Program
         foreach (var (k, v) in bindings)
         {
             context.Bind(k, v);
+            // Scope.Bindings[k] = v;
         }
 
         Linker.LinkExpression(Scope, expression);
@@ -54,7 +55,6 @@ public class Program
     public void Merge(Scope other, Dictionary<string, object> bindings)
     {
         var clone = new Scope(other);
-        // TODO
         Scope.Merge(clone);
         Linker.LinkAll(Scope);
     }

@@ -17,7 +17,7 @@ deposit(b: building, m: material) -> {
     "cost": 1.
     "terms": [str(b), str(m)].
     "space":
-        subtypes(building) * subtypes(material).
+        instances(building) * instances(material).
     "conditions":
         location(b, _, _) and
         consumes(b, m) and
@@ -47,16 +47,16 @@ light(c: campfire) -> {
     "cost": 2.
     "terms": ["campfire", "wood", "fire"].
     "space":
-        &instance(@all, campfire); all.
+        true; instances(campfire).
     "conditions":
-        location(@cf :: campfire, _, _);  // use and
-        contains(cf, wood).
+        location(c, _, _) and
+        contains(c, wood).
     "locals":
         name = str(c) + "_" + id().
     "effects":
-        instantiate(c, fire).
-        location(c, 0, 0).
-        ~contains(c, wood).
+        instantiate(name, fire).
+        location(name, 0, 0).
+        ~contains(name, wood).
         // TODO need to destroy the wood instance and facts
 }.
 
@@ -68,7 +68,7 @@ warm(f: fire) -> {
         &instance(@all, fire); all.
     "conditions":
         !warm(self) and
-        location(fire, _, _).
+        location(f, _, _).
     "locals": _.
     "effects":
         warm(self).
@@ -79,14 +79,14 @@ gather(m: material) -> {
     "cost": 2. // TODO distance
     "terms": ["carrying", str(m)].
     "space":
-        true; subtypes(material).
+        true; instances(material).
     "conditions":
         !carrying(_) and
         location(m, _, _).
     "locals": _.
     "effects":
         carrying(m).
-        ~location(wood, _, _).
+        ~location(m, _, _).
 }.
 
 // extract
@@ -94,13 +94,13 @@ extract(r: resource, m: material) -> {
     "cost": 20. // TODO distance
     "terms": [str(r), str(m)].
     "space":
-        subtypes(building) * subtypes(material).
+        instances(resource) * subtypes(material).
     "conditions":
         provides(r, m) and
         location(r, _, _) and
         !location(m, _, _).
     "locals":
-        name = str(c) + "_" + id().
+        name = str(m) + "_" + id().
     "effects":
         instantiate(name, m).
         location(name, 0, 0).
