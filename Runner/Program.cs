@@ -12,7 +12,7 @@ public static class Program
         var program = Loader.LoadAll(path);
 
         var planner = new Planner(program);
-        var network = Network.Load("../../../semnet.json");
+        var network = Network.LoadFromFile("../../../semnet.json");
         if (planner.ForwardSearch(program, network, "warm(self)", out var plan, out var debug))
         {
             Console.WriteLine($"plan: {plan.Steps.Count}");
