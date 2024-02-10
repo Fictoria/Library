@@ -15,8 +15,7 @@ public static class Program
         while (true)
         {
             Console.Write("> ");
-            // loop until either . or ? at the end
-            var input = Console.ReadLine();
+            var input = GetUserInput();
             try
             {
                 Handle(input!);
@@ -27,6 +26,24 @@ public static class Program
             }
         }
         // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static string GetUserInput()
+    {
+        var accumulator = "";
+        while (true)
+        {
+            var input = Console.ReadLine();
+            accumulator += input;
+            var trimmed = accumulator.Trim();
+            if (trimmed.EndsWith(".") || trimmed.EndsWith("?"))
+            {
+                break;
+            }
+            Console.Write("  ");
+        }
+
+        return accumulator;
     }
 
     private static void Handle(string input)
