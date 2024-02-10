@@ -8,7 +8,7 @@ namespace Fictoria.Runner;
 
 public static class Program
 {
-    private static readonly Logic.Program program = Loader.Load("repl:object.");
+    private static Logic.Program program = Loader.Load("repl:object.");
 
     private static void REPL()
     {
@@ -63,14 +63,21 @@ public static class Program
                 }
 
                 break;
+            case ":reset":
+                program = Loader.Load("repl:object.");
+                Console.WriteLine("OK");
+                break;
             case ":exit":
             case ":quit":
-                Console.WriteLine("Exiting");
+                Console.WriteLine("GOODBYE");
                 Environment.Exit(0);
                 break;
             case ":help":
                 // TODO fill this out
                 Console.WriteLine("Type :exit to leave, otherwise enter statements or expressions");
+                break;
+            case not null when input.StartsWith(":"):
+                Console.WriteLine("UNKNOWN");
                 break;
             default:
                 var inputProgram = Loader.LoadUnlinked(input);
