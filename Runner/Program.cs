@@ -91,7 +91,7 @@ public static class Program
                     foreach (var query in inputProgram.Scope.Queries)
                     {
                         var result = program.Evaluate(query.Expression);
-                        Console.WriteLine(result);
+                        Console.WriteLine(PrettyPrint.Format(result));
                     }
                 }
 

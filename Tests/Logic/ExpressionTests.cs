@@ -168,9 +168,9 @@ public class ExpressionTests
                    f() =
                        {
                            "foo": {
-                               "bar": "baz".
-                           }.
-                       }.
+                               "bar": "baz"
+                           }
+                       }
                    """;
         var program = Loader.Load(code);
 
@@ -353,7 +353,7 @@ public class ExpressionTests
     public void Index()
     {
         var code = """
-                   f(key: string) = { "foo": "bar". }[key].
+                   f(key: string) = { "foo": "bar" }[key].
                    """;
         var program = Loader.Load(code);
 

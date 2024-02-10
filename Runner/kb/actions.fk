@@ -1,42 +1,42 @@
 // general
 search(t: thing) -> {
-    "cost": 1000.
-    "terms": ["location", str(t)].
+    "cost": 1000,
+    "terms": ["location", str(t)],
     "space":
-        &searchable(@all); all.
+        &searchable(@all); all,
     "conditions":
-        !location(t, _, _).
+        !location(t, _, _),
     "locals":
-        name = str(t) + "_" + id().
+        name = str(t) + "_" + id(),
     "effects":
         instantiate(name, t).
         location(name, 0, 0).
 }.
 
 deposit(b: building, m: material) -> {
-    "cost": 1.
-    "terms": [str(b), str(m)].
+    "cost": 1,
+    "terms": [str(b), str(m)],
     "space":
-        instances(building) * instances(material).
+        instances(building) * instances(material),
     "conditions":
         location(b, _, _) and
         consumes(b, m) and
         !contains(b, m) and
-        carrying(m).
-    "locals": _.
+        carrying(m),
+    "locals": _,
     "effects":
         contains(b, m).
         ~carrying(_).
 }.
 
 drop(t: thing) -> {
-    "cost": 1.
-    "terms": ["carrying", str(t)].
+    "cost": 1,
+    "terms": ["carrying", str(t)],
     "space":
-        &carrying(@c); c.
+        &carrying(@c); c,
     "conditions":
-        true; carrying(t). // TODO just `carrying(t)` is ambiguous...probably need to tweak the grammar
-    "locals": _.
+        true; carrying(t), // TODO just `carrying(t)` is ambiguous...probably need to tweak the grammar
+    "locals": _,
     "effects":
         ~carrying(t).
          // thing should now be at current location
@@ -44,15 +44,15 @@ drop(t: thing) -> {
 
 // campfire
 light(c: campfire) -> {
-    "cost": 2.
-    "terms": ["campfire", "wood", "fire"].
+    "cost": 2,
+    "terms": ["campfire", "wood", "fire"],
     "space":
-        true; instances(campfire).
+        true; instances(campfire),
     "conditions":
         location(c, _, _) and
-        contains(c, wood).
+        contains(c, wood),
     "locals":
-        name = str(c) + "_" + id().
+        name = str(c) + "_" + id(),
     "effects":
         instantiate(name, fire).
         location(name, 0, 0).
@@ -62,28 +62,28 @@ light(c: campfire) -> {
 
 // homeostasis
 warm(f: fire) -> {
-    "cost": 1. // TODO distance
-    "terms": ["fire"].
+    "cost": 1, // TODO distance
+    "terms": ["fire"],
     "space":
-        &instance(@all, fire); all.
+        &instance(@all, fire); all,
     "conditions":
         !warm(self) and
-        location(f, _, _).
-    "locals": _.
+        location(f, _, _),
+    "locals": _,
     "effects":
         warm(self).
 }.
 
 // material
 gather(m: material) -> {
-    "cost": 2. // TODO distance
-    "terms": ["carrying", str(m)].
+    "cost": 2, // TODO distance
+    "terms": ["carrying", str(m)],
     "space":
-        true; instances(material).
+        true; instances(material),
     "conditions":
         !carrying(_) and
-        location(m, _, _).
-    "locals": _.
+        location(m, _, _),
+    "locals": _,
     "effects":
         carrying(m).
         ~location(m, _, _).
@@ -91,16 +91,16 @@ gather(m: material) -> {
 
 // extract
 extract(r: resource, m: material) -> {
-    "cost": 20. // TODO distance
-    "terms": [str(r), str(m)].
+    "cost": 20, // TODO distance
+    "terms": [str(r), str(m)],
     "space":
-        instances(resource) * subtypes(material).
+        instances(resource) * subtypes(material),
     "conditions":
         provides(r, m) and
         location(r, _, _) and
-        !location(m, _, _).
+        !location(m, _, _),
     "locals":
-        name = str(m) + "_" + id().
+        name = str(m) + "_" + id(),
     "effects":
         instantiate(name, m).
         location(name, 0, 0).

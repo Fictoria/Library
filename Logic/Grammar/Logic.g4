@@ -55,12 +55,12 @@ action
     
 struct
     :   OPEN_BRACE
-        field*
+        field* (COMMA field)*
         CLOSE_BRACE
     ;
     
 field
-    :   literalString COLON (statement+ | series PERIOD)
+    :   literalString COLON (statement+ | series)
     ;
 
 series
