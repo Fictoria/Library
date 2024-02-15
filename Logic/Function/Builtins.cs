@@ -14,7 +14,8 @@ public class Builtins
         new Instances(),
         new Id(),
         new Sqrt(),
-        new Floor()
+        new Floor(),
+        new Ceil()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);
