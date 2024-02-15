@@ -7,7 +7,7 @@ namespace Fictoria.Logic.Function.BuiltIns.Double;
 public class Floor : BuiltIn
 {
     public string Name => "floor";
-    public Type.Type Type => Logic.Type.Type.Float;
+    public Type.Type Type => Logic.Type.Type.Int;
 
     public IList<Parameter> Parameters => new List<Parameter>
     {
