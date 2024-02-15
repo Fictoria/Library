@@ -13,7 +13,8 @@ public class Builtins
         new Subtypes(),
         new Instances(),
         new Id(),
-        new Sqrt()
+        new Sqrt(),
+        new Floor()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);
