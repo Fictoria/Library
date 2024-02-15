@@ -189,7 +189,7 @@ INT
     ;
 
 FLOAT
-    :   [0-9]+ PERIOD [0-9]+
+    :   '-'? [0-9]+ PERIOD [0-9]+
     ;
 
 ARROW
