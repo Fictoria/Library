@@ -36,10 +36,11 @@ public static class Program
             var input = Console.ReadLine();
             accumulator += input;
             var trimmed = accumulator.Trim();
-            if (trimmed.EndsWith(".") || trimmed.EndsWith("?"))
+            if (trimmed.StartsWith(":") || trimmed.EndsWith(".") || trimmed.EndsWith("?"))
             {
                 break;
             }
+
             Console.Write("  ");
         }
 
