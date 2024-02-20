@@ -16,7 +16,6 @@ stone: material.
 campfire: building.
 storage: building.
 
-
 // input/output
 provides(r: +resource, m: +material).
 consumes(b: +building, m: +material).
