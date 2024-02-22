@@ -10,4 +10,9 @@ public class Point
         X = x;
         Y = y;
     }
+
+    public double DistanceTo(Point point)
+    {
+        return Math.Sqrt(Math.Pow(X - point.X, 2) + Math.Pow(Y - point.Y, 2));
+    }
 }

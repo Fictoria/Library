@@ -88,6 +88,20 @@ public class Quadtree
             _bottomRight?.Count() ?? 0;
     }
 
+    public IList<QuadtreeEntry> Entries()
+    {
+        var entries = new List<QuadtreeEntry>();
+        entries.AddRange(_entries.Values);
+        if (!isLeaf())
+        {
+            entries.AddRange(_topLeft!.Entries());
+            entries.AddRange(_topRight!.Entries());
+            entries.AddRange(_bottomLeft!.Entries());
+            entries.AddRange(_topRight!.Entries());
+        }
+        return entries;
+    }
+
     private bool isLeaf()
     {
         return _topLeft is null || _topRight is null || _bottomLeft is null || _bottomRight is null;
