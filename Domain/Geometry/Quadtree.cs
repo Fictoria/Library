@@ -18,6 +18,8 @@ public class Quadtree
         _level = 0;
     }
 
+    // TODO search by distance; filter by all four corners
+
     public void Insert(QuadtreeEntry entry)
     {
         Insert(entry.Id, entry.Point);
@@ -49,7 +51,7 @@ public class Quadtree
     {
         if (_entries.Remove(id))
         {
-            if (count() <= _capacity)
+            if (Count() <= _capacity)
             {
                 combine();
             }
@@ -74,16 +76,16 @@ public class Quadtree
         Insert(id, point);
     }
 
-    private int count()
+    public int Count()
     {
         if (isLeaf())
         {
             return _entries.Count;
         }
-        return _topLeft?.count() ?? 0 +
-            _topRight?.count() ?? 0 +
-            _bottomLeft?.count() ?? 0 +
-            _bottomRight?.count() ?? 0;
+        return _topLeft?.Count() ?? 0 +
+            _topRight?.Count() ?? 0 +
+            _bottomLeft?.Count() ?? 0 +
+            _bottomRight?.Count() ?? 0;
     }
 
     private bool isLeaf()

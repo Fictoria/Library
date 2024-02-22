@@ -1,6 +1,6 @@
 namespace Fictoria.Domain.Geometry;
 
-public class Point : Geometry
+public class Point
 {
     public float X { get; }
     public float Y { get; }
@@ -9,10 +9,5 @@ public class Point : Geometry
     {
         X = x;
         Y = y;
-    }
-
-    public bool Contains(Geometry geometry)
-    {
-        return false;
     }
 }

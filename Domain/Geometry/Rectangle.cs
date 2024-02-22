@@ -1,6 +1,6 @@
 namespace Fictoria.Domain.Geometry;
 
-public class Rectangle : Geometry
+public class Rectangle
 {
     public Point Origin { get; }
     public float Width { get; }
@@ -14,15 +14,9 @@ public class Rectangle : Geometry
         Height = height;
     }
 
-    public bool Contains(Geometry geometry)
+    public bool Contains(Point point)
     {
-        switch (geometry)
-        {
-            case Point point:
-                return point.X >= Origin.X && point.X <= Origin.X + Width &&
-                       point.Y >= Origin.Y && point.Y <= Origin.Y + Height;
-        }
-
-        throw new NotImplementedException();
+        return point.X >= Origin.X && point.X <= Origin.X + Width &&
+               point.Y >= Origin.Y && point.Y <= Origin.Y + Height;
     }
 }
