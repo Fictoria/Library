@@ -75,13 +75,23 @@ public class LocalityTests
         var y = new Location("def", 3, 4);
         var z = new Location("ghi", 0, 0);
         var a = new Location("ghi", 100, 100);
+        var b = new Location("ghi", 101, 102);
+        var c = new Location("ghi", 99, 98);
         
         tree.Insert(x);
         tree.Insert(y);
         tree.Insert(z);
         tree.Insert(a);
+        tree.Insert(b);
+        tree.Insert(c);
 
         var results = tree.Search(0, 0, 10);
         Assert.That(results.Count, Is.EqualTo(3));
+        
+        results = tree.Search(100, 100, 10);
+        Assert.That(results.Count, Is.EqualTo(3));
+        
+        results = tree.Search(100, 100, 1000);
+        Assert.That(results.Count, Is.EqualTo(6));
     }
 }
