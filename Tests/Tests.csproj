@@ -23,8 +23,4 @@
         <ProjectReference Include="..\Planning\Planning.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Domain\" />
-    </ItemGroup>
-
 </Project>
