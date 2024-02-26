@@ -62,6 +62,9 @@ public class Constellation
     {
         var half = distance / 2.0;
         var space = new Envelope(x - half, y - half, x + half, y + half);
-        return _tree.Search(space);
+        var results = _tree.Search(space);
+
+        // TODO is this performant?
+        return results.Where(r => r.DistanceTo(x, y) <= distance).ToList().AsReadOnly();
     }
 }

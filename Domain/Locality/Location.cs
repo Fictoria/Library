@@ -35,6 +35,16 @@ public class Location : ISpatialData, IEquatable<Location>
 
     public ref readonly Envelope Envelope => ref _envelope;
 
+    public double DistanceTo(double x, double y)
+    {
+        return Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2));
+    }
+
+    public double DistanceTo(Location location)
+    {
+        return DistanceTo(location.X, location.Y);
+    }
+
     public override bool Equals(object? obj)
     {
         return Equals(obj as Location);
