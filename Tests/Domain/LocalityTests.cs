@@ -66,4 +66,22 @@ public class LocalityTests
         tree.Update("abc", 4, 5);
         Assert.That(tree.Count, Is.EqualTo(1));
     }
+
+    [Test]
+    public void ConstellationSearch()
+    {
+        var tree = new Constellation();
+        var x = new Location("abc", 1, 2);
+        var y = new Location("def", 3, 4);
+        var z = new Location("ghi", 0, 0);
+        var a = new Location("ghi", 100, 100);
+        
+        tree.Insert(x);
+        tree.Insert(y);
+        tree.Insert(z);
+        tree.Insert(a);
+
+        var results = tree.Search(0, 0, 10);
+        Assert.That(results.Count, Is.EqualTo(3));
+    }
 }
