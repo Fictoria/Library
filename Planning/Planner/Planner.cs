@@ -115,7 +115,10 @@ public class Planner
                 }
 
                 var context = new Context(state);
-                state.Evaluate(context, action.Locals, bindings);
+                if (action.Locals is not null)
+                {
+                    state.Evaluate(context, action.Locals, bindings);
+                }
                 foreach (var (k, v) in context.Stack.Peek().Bindings)
                 {
                     // TODO fix how built-in Str() works (can't ToString types)

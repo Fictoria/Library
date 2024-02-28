@@ -5,6 +5,8 @@ namespace Fictoria.Logic.Expression;
 
 public class Struct : Expression
 {
+    public IDictionary<string, Field> Value { get; }
+
     public Struct(string text, IEnumerable<(string, Field)> fields) : base(text, Logic.Type.Type.Struct)
     {
         Value = new Dictionary<string, Field>();
@@ -14,7 +16,10 @@ public class Struct : Expression
         }
     }
 
-    public IDictionary<string, Field> Value { get; }
+    public Field? GetOrNull(string key)
+    {
+        return Value.TryGetValue(key, out var field) ? field : null;
+    }
 
     public override object Evaluate(Context context)
     {

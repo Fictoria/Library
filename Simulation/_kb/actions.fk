@@ -23,7 +23,6 @@ deposit(b: building, m: material) -> {
         consumes(b, m) and
         !contains(b, m) and
         carrying(m),
-    "locals": _,
     "effects":
         contains(b, m).
         ~carrying(_).
@@ -36,7 +35,6 @@ drop(t: thing) -> {
         &carrying(@c); c,
     "conditions":
         carrying(t),
-    "locals": _,
     "effects":
         ~carrying(t).
          // thing should now be at current location
@@ -69,7 +67,6 @@ warm(f: fire) -> {
     "conditions":
         !warm(self) and
         location(f, _, _),
-    "locals": _,
     "effects":
         warm(self).
 }.
@@ -83,7 +80,6 @@ gather(m: material) -> {
     "conditions":
         !carrying(_) and
         location(m, _, _),
-    "locals": _,
     "effects":
         carrying(m).
         ~location(m, _, _).
