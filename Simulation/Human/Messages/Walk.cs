@@ -1,13 +1,13 @@
+using Fictoria.Domain.Locality;
+
 namespace Fictoria.Simulation.Human.Messages;
 
 public class Walk
 {
-    public double X { get; }
-    public double Y { get; }
+    public Point Point { get; }
 
-    public Walk(double x, double y)
+    public Walk(Point point)
     {
-        X = x;
-        Y = y;
+        Point = point;
     }
 }

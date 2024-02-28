@@ -1,5 +1,6 @@
 using Akka.Actor;
 using Akka.Event;
+using Fictoria.Domain.Locality;
 using Fictoria.Planning.Planner;
 using Fictoria.Planning.Semantic;
 using Fictoria.Simulation.Common;
@@ -14,10 +15,13 @@ public class PrefrontalCortex : FictoriaActor
     private readonly Network _network = Network.LoadFromFile("../../../_data/semnet.json");
     private IActorRef? _body;
     private IActorRef? _brain;
+    private Point? _destination;
     private string? _goal;
     private Logic.Program? _knowledge;
     private Plan? _plan;
     private Planner? _planner;
+
+    private Point? _position;
     private int _step = -1;
 
     protected override void PreStart()
@@ -31,6 +35,9 @@ public class PrefrontalCortex : FictoriaActor
     {
         switch (message)
         {
+            case Move move:
+                _position = move.Point;
+                break;
             case Goal g:
                 _goal = g.Predicate;
                 _log.Info($"received goal {_goal}");
@@ -65,15 +72,36 @@ public class PrefrontalCortex : FictoriaActor
                     return;
                 }
                 var step = _plan.Steps[_step];
-                
-                
-                // TODO this should be a helper/utility function somewhere
-                var bindings = string.Join(", ",
-                    step.Bindings.Take(step.Action.Parameters.Count).Select(p => p.ToString()));
-                // _log.Info($"action {step.Action.Name}({bindings})");
-
-                _body.Tell(new Walk(5, 2));
-
+                var action = step.Action;
+                if (_destination is null && action.Proximity is not null)
+                {
+                    var proximity = _knowledge.Evaluate(action.Proximity) as List<object>;
+                    var x = (double)proximity![0];
+                    var y = (double)proximity![1];
+                    var point = new Point(x, y);
+                    _destination = point;
+                    _body.Tell(new Walk(point));
+                    // TODO this should be a helper/utility function somewhere
+                    var bindings = string.Join(", ",
+                        step.Bindings.Take(step.Action.Parameters.Count).Select(p => p.ToString()));
+                    _log.Info($"action {step.Action.Name}({bindings})");
+                    _log.Info($"destination ({x}, {y})");
+                }
+                else if (_destination is not null)
+                {
+                    var distance = _position?.DistanceTo(_destination);
+                    if (distance is not null)
+                    {
+                        _log.Info($"walking, distance {distance}");
+                    }
+                    if (distance < 0.5)
+                    {
+                        _destination = null;
+                        _body.Tell(new Stop());
+                        _log.Info($"arrived ({_position.X}, {_position.Y})");
+                        _step++;
+                    }
+                }
                 break;
         }
     }

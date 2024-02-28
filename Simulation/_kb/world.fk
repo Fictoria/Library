@@ -29,7 +29,7 @@ consumes(storage, stone).
 
 // etc.
 searchable(t: thing).
-location(t: -thing, x: int, y: int).
+location(t: -thing, x: float, y: float).
 carrying(t: -thing).
 warm(h: human).
 
@@ -42,5 +42,5 @@ searchable(storage).
 instantiate(tree1, tree).
 instantiate(cf1, campfire).
 
-location(tree1, 5, 2).
-location(cf1, 2, 3).
+location(tree1, 5.0, 2.0).
+location(cf1, 2.0, 3.0).
