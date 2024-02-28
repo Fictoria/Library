@@ -8,7 +8,7 @@ public static class Program
     {
         var system = ActorSystem.Create("fictoria");
         var nature = system.ActorOf<Nature.Nature>("nature");
-        var human = system.ActorOf<Human.Human>("human");
+        var adam = system.ActorOf<Human.Human>("human");
 
         Console.Read();
     }

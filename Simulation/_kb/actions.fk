@@ -35,7 +35,7 @@ drop(t: thing) -> {
     "space":
         &carrying(@c); c,
     "conditions":
-        true; carrying(t), // TODO just `carrying(t)` is ambiguous...probably need to tweak the grammar
+        carrying(t),
     "locals": _,
     "effects":
         ~carrying(t).
@@ -47,7 +47,7 @@ light(c: campfire) -> {
     "cost": 2,
     "terms": ["campfire", "wood", "fire"],
     "space":
-        true; instances(campfire),
+        instances(campfire),
     "conditions":
         location(c, _, _) and
         contains(c, wood),
@@ -79,7 +79,7 @@ gather(m: material) -> {
     "cost": 2, // TODO distance
     "terms": ["carrying", str(m)],
     "space":
-        true; instances(material),
+        instances(material),
     "conditions":
         !carrying(_) and
         location(m, _, _),

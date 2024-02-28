@@ -12,6 +12,7 @@ namespace Fictoria.Simulation.Human.Brain;
 public class PrefrontalCortex : FictoriaActor
 {
     private readonly Network _network = Network.LoadFromFile("../../../_data/semnet.json");
+    private IActorRef? _body;
     private IActorRef? _brain;
     private string? _goal;
     private Logic.Program? _knowledge;
@@ -21,8 +22,9 @@ public class PrefrontalCortex : FictoriaActor
 
     protected override void PreStart()
     {
-        _brain = Context.ActorSelection("..").ResolveOne(TimeSpan.FromSeconds(1)).Result;
-        Context.ActorSelection("/user/nature/time").Tell(new Subscribe());
+        _brain = GetActor("..");
+        _body = GetActor("../../body");
+        SubscribeToTime();
     }
 
     protected override void OnReceive(object message)
@@ -63,10 +65,15 @@ public class PrefrontalCortex : FictoriaActor
                     return;
                 }
                 var step = _plan.Steps[_step];
+                
+                
                 // TODO this should be a helper/utility function somewhere
                 var bindings = string.Join(", ",
                     step.Bindings.Take(step.Action.Parameters.Count).Select(p => p.ToString()));
-                _log.Info($"action {step.Action.Name}({bindings})");
+                // _log.Info($"action {step.Action.Name}({bindings})");
+
+                _body.Tell(new Walk(5, 2));
+
                 break;
         }
     }

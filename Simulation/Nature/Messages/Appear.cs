@@ -1,15 +1,21 @@
+using Fictoria.Domain.Locality;
+
 namespace Fictoria.Simulation.Nature.Messages;
 
 public class Appear
 {
     public string Id { get; }
-    public double X { get; }
-    public double Y { get; }
+    public Point Point { get; }
 
     public Appear(string id, double x, double y)
     {
         Id = id;
-        X = x;
-        Y = y;
+        Point = new Point(x, y);
+    }
+
+    public Appear(string id, Point point)
+    {
+        Id = id;
+        Point = point;
     }
 }

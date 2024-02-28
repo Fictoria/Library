@@ -1,3 +1,5 @@
+using Akka.Actor;
+using Akka.Event;
 using Fictoria.Domain.Locality;
 using Fictoria.Simulation.Common;
 using Fictoria.Simulation.Nature.Messages;
@@ -13,13 +15,18 @@ public class Space : FictoriaActor
         switch (message)
         {
             case Appear appear:
-                _constellation.Insert(appear.Id, appear.X, appear.Y);
+                _constellation.Insert(appear.Id, appear.Point.X, appear.Point.Y);
                 break;
             case Disappear disappear:
                 _constellation.Remove(disappear.Id);
                 break;
             case Move move:
-                _constellation.Update(move.Id, move.X, move.Y);
+                _constellation.Update(move.Id, move.Point.X, move.Point.Y);
+                break;
+            case RequestSpace request:
+                var results = _constellation.Search(request.Point, request.Distance);
+                var response = new ReceiveSpace(results);
+                Sender.Tell(response);
                 break;
         }
     }

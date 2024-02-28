@@ -2,6 +2,7 @@ using Akka.Actor;
 using Fictoria.Logic;
 using Fictoria.Simulation.Common;
 using Fictoria.Simulation.Human.Messages;
+using Fictoria.Simulation.Nature.Messages;
 
 namespace Fictoria.Simulation.Human.Brain;
 
@@ -22,6 +23,9 @@ public class Brain : FictoriaActor
         // var achieved = _knowledge.Evaluate((string)goal);
         switch (message)
         {
+            case Move move:
+                _prefrontalCortex.Tell(move);
+                break;
             case RequestKnowledge:
                 Sender.Tell(new ReceiveKnowledge(_knowledge));
                 break;
