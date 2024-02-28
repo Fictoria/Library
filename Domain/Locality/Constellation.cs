@@ -58,13 +58,13 @@ public class Constellation
         Insert(location);
     }
 
-    public IReadOnlyList<Location> Search(double x, double y, double distance)
+    public IReadOnlyList<Location> Search(Point point, double distance)
     {
         var half = distance / 2.0;
-        var space = new Envelope(x - half, y - half, x + half, y + half);
+        var space = new Envelope(point.X - half, point.Y - half, point.X + half, point.Y + half);
         var results = _tree.Search(space);
 
         // TODO is this performant?
-        return results.Where(r => r.DistanceTo(x, y) <= distance).ToList().AsReadOnly();
+        return results.Where(r => r.DistanceTo(point) <= distance).ToList().AsReadOnly();
     }
 }

@@ -95,13 +95,13 @@ public class LocalityTests
         tree.Insert(b);
         tree.Insert(c);
 
-        var results = tree.Search(0, 0, 10);
+        var results = tree.Search(new Point(0, 0), 10);
         Assert.That(results.Count, Is.EqualTo(3));
 
-        results = tree.Search(100, 100, 10);
+        results = tree.Search(new Point(100, 100), 10);
         Assert.That(results.Count, Is.EqualTo(3));
 
-        results = tree.Search(100, 100, 1000);
+        results = tree.Search(new Point(100, 100), 1000);
         Assert.That(results.Count, Is.EqualTo(6));
     }
 }

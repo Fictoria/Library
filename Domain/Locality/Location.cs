@@ -7,21 +7,26 @@ public class Location : ISpatialData, IEquatable<Location>
     private readonly Envelope _envelope;
 
     public string Id { get; }
-    public double X { get; }
-    public double Y { get; }
+    public Point Point { get; }
 
     public Location(string id, double x, double y)
     {
         _envelope = new Envelope(x, y, x, y);
 
         Id = id;
-        X = x;
-        Y = y;
+        Point = new Point(x, y);
+    }
+
+    public Location(string id, Point point)
+    {
+        _envelope = new Envelope(point.X, point.Y, point.X, point.Y);
+
+        Id = id;
+        Point = point;
     }
 
     public bool Equals(Location? other)
     {
-        Console.WriteLine("equals");
         if (ReferenceEquals(null, other))
         {
             return false;
@@ -37,12 +42,17 @@ public class Location : ISpatialData, IEquatable<Location>
 
     public double DistanceTo(double x, double y)
     {
-        return Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2));
+        return Point.DistanceTo(x, y);
+    }
+
+    public double DistanceTo(Point point)
+    {
+        return Point.DistanceTo(point.X, point.Y);
     }
 
     public double DistanceTo(Location location)
     {
-        return DistanceTo(location.X, location.Y);
+        return DistanceTo(location.Point);
     }
 
     public override bool Equals(object? obj)
