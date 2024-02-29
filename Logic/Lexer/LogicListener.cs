@@ -82,6 +82,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitInstance([NotNull] LogicParser.InstanceContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.index"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIndex([NotNull] LogicParser.IndexContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.index"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIndex([NotNull] LogicParser.IndexContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.schema"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -367,6 +377,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitCall([NotNull] LogicParser.CallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.using"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUsing([NotNull] LogicParser.UsingContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.using"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUsing([NotNull] LogicParser.UsingContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.parenthetical"/>.
 	/// </summary>

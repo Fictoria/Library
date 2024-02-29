@@ -25,8 +25,12 @@ type
     ;
 
 instance
-    :   'instantiate' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN
+    :   'instantiate' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN index*
         PERIOD
+    ;
+
+index
+    :   'with' spatial='spatial'? 'index' OPEN_PAREN identifier (COMMA identifier)* CLOSE_PAREN
     ;
 
 schema
@@ -109,7 +113,12 @@ assign
     ;
 
 call
-    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
+    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN using?
+    ;
+    
+using
+    :   'using' OPEN_PAREN ref=expression? (COMMA ref=expression)* CLOSE_PAREN
+        'within' OPEN_PAREN threshold=expression CLOSE_PAREN
     ;
 
 parenthetical
