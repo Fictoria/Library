@@ -9,6 +9,7 @@ public class Nature : FictoriaActor
     {
         Context.ActorOf<Time>("time");
         Context.ActorOf<Space>("space");
+        Context.ActorOf<Reality>("reality");
     }
 
     protected override void OnReceive(object message) { }

@@ -326,7 +326,7 @@ public class Linker
                     break;
                 }
 
-                if (Builtins.ByName.TryGetValue(call.Functor, out var builtin))
+                if (AllBuiltIns.ByName.TryGetValue(call.Functor, out var builtin))
                 {
                     foreach (var e in call.Arguments)
                     {

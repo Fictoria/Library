@@ -44,7 +44,7 @@ public class PrefrontalCortex : FictoriaActor
                 requestKnowledge();
                 _log.Info("requesting knowledge");
                 break;
-            case ReceiveKnowledge rk:
+            case KnowledgeReceipt rk:
                 _knowledge = rk.Knowledge;
                 _log.Info("received knowledge");
                 if (isGoalAchieved())
@@ -108,7 +108,7 @@ public class PrefrontalCortex : FictoriaActor
 
     private void requestKnowledge()
     {
-        _brain.Tell(new RequestKnowledge());
+        _brain.Tell(new KnowledgeRequest());
     }
 
     private bool isGoalAchieved()

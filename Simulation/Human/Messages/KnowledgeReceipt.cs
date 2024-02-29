@@ -1,10 +1,10 @@
 namespace Fictoria.Simulation.Human.Messages;
 
-public class ReceiveKnowledge
+public class KnowledgeReceipt
 {
     public Logic.Program Knowledge { get; }
 
-    public ReceiveKnowledge(Logic.Program knowledge)
+    public KnowledgeReceipt(Logic.Program knowledge)
     {
         Knowledge = knowledge;
     }

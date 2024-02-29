@@ -1,5 +1,4 @@
 using Akka.Actor;
-using Akka.Event;
 using Fictoria.Domain.Locality;
 using Fictoria.Simulation.Common;
 using Fictoria.Simulation.Nature.Messages;
@@ -23,9 +22,9 @@ public class Space : FictoriaActor
             case Move move:
                 _constellation.Update(move.Id, move.Point.X, move.Point.Y);
                 break;
-            case RequestSpace request:
+            case SpaceRequest request:
                 var results = _constellation.Search(request.Point, request.Distance);
-                var response = new ReceiveSpace(results);
+                var response = new SpaceReceipt(results);
                 Sender.Tell(response);
                 break;
         }

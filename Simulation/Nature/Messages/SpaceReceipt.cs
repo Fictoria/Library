@@ -2,11 +2,11 @@ using Fictoria.Domain.Locality;
 
 namespace Fictoria.Simulation.Nature.Messages;
 
-public class ReceiveSpace
+public class SpaceReceipt
 {
     public IReadOnlyList<Location> Results { get; }
 
-    public ReceiveSpace(IReadOnlyList<Location> results)
+    public SpaceReceipt(IReadOnlyList<Location> results)
     {
         Results = results;
     }

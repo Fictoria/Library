@@ -8,16 +8,16 @@ namespace Fictoria.Logic.Expression;
 
 public class Call : Expression
 {
+    public bool Many { get; }
+    public string Functor { get; }
+    public IList<Expression> Arguments { get; }
+
     public Call(string text, string functor, IList<Expression> arguments, bool many = false) : base(text)
     {
         Functor = functor;
         Arguments = arguments;
         Many = many;
     }
-
-    public bool Many { get; }
-    public string Functor { get; }
-    public IList<Expression> Arguments { get; }
 
     public override object Evaluate(Context context)
     {
@@ -46,7 +46,7 @@ public class Call : Expression
             return function.Evaluate(context, Arguments);
         }
 
-        if (Builtins.ByName.TryGetValue(Functor, out var builtin))
+        if (AllBuiltIns.ByName.TryGetValue(Functor, out var builtin))
         {
             return builtin.Evaluate(context, Arguments);
         }

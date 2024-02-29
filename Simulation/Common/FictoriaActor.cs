@@ -13,6 +13,16 @@ public abstract class FictoriaActor : UntypedActor
         Context.ActorSelection("/user/nature/time").Tell(new Subscribe());
     }
 
+    protected void Exists(string id)
+    {
+        GetReality().Tell(new Exists(id));
+    }
+
+    protected IActorRef GetReality()
+    {
+        return GetActor("/user/nature/reality");
+    }
+
     protected IActorRef GetSpace()
     {
         return GetActor("/user/nature/space");

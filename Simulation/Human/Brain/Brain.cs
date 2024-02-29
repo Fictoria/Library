@@ -26,8 +26,8 @@ public class Brain : FictoriaActor
             case Move move:
                 _prefrontalCortex.Tell(move);
                 break;
-            case RequestKnowledge:
-                Sender.Tell(new ReceiveKnowledge(_knowledge));
+            case KnowledgeRequest:
+                Sender.Tell(new KnowledgeReceipt(_knowledge));
                 break;
         }
     }

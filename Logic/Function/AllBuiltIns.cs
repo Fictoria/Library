@@ -5,7 +5,7 @@ using Fictoria.Logic.Function.BuiltIns.Types;
 
 namespace Fictoria.Logic.Function;
 
-public class Builtins
+public class AllBuiltIns
 {
     public static IEnumerable<BuiltIn> All => new BuiltIn[]
     {
@@ -15,7 +15,8 @@ public class Builtins
         new Id(),
         new Sqrt(),
         new Floor(),
-        new Ceil()
+        new Ceil(),
+        new Typeof()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);
