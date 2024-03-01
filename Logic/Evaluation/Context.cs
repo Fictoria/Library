@@ -1,16 +1,17 @@
 using Fictoria.Logic.Fact;
+using Fictoria.Logic.Index;
 
 namespace Fictoria.Logic.Evaluation;
 
 public class Context
 {
+    public Stack<Scope> Stack { get; }
+
     public Context(Program program)
     {
         Stack = new Stack<Scope>();
         Stack.Push(program.Scope);
     }
-
-    public Stack<Scope> Stack { get; }
 
     public void Push()
     {
@@ -93,6 +94,23 @@ public class Context
         }
 
         schema = null!;
+        return false;
+    }
+
+    public bool ResolveSpatialIndex(string name, out SpatialIndex index)
+    {
+        foreach (var container in Stack)
+        {
+            if (!container.SpatialIndices.TryGetValue(name, out var found))
+            {
+                continue;
+            }
+
+            index = found;
+            return true;
+        }
+
+        index = null!;
         return false;
     }
 

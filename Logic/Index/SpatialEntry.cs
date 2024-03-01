@@ -9,13 +9,15 @@ public class SpatialEntry : ISpatialData, IEquatable<SpatialEntry>
 
     public string Id { get; }
     public Point Point { get; }
+    public Fact.Fact Fact { get; }
 
-    public SpatialEntry(string id, Point point)
+    public SpatialEntry(string id, Point point, Fact.Fact fact)
     {
         _envelope = new Envelope(point.X, point.Y, point.X, point.Y);
 
         Id = id;
         Point = point;
+        Fact = fact;
     }
 
     public bool Equals(SpatialEntry? other)

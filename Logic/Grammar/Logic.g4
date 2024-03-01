@@ -117,7 +117,7 @@ call
     ;
     
 using
-    :   'using' OPEN_PAREN ref=expression? (COMMA ref=expression)* CLOSE_PAREN
+    :   'using' OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
         'within' OPEN_PAREN threshold=expression CLOSE_PAREN
     ;
 

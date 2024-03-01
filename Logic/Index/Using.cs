@@ -1,15 +1,15 @@
-using Fictoria.Domain.Locality;
-
 namespace Fictoria.Logic.Index;
 
 public class Using
 {
-    public Point Point { get; }
-    public double Distance { get; }
+    public Expression.Expression X { get; }
+    public Expression.Expression Y { get; }
+    public Expression.Expression Distance { get; }
 
-    public Using(Point point, double distance)
+    public Using(Expression.Expression x, Expression.Expression y, Expression.Expression distance)
     {
-        Point = point;
+        X = x;
+        Y = y;
         Distance = distance;
     }
 }

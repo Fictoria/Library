@@ -26,14 +26,14 @@ public class SpatialIndex
         _tree.BulkLoad(_cache.Values);
     }
 
-    public void Insert(string id, Point point)
+    public void Insert(string id, Point point, Fact.Fact fact)
     {
         if (_cache.ContainsKey(id))
         {
             // TODO throw something reasonable
             throw new Exception("");
         }
-        var entry = new SpatialEntry(id, point);
+        var entry = new SpatialEntry(id, point, fact);
         _cache[entry.Id] = entry;
         _tree.Insert(entry);
     }
@@ -52,9 +52,13 @@ public class SpatialIndex
         }
     }
 
-    public void Update(string id, Point point)
+    public IList<SpatialEntry> Search(Point point, double distance)
     {
-        Remove(id);
-        Insert(id, point);
+        var half = distance / 2.0;
+        var space = new Envelope(point.X - half, point.Y - half, point.X + half, point.Y + half);
+        var results = _tree.Search(space);
+
+        // TODO is this performant?
+        return results.Where(r => r.Point.DistanceTo(point) <= distance).ToList();
     }
 }

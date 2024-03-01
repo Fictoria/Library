@@ -2390,7 +2390,6 @@ public partial class LogicParser : Parser {
 	}
 
 	public partial class UsingContext : ParserRuleContext {
-		public ExpressionContext @ref;
 		public ExpressionContext threshold;
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] OPEN_PAREN() { return GetTokens(LogicParser.OPEN_PAREN); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN(int i) {
@@ -2451,7 +2450,7 @@ public partial class LogicParser : Parser {
 			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 5856045301856L) != 0)) {
 				{
 				State = 339;
-				_localctx.@ref = expression(0);
+				expression(0);
 				}
 			}
 
@@ -2464,7 +2463,7 @@ public partial class LogicParser : Parser {
 				State = 342;
 				Match(COMMA);
 				State = 343;
-				_localctx.@ref = expression(0);
+				expression(0);
 				}
 				}
 				State = 348;

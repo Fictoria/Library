@@ -185,7 +185,7 @@ public class Scope
             var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
             var x = (double)fact.Arguments[xIdx].Evaluate(context);
             var y = (double)fact.Arguments[yIdx].Evaluate(context);
-            index.Insert(id, new Point(x, y));
+            index.Insert(id, new Point(x, y), fact);
         }
     }
 

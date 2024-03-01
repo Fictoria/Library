@@ -1,7 +1,9 @@
+using Fictoria.Domain.Locality;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
+using Fictoria.Logic.Index;
 using Fictoria.Logic.Type;
 
 namespace Fictoria.Logic.Search;
@@ -13,9 +15,79 @@ public static class FactSearch
         return FindFirst(context, schema, args, out _);
     }
 
-    public static IList<FactResult> SearchAll(Context context, Schema schema, IEnumerable<Expression.Expression> args)
+    public static IList<FactResult> SearchAll(Context context, Schema schema, IEnumerable<Expression.Expression> args,
+        Using? @using = null)
     {
-        return FindAll(context, schema, args);
+        if (@using is null)
+        {
+            return FindAll(context, schema, args);
+        }
+
+        if (context.ResolveSpatialIndex(schema.Name, out var index))
+        {
+            var x = (double)@using.X.Evaluate(context);
+            var y = (double)@using.Y.Evaluate(context);
+            var distance = (double)@using.Distance.Evaluate(context);
+            var point = new Point(x, y);
+            var entries = index.Search(point, distance);
+            var facts = entries.Select(e => e.Fact);
+
+            var arguments = args.ToList();
+            var results = new List<FactResult>();
+            var seriesBindings = new List<(string, object)>();
+            var memoizer = new Memoizer(arguments);
+            foreach (var fact in facts)
+            {
+                if (matches(context, schema, fact, memoizer, arguments, out var bindings, out var values))
+                {
+                    foreach (var (k, v) in bindings)
+                    {
+                        seriesBindings.Add((k, v));
+                        // context.Bind(k, v);
+                    }
+
+                    var result = new FactResult(fact.Schema.Name, values);
+                    results.Add(result);
+                }
+            }
+            
+            // TODO this is copied from below; refactor into a utility
+            var groupedBindings =
+                seriesBindings
+                    .GroupBy(b => b.Item1)
+                    .Select(g =>
+                        (g.Key, g.Select(b => b.Item2).ToList())
+                    ).ToDictionary(g => g.Key, g => g.Item2);
+            foreach (var a in arguments)
+            {
+                if (a is Binding b)
+                {
+                    if (groupedBindings.TryGetValue(b.Name, out var found))
+                    {
+                        context.Bind(b.Name, found);
+                    }
+                    else
+                    {
+                        context.Bind(b.Name, new List<object>());
+                    }
+                }
+
+                if (a is Infix { Left: Binding b2 })
+                {
+                    if (groupedBindings.TryGetValue(b2.Name, out var found))
+                    {
+                        context.Bind(b2.Name, found);
+                    }
+                    else
+                    {
+                        context.Bind(b2.Name, new List<object>());
+                    }
+                }
+            }
+
+            return results;
+        }
+        throw new EvaluateException($"spatial index not found for schema `{schema.Name}`");
     }
 
     public static bool FindFirst(Context context, Schema schema, IEnumerable<Expression.Expression> args,

@@ -227,8 +227,17 @@ public class Parser : LogicBaseVisitor<object>
         var many = context.many() is not null;
         var identifier = context.identifier().IDENTIFIER().GetText();
         var arguments = context.expression().Select(a => (Expression.Expression)Visit(a)).ToList();
+        var @using = Visit(context.@using()) as Using;
 
-        return new Call(context.GetText(), identifier, arguments, many);
+        return new Call(context.GetText(), identifier, arguments, many, @using);
+    }
+
+    public override object VisitUsing(LogicParser.UsingContext context)
+    {
+        var point = context.expression().Select(e => (Expression.Expression)Visit(e)).ToList();
+        var distance = (Expression.Expression)Visit(context.threshold);
+
+        return new Using(point[0], point[1], distance);
     }
 
     public override object VisitUnaryExpression(LogicParser.UnaryExpressionContext context)
