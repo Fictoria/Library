@@ -30,8 +30,12 @@ instance
     ;
 
 schema
-    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN
+    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN index*
         PERIOD
+    ;
+
+index
+    :   'with' spatial='spatial'? 'index' OPEN_PAREN identifier (COMMA identifier)* CLOSE_PAREN
     ;
     
 fact
@@ -109,7 +113,12 @@ assign
     ;
 
 call
-    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
+    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN using?
+    ;
+    
+using
+    :   'using' OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
+        'within' OPEN_PAREN threshold=expression CLOSE_PAREN
     ;
 
 parenthetical
