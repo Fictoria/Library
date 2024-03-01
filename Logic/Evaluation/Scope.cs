@@ -170,12 +170,18 @@ public class Scope
         }
         facts[fact.Schema.Name].Add(fact);
 
-        if (SpatialIndices.TryGetValue(fact.Schema.Name, out var index))
+        var schema = fact.Schema;
+        if (fact.Schema is SchemaPlaceholder placeholder)
+        {
+            schema = Schemata[placeholder.Name];
+        }
+        
+        if (SpatialIndices.TryGetValue(schema.Name, out var index))
         {
             var context = new Context(new Program(this));
-            var idIdx = fact.Schema.Parameters.FindIndex(p => p.Name == index.IdField);
-            var xIdx = fact.Schema.Parameters.FindIndex(p => p.Name == index.XField);
-            var yIdx = fact.Schema.Parameters.FindIndex(p => p.Name == index.YField);
+            var idIdx = schema.Parameters.FindIndex(p => p.Name == index.IdField);
+            var xIdx = schema.Parameters.FindIndex(p => p.Name == index.XField);
+            var yIdx = schema.Parameters.FindIndex(p => p.Name == index.YField);
             var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
             var x = (double)fact.Arguments[xIdx].Evaluate(context);
             var y = (double)fact.Arguments[yIdx].Evaluate(context);

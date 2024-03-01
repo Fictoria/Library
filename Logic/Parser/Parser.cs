@@ -60,7 +60,7 @@ public class Parser : LogicBaseVisitor<object>
 
     public override object VisitIndex(LogicParser.IndexContext context)
     {
-        var spatial = context.spatial is null;
+        var spatial = context.spatial is not null;
         if (spatial)
         {
             var id = (Identifier)Visit(context.identifier()[0]);
