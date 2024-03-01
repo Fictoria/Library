@@ -63,17 +63,17 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitInstance([NotNull] LogicParser.InstanceContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LogicParser.index"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitIndex([NotNull] LogicParser.IndexContext context);
-	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.schema"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSchema([NotNull] LogicParser.SchemaContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.index"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIndex([NotNull] LogicParser.IndexContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.fact"/>.
 	/// </summary>

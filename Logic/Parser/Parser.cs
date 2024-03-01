@@ -2,6 +2,7 @@ using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
+using Fictoria.Logic.Index;
 using Fictoria.Logic.Lexer;
 using Fictoria.Logic.Type;
 using Tuple = Fictoria.Logic.Expression.Tuple;
@@ -47,8 +48,28 @@ public class Parser : LogicBaseVisitor<object>
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
         var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
+        var indices = context.index().Select(i => (SpatialIndex)Visit(i)).ToList();
+        SpatialIndex? index = null;
+        if (indices.Count > 0)
+        {
+            index = indices[0];
+        }
 
-        return new Schema(identifier, parameters);
+        return new Schema(identifier, parameters, index);
+    }
+
+    public override object VisitIndex(LogicParser.IndexContext context)
+    {
+        var spatial = context.spatial is null;
+        if (spatial)
+        {
+            var id = (Identifier)Visit(context.identifier()[0]);
+            var x = (Identifier)Visit(context.identifier()[1]);
+            var y = (Identifier)Visit(context.identifier()[2]);
+            return new SpatialIndex(id.Name, x.Name, y.Name);
+        }
+
+        throw new ParseException($"non-spatial indices not supported yet at '{context.GetText()}'");
     }
 
     public override object VisitFact(LogicParser.FactContext context)

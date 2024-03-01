@@ -82,16 +82,6 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitInstance([NotNull] LogicParser.InstanceContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="LogicParser.index"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterIndex([NotNull] LogicParser.IndexContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="LogicParser.index"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitIndex([NotNull] LogicParser.IndexContext context);
-	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.schema"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -101,6 +91,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSchema([NotNull] LogicParser.SchemaContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.index"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIndex([NotNull] LogicParser.IndexContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.index"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIndex([NotNull] LogicParser.IndexContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.fact"/>.
 	/// </summary>

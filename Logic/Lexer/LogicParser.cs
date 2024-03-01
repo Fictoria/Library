@@ -46,7 +46,7 @@ public partial class LogicParser : Parser {
 		PIPE=44, COLON=45, SEMICOLON=46, COMMA=47, PERIOD=48, WHITESPACE=49, LINE_COMMENT=50;
 	public const int
 		RULE_logic = 0, RULE_statement = 1, RULE_query = 2, RULE_type = 3, RULE_instance = 4, 
-		RULE_index = 5, RULE_schema = 6, RULE_fact = 7, RULE_antifact = 8, RULE_function = 9, 
+		RULE_schema = 5, RULE_index = 6, RULE_fact = 7, RULE_antifact = 8, RULE_function = 9, 
 		RULE_action = 10, RULE_struct = 11, RULE_field = 12, RULE_series = 13, 
 		RULE_expression = 14, RULE_if = 15, RULE_condition = 16, RULE_block = 17, 
 		RULE_assign = 18, RULE_call = 19, RULE_using = 20, RULE_parenthetical = 21, 
@@ -55,7 +55,7 @@ public partial class LogicParser : Parser {
 		RULE_binding = 29, RULE_parameter = 30, RULE_many = 31, RULE_variance = 32, 
 		RULE_identifier = 33;
 	public static readonly string[] ruleNames = {
-		"logic", "statement", "query", "type", "instance", "index", "schema", 
+		"logic", "statement", "query", "type", "instance", "schema", "index", 
 		"fact", "antifact", "function", "action", "struct", "field", "series", 
 		"expression", "if", "condition", "block", "assign", "call", "using", "parenthetical", 
 		"tuple", "wildcard", "literal", "literalBool", "literalInt", "literalFloat", 
@@ -449,12 +449,6 @@ public partial class LogicParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public IndexContext[] index() {
-			return GetRuleContexts<IndexContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public IndexContext index(int i) {
-			return GetRuleContext<IndexContext>(i);
-		}
 		public InstanceContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -482,7 +476,6 @@ public partial class LogicParser : Parser {
 	public InstanceContext instance() {
 		InstanceContext _localctx = new InstanceContext(Context, State);
 		EnterRule(_localctx, 8, RULE_instance);
-		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
@@ -498,21 +491,114 @@ public partial class LogicParser : Parser {
 			_localctx.of = expression(0);
 			State = 105;
 			Match(CLOSE_PAREN);
+			State = 106;
+			Match(PERIOD);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class SchemaContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public IdentifierContext identifier() {
+			return GetRuleContext<IdentifierContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(LogicParser.OPEN_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext[] parameter() {
+			return GetRuleContexts<ParameterContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext parameter(int i) {
+			return GetRuleContext<ParameterContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(LogicParser.CLOSE_PAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PERIOD() { return GetToken(LogicParser.PERIOD, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(LogicParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(LogicParser.COMMA, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IndexContext[] index() {
+			return GetRuleContexts<IndexContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IndexContext index(int i) {
+			return GetRuleContext<IndexContext>(i);
+		}
+		public SchemaContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_schema; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			ILogicListener typedListener = listener as ILogicListener;
+			if (typedListener != null) typedListener.EnterSchema(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			ILogicListener typedListener = listener as ILogicListener;
+			if (typedListener != null) typedListener.ExitSchema(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ILogicVisitor<TResult> typedVisitor = visitor as ILogicVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitSchema(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public SchemaContext schema() {
+		SchemaContext _localctx = new SchemaContext(Context, State);
+		EnterRule(_localctx, 10, RULE_schema);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 108;
+			identifier();
 			State = 109;
+			Match(OPEN_PAREN);
+			State = 110;
+			parameter();
+			State = 115;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 111;
+				Match(COMMA);
+				State = 112;
+				parameter();
+				}
+				}
+				State = 117;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 118;
+			Match(CLOSE_PAREN);
+			State = 122;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==T__1) {
 				{
 				{
-				State = 106;
+				State = 119;
 				index();
 				}
 				}
-				State = 111;
+				State = 124;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 112;
+			State = 125;
 			Match(PERIOD);
 			}
 		}
@@ -567,134 +653,47 @@ public partial class LogicParser : Parser {
 	[RuleVersion(0)]
 	public IndexContext index() {
 		IndexContext _localctx = new IndexContext(Context, State);
-		EnterRule(_localctx, 10, RULE_index);
+		EnterRule(_localctx, 12, RULE_index);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 114;
+			State = 127;
 			Match(T__1);
-			State = 116;
+			State = 129;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==T__2) {
 				{
-				State = 115;
+				State = 128;
 				_localctx.spatial = Match(T__2);
 				}
 			}
 
-			State = 118;
+			State = 131;
 			Match(T__3);
-			State = 119;
+			State = 132;
 			Match(OPEN_PAREN);
-			State = 120;
+			State = 133;
 			identifier();
-			State = 125;
+			State = 138;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 121;
+				State = 134;
 				Match(COMMA);
-				State = 122;
+				State = 135;
 				identifier();
 				}
 				}
-				State = 127;
+				State = 140;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 128;
-			Match(CLOSE_PAREN);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class SchemaContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public IdentifierContext identifier() {
-			return GetRuleContext<IdentifierContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode OPEN_PAREN() { return GetToken(LogicParser.OPEN_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext[] parameter() {
-			return GetRuleContexts<ParameterContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext parameter(int i) {
-			return GetRuleContext<ParameterContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CLOSE_PAREN() { return GetToken(LogicParser.CLOSE_PAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PERIOD() { return GetToken(LogicParser.PERIOD, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(LogicParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(LogicParser.COMMA, i);
-		}
-		public SchemaContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_schema; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			ILogicListener typedListener = listener as ILogicListener;
-			if (typedListener != null) typedListener.EnterSchema(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			ILogicListener typedListener = listener as ILogicListener;
-			if (typedListener != null) typedListener.ExitSchema(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
-			ILogicVisitor<TResult> typedVisitor = visitor as ILogicVisitor<TResult>;
-			if (typedVisitor != null) return typedVisitor.VisitSchema(this);
-			else return visitor.VisitChildren(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public SchemaContext schema() {
-		SchemaContext _localctx = new SchemaContext(Context, State);
-		EnterRule(_localctx, 12, RULE_schema);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 130;
-			identifier();
-			State = 131;
-			Match(OPEN_PAREN);
-			State = 132;
-			parameter();
-			State = 137;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while (_la==COMMA) {
-				{
-				{
-				State = 133;
-				Match(COMMA);
-				State = 134;
-				parameter();
-				}
-				}
-				State = 139;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			State = 140;
-			Match(CLOSE_PAREN);
 			State = 141;
-			Match(PERIOD);
+			Match(CLOSE_PAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -3259,9 +3258,9 @@ public partial class LogicParser : Parser {
 		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,1,0,4,0,70,8,0,11,0,
 		12,0,71,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,84,8,1,1,2,1,2,1,2,
 		1,3,1,3,1,3,1,3,1,3,5,3,94,8,3,10,3,12,3,97,9,3,1,3,1,3,1,4,1,4,1,4,1,
-		4,1,4,1,4,1,4,5,4,108,8,4,10,4,12,4,111,9,4,1,4,1,4,1,5,1,5,3,5,117,8,
-		5,1,5,1,5,1,5,1,5,1,5,5,5,124,8,5,10,5,12,5,127,9,5,1,5,1,5,1,6,1,6,1,
-		6,1,6,1,6,5,6,136,8,6,10,6,12,6,139,9,6,1,6,1,6,1,6,1,7,1,7,1,7,1,7,1,
+		4,1,4,1,4,1,4,1,4,1,5,1,5,1,5,1,5,1,5,5,5,114,8,5,10,5,12,5,117,9,5,1,
+		5,1,5,5,5,121,8,5,10,5,12,5,124,9,5,1,5,1,5,1,6,1,6,3,6,130,8,6,1,6,1,
+		6,1,6,1,6,1,6,5,6,137,8,6,10,6,12,6,140,9,6,1,6,1,6,1,7,1,7,1,7,1,7,1,
 		7,5,7,149,8,7,10,7,12,7,152,9,7,1,7,1,7,1,7,1,8,3,8,158,8,8,1,8,1,8,1,
 		8,1,9,1,9,1,9,3,9,166,8,9,1,9,1,9,5,9,170,8,9,10,9,12,9,173,9,9,1,9,1,
 		9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,1,10,5,10,185,8,10,10,10,12,10,188,9,
@@ -3285,7 +3284,7 @@ public partial class LogicParser : Parser {
 		33,1,33,1,33,0,1,28,34,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,
 		36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,0,7,1,0,5,6,1,0,9,10,2,
 		0,5,5,11,11,1,0,12,15,1,0,16,17,1,0,18,20,1,0,23,24,425,0,69,1,0,0,0,2,
-		83,1,0,0,0,4,85,1,0,0,0,6,88,1,0,0,0,8,100,1,0,0,0,10,114,1,0,0,0,12,130,
+		83,1,0,0,0,4,85,1,0,0,0,6,88,1,0,0,0,8,100,1,0,0,0,10,108,1,0,0,0,12,127,
 		1,0,0,0,14,143,1,0,0,0,16,157,1,0,0,0,18,162,1,0,0,0,20,179,1,0,0,0,22,
 		194,1,0,0,0,24,210,1,0,0,0,26,220,1,0,0,0,28,241,1,0,0,0,30,277,1,0,0,
 		0,32,291,1,0,0,0,34,303,1,0,0,0,36,314,1,0,0,0,38,319,1,0,0,0,40,337,1,
@@ -3293,7 +3292,7 @@ public partial class LogicParser : Parser {
 		1,0,0,0,52,380,1,0,0,0,54,382,1,0,0,0,56,384,1,0,0,0,58,386,1,0,0,0,60,
 		389,1,0,0,0,62,396,1,0,0,0,64,398,1,0,0,0,66,400,1,0,0,0,68,70,3,2,1,0,
 		69,68,1,0,0,0,70,71,1,0,0,0,71,69,1,0,0,0,71,72,1,0,0,0,72,73,1,0,0,0,
-		73,74,5,0,0,1,74,1,1,0,0,0,75,84,3,6,3,0,76,84,3,8,4,0,77,84,3,12,6,0,
+		73,74,5,0,0,1,74,1,1,0,0,0,75,84,3,6,3,0,76,84,3,8,4,0,77,84,3,10,5,0,
 		78,84,3,14,7,0,79,84,3,16,8,0,80,84,3,18,9,0,81,84,3,20,10,0,82,84,3,4,
 		2,0,83,75,1,0,0,0,83,76,1,0,0,0,83,77,1,0,0,0,83,78,1,0,0,0,83,79,1,0,
 		0,0,83,80,1,0,0,0,83,81,1,0,0,0,83,82,1,0,0,0,84,3,1,0,0,0,85,86,3,28,
@@ -3301,16 +3300,16 @@ public partial class LogicParser : Parser {
 		3,66,33,0,91,92,5,47,0,0,92,94,3,66,33,0,93,91,1,0,0,0,94,97,1,0,0,0,95,
 		93,1,0,0,0,95,96,1,0,0,0,96,98,1,0,0,0,97,95,1,0,0,0,98,99,5,48,0,0,99,
 		7,1,0,0,0,100,101,5,1,0,0,101,102,5,38,0,0,102,103,3,28,14,0,103,104,5,
-		47,0,0,104,105,3,28,14,0,105,109,5,39,0,0,106,108,3,10,5,0,107,106,1,0,
-		0,0,108,111,1,0,0,0,109,107,1,0,0,0,109,110,1,0,0,0,110,112,1,0,0,0,111,
-		109,1,0,0,0,112,113,5,48,0,0,113,9,1,0,0,0,114,116,5,2,0,0,115,117,5,3,
-		0,0,116,115,1,0,0,0,116,117,1,0,0,0,117,118,1,0,0,0,118,119,5,4,0,0,119,
-		120,5,38,0,0,120,125,3,66,33,0,121,122,5,47,0,0,122,124,3,66,33,0,123,
-		121,1,0,0,0,124,127,1,0,0,0,125,123,1,0,0,0,125,126,1,0,0,0,126,128,1,
-		0,0,0,127,125,1,0,0,0,128,129,5,39,0,0,129,11,1,0,0,0,130,131,3,66,33,
-		0,131,132,5,38,0,0,132,137,3,60,30,0,133,134,5,47,0,0,134,136,3,60,30,
-		0,135,133,1,0,0,0,136,139,1,0,0,0,137,135,1,0,0,0,137,138,1,0,0,0,138,
-		140,1,0,0,0,139,137,1,0,0,0,140,141,5,39,0,0,141,142,5,48,0,0,142,13,1,
+		47,0,0,104,105,3,28,14,0,105,106,5,39,0,0,106,107,5,48,0,0,107,9,1,0,0,
+		0,108,109,3,66,33,0,109,110,5,38,0,0,110,115,3,60,30,0,111,112,5,47,0,
+		0,112,114,3,60,30,0,113,111,1,0,0,0,114,117,1,0,0,0,115,113,1,0,0,0,115,
+		116,1,0,0,0,116,118,1,0,0,0,117,115,1,0,0,0,118,122,5,39,0,0,119,121,3,
+		12,6,0,120,119,1,0,0,0,121,124,1,0,0,0,122,120,1,0,0,0,122,123,1,0,0,0,
+		123,125,1,0,0,0,124,122,1,0,0,0,125,126,5,48,0,0,126,11,1,0,0,0,127,129,
+		5,2,0,0,128,130,5,3,0,0,129,128,1,0,0,0,129,130,1,0,0,0,130,131,1,0,0,
+		0,131,132,5,4,0,0,132,133,5,38,0,0,133,138,3,66,33,0,134,135,5,47,0,0,
+		135,137,3,66,33,0,136,134,1,0,0,0,137,140,1,0,0,0,138,136,1,0,0,0,138,
+		139,1,0,0,0,139,141,1,0,0,0,140,138,1,0,0,0,141,142,5,39,0,0,142,13,1,
 		0,0,0,143,144,3,66,33,0,144,145,5,38,0,0,145,150,3,28,14,0,146,147,5,47,
 		0,0,147,149,3,28,14,0,148,146,1,0,0,0,149,152,1,0,0,0,150,148,1,0,0,0,
 		150,151,1,0,0,0,151,153,1,0,0,0,152,150,1,0,0,0,153,154,5,39,0,0,154,155,
@@ -3382,7 +3381,7 @@ public partial class LogicParser : Parser {
 		5,45,0,0,391,393,3,64,32,0,392,391,1,0,0,0,392,393,1,0,0,0,393,394,1,0,
 		0,0,394,395,3,66,33,0,395,61,1,0,0,0,396,397,5,33,0,0,397,63,1,0,0,0,398,
 		399,7,2,0,0,399,65,1,0,0,0,400,401,5,28,0,0,401,67,1,0,0,0,33,71,83,95,
-		109,116,125,137,150,157,165,171,186,198,205,215,218,225,241,272,274,284,
+		115,122,129,138,150,157,165,171,186,198,205,215,218,225,241,272,274,284,
 		289,297,309,319,324,330,335,340,346,365,376,392
 	};
 

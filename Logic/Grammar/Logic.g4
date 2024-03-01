@@ -25,17 +25,17 @@ type
     ;
 
 instance
-    :   'instantiate' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN index*
+    :   'instantiate' OPEN_PAREN name=expression COMMA of=expression CLOSE_PAREN
+        PERIOD
+    ;
+
+schema
+    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN index*
         PERIOD
     ;
 
 index
     :   'with' spatial='spatial'? 'index' OPEN_PAREN identifier (COMMA identifier)* CLOSE_PAREN
-    ;
-
-schema
-    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN
-        PERIOD
     ;
     
 fact
