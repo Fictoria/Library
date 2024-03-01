@@ -388,7 +388,7 @@ public class Linker
                     infix.BindingName = infix.Right.BindingName;
                 }
 
-                if (!infix.Left.Type.Equals(infix.Right.Type) && infix.Operator != "::")
+                if (!infix.Left.Type.Equals(infix.Right.Type) && infix.Operator != "::" && infix.Operator != "^")
                 {
                     throw new ParseException(
                         $"mismatched types '{infix.Left.Type}' and '{infix.Right.Type}' for '{infix.Operator}' infix expression");

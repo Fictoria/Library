@@ -29,7 +29,6 @@ consumes(storage, stone).
 
 // etc.
 searchable(t: thing).
-location(t: -thing, x: float, y: float).
 carrying(t: -thing).
 warm(h: human).
 

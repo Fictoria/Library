@@ -227,7 +227,11 @@ public class Parser : LogicBaseVisitor<object>
         var many = context.many() is not null;
         var identifier = context.identifier().IDENTIFIER().GetText();
         var arguments = context.expression().Select(a => (Expression.Expression)Visit(a)).ToList();
-        var @using = Visit(context.@using()) as Using;
+        Using? @using = null;
+        if (context.@using() is not null)
+        {
+            @using = (Using)Visit(context.@using());
+        }
 
         return new Call(context.GetText(), identifier, arguments, many, @using);
     }

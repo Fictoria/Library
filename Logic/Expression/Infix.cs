@@ -7,16 +7,16 @@ namespace Fictoria.Logic.Expression;
 
 public class Infix : Expression
 {
+    public Expression Left { get; }
+    public Expression Right { get; }
+    public string Operator { get; }
+
     public Infix(string text, Expression left, string op, Expression right) : base(text)
     {
         Left = left;
         Operator = op;
         Right = right;
     }
-
-    public Expression Left { get; }
-    public Expression Right { get; }
-    public string Operator { get; }
 
     // TODO this method is long
     public override object Evaluate(Context context)
@@ -63,7 +63,7 @@ public class Infix : Expression
                     // TODO hmm
                     return left / right;
                 case "^":
-                    throw new EvaluateException("exponents are not valid for floats");
+                    return Math.Pow(left, right);
             }
         }
         else if (Type.Equals(Logic.Type.Type.String))
