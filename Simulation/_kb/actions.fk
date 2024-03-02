@@ -95,7 +95,7 @@ extract(r: resource, m: material) -> {
         provides(r, m) and
         location(r, _, _) and
         !location(m, _, _),
-    "proximity":
+    "target":
         location(r, @x, @y); [x, y],
     "locals":
         name = str(m) + "_" + id(),

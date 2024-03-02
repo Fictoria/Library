@@ -1,25 +1,34 @@
 using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
+using Fictoria.Logic.Exceptions;
 
 namespace Fictoria.Logic.Expression;
 
 public class Accessor : Expression
 {
+    public Expression Structure { get; }
+    public Expression Indexer { get; }
+
     public Accessor(string text, Expression structure, Expression indexer) : base(text, Logic.Type.Type.Anything)
     {
         Structure = structure;
         Indexer = indexer;
     }
 
-    public Expression Structure { get; }
-    public Expression Indexer { get; }
-
     public override object Evaluate(Context context)
     {
-        var dict = (Dictionary<string, object>)Structure.Evaluate(context);
-        var index = (string)Indexer.Evaluate(context);
+        var target = Structure.Evaluate(context);
+        var index = Indexer.Evaluate(context);
 
-        return dict[index];
+        switch (target)
+        {
+            case Dictionary<string, object> dict:
+                return dict[(string)index];
+            case List<object> list:
+                return list[Convert.ToInt32(index)];
+        }
+
+        throw new EvaluateException($"`{Structure.Text}` is not a struct or tuple");
     }
 
     public override IEnumerable<string> Terms()

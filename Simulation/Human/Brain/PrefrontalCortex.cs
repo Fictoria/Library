@@ -73,11 +73,12 @@ public class PrefrontalCortex : FictoriaActor
                 }
                 var step = _plan.Steps[_step];
                 var action = step.Action;
-                if (_destination is null && action.Proximity is not null)
+                if (_destination is null && action.Target is not null)
                 {
-                    var proximity = _knowledge.Evaluate(action.Proximity) as List<object>;
-                    var x = (double)proximity![0];
-                    var y = (double)proximity![1];
+                    var target = _knowledge.Evaluate(action.Target) as List<object>;
+                    var id = (double)target![0];
+                    var x = (double)target![1];
+                    var y = (double)target![2];
                     var point = new Point(x, y);
                     _destination = point;
                     _body.Tell(new Walk(point));

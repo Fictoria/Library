@@ -102,7 +102,7 @@ public class Parser : LogicBaseVisitor<object>
         var space = @struct.Value["space"].Expression!;
         var cost = @struct.Value["cost"].Expression!;
         var conditions = @struct.Value["conditions"].Expression!;
-        var proximity = @struct.GetOrNull("proximity")?.Expression;
+        var target = @struct.GetOrNull("target")?.Expression;
         var locals = @struct.GetOrNull("locals")?.Expression;
         var terms = @struct.Value["terms"].Expression!;
         var effects = @struct.Value["effects"].Statements!;
@@ -113,7 +113,7 @@ public class Parser : LogicBaseVisitor<object>
             space,
             cost,
             conditions,
-            proximity,
+            target,
             locals,
             terms,
             effects

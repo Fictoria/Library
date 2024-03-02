@@ -10,7 +10,7 @@ public class Action
     public Expression.Expression Space { get; }
     public Expression.Expression Cost { get; }
     public Expression.Expression Conditions { get; }
-    public Expression.Expression? Proximity { get; }
+    public Expression.Expression? Target { get; }
     public Expression.Expression? Locals { get; }
     public Expression.Expression Terms { get; }
     public Scope Effects { get; } // TODO generalize statements?
@@ -21,7 +21,7 @@ public class Action
         Expression.Expression space,
         Expression.Expression cost,
         Expression.Expression conditions,
-        Expression.Expression? proximity,
+        Expression.Expression? target,
         Expression.Expression? locals,
         Expression.Expression terms,
         Scope effects)
@@ -31,7 +31,7 @@ public class Action
         Space = space;
         Cost = cost;
         Conditions = conditions;
-        Proximity = proximity;
+        Target = target;
         Locals = locals;
         Terms = terms;
         Effects = effects;
