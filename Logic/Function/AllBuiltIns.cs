@@ -1,6 +1,7 @@
 using Fictoria.Logic.Function.BuiltIns;
 using Fictoria.Logic.Function.BuiltIns.Double;
 using Fictoria.Logic.Function.BuiltIns.General;
+using Fictoria.Logic.Function.BuiltIns.Tuple;
 using Fictoria.Logic.Function.BuiltIns.Types;
 
 namespace Fictoria.Logic.Function;
@@ -16,7 +17,8 @@ public class AllBuiltIns
         new Sqrt(),
         new Floor(),
         new Ceil(),
-        new Typeof()
+        new Typeof(),
+        new Zip()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);
