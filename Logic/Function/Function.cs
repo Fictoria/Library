@@ -6,6 +6,10 @@ namespace Fictoria.Logic.Function;
 
 public class Function
 {
+    public string Name { get; }
+    public List<Parameter> Parameters { get; }
+    public Expression.Expression Expression { get; }
+
     public Function(string name, List<Parameter> parameters, Expression.Expression expression)
     {
         Name = name;
@@ -13,16 +17,18 @@ public class Function
         Expression = expression;
     }
 
-    public string Name { get; }
-    public List<Parameter> Parameters { get; }
-    public Expression.Expression Expression { get; }
-
     public object Evaluate(Context context, IList<Expression.Expression> arguments)
+    {
+        var evaluated = arguments.Select(a => a.Evaluate(context)).ToList();
+        return Evaluate(context, evaluated);
+    }
+
+    public object Evaluate(Context context, IList<object> arguments)
     {
         context.Push();
         for (var i = 0; i < arguments.Count; i++)
         {
-            var value = arguments[i].Evaluate(context);
+            var value = arguments[i];
             context.Bind(Parameters[i].Name, value);
         }
 

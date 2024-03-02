@@ -18,7 +18,8 @@ public class AllBuiltIns
         new Floor(),
         new Ceil(),
         new Typeof(),
-        new Zip()
+        new Zip(),
+        new Sort()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);

@@ -6,12 +6,12 @@ namespace Fictoria.Logic.Expression;
 
 public class Identifier : Expression
 {
+    public string Name { get; set; }
+
     public Identifier(string text, string name) : base(text)
     {
         Name = name;
     }
-
-    public string Name { get; set; }
 
     public override object Evaluate(Context context)
     {
@@ -34,6 +34,11 @@ public class Identifier : Expression
         if (context.ResolveType(Name, out var type))
         {
             return type;
+        }
+
+        if (context.ResolveFunction(Name, out var func))
+        {
+            return func;
         }
 
         throw new ResolveException($"unknown identifier '{Name}'");

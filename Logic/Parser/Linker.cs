@@ -224,6 +224,12 @@ public class Linker
                     break;
                 }
 
+                if (scope.Functions.TryGetValue(identifier.Name, out var func))
+                {
+                    identifier.Type = func.Expression.Type;
+                    break;
+                }
+
                 throw new ResolveException($"unknown symbol '{identifier.Name}'");
             case Binding binding:
                 if (scope.Bindings.TryGetValue("$", out var found))
