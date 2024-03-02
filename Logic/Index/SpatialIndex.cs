@@ -52,6 +52,11 @@ public class SpatialIndex
         }
     }
 
+    public void Clear()
+    {
+        _tree.Clear();
+    }
+
     public IList<SpatialEntry> Search(Point point, double distance)
     {
         var half = distance / 2.0;

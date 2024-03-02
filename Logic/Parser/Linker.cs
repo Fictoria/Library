@@ -403,7 +403,7 @@ public class Linker
                 switch (infix.Operator)
                 {
                     case "::":
-                        if (infix.Left is Binding && infix.Right is Identifier)
+                        if (infix.Left is Binding)
                         {
                             infix.Type = Type.Type.Boolean;
                             break;

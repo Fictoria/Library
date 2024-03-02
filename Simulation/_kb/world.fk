@@ -43,3 +43,5 @@ instantiate(cf1, campfire).
 
 location(tree1, 5.0, 2.0).
 location(cf1, 2.0, 3.0).
+
+location(self, 0.0, 0.0).

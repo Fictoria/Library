@@ -169,8 +169,7 @@ public class Scope
             facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
         }
         facts[fact.Schema.Name].Add(fact);
-
-
+        
         if (SpatialIndices.TryGetValue(fact.Schema.Name, out var index))
         {
             var schema = fact.Schema;
@@ -183,8 +182,8 @@ public class Scope
             var xIdx = schema.Parameters.FindIndex(p => p.Name == index.XField);
             var yIdx = schema.Parameters.FindIndex(p => p.Name == index.YField);
             var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
-            var x = (double)fact.Arguments[xIdx].Evaluate(context);
-            var y = (double)fact.Arguments[yIdx].Evaluate(context);
+            var x = Convert.ToDouble(fact.Arguments[xIdx].Evaluate(context));
+            var y = Convert.ToDouble(fact.Arguments[yIdx].Evaluate(context));
             index.Insert(id, new Point(x, y), fact);
         }
     }
@@ -301,6 +300,38 @@ public class Scope
         }
 
         Linker.LinkAll(this);
+        RebuildIndices();
+    }
+
+    public void RebuildIndices()
+    {
+        foreach (var idx in SpatialIndices.Values)
+        {
+            idx.Clear();
+        }
+
+        foreach (var set in Facts.Values)
+        {
+            foreach (var fact in set)
+            {
+                if (SpatialIndices.TryGetValue(fact.Schema.Name, out var index))
+                {
+                    var schema = fact.Schema;
+                    if (fact.Schema is SchemaPlaceholder placeholder)
+                    {
+                        schema = Schemata[placeholder.Name];
+                    }
+                    var context = new Context(new Program(this));
+                    var idIdx = schema.Parameters.FindIndex(p => p.Name == index.IdField);
+                    var xIdx = schema.Parameters.FindIndex(p => p.Name == index.XField);
+                    var yIdx = schema.Parameters.FindIndex(p => p.Name == index.YField);
+                    var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
+                    var x = Convert.ToDouble(fact.Arguments[xIdx].Evaluate(context));
+                    var y = Convert.ToDouble(fact.Arguments[yIdx].Evaluate(context));
+                    index.Insert(id, new Point(x, y), fact);
+                }
+            }
+        }
     }
 
     protected bool Equals(Scope other)

@@ -76,7 +76,7 @@ public class PrefrontalCortex : FictoriaActor
                 if (_destination is null && action.Target is not null)
                 {
                     var target = _knowledge.Evaluate(action.Target) as List<object>;
-                    var id = (double)target![0];
+                    var id = target![0].ToString();
                     var x = (double)target![1];
                     var y = (double)target![2];
                     var point = new Point(x, y);

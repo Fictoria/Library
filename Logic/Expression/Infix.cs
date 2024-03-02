@@ -90,8 +90,15 @@ public class Infix : Expression
                 {
                     if (found is Instance instance)
                     {
-                        context.ResolveType(((Identifier)Right).Name, out var type);
-                        return instance.Type.IsA(type);
+                        switch (Right)
+                        {
+                            case Identifier id:
+                                context.ResolveType(id.Name, out var type);
+                                return instance.Type.IsA(type);
+                            case Call call:
+                                var t = (Type.Type)Right.Evaluate(context);
+                                return instance.Type.IsA(t);
+                        }
                     }
 
                     throw new EvaluateException("skolem binding missing for search filter");

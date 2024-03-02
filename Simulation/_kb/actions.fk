@@ -96,7 +96,9 @@ extract(r: resource, m: material) -> {
         location(r, _, _) and
         !location(m, _, _),
     "target":
-        location(r, @x, @y); [x, y],
+        location(self, @xpos, @ypos);
+        &location(@id, @x, @y) using (xpos, ypos) within (1000.0);
+        [id, x, y],
     "locals":
         name = str(m) + "_" + id(),
     "effects":

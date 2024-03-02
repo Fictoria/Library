@@ -15,6 +15,7 @@ public class Parser : LogicBaseVisitor<object>
     {
         var statements = context.statement().Select(Visit);
         var scope = Builder.FromStatements(statements);
+        scope.RebuildIndices();
 
         return new Program(scope);
     }
