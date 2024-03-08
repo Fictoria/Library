@@ -19,7 +19,9 @@ public class AllBuiltIns
         new Ceil(),
         new Typeof(),
         new Zip(),
-        new Sort()
+        new Sort(),
+        new Map(),
+        new Filter()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);

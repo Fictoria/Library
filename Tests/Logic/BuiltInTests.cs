@@ -54,4 +54,36 @@ public class BuiltInTests
         Assert.That(result[3], Is.EqualTo(4));
         Assert.That(result[4], Is.EqualTo(5));
     }
+
+    [Test]
+    public void Map()
+    {
+        var code = """
+                   f() = [2,1,5,4,-2].
+                   g() = map(f(), (x: int) => x * x).
+                   """;
+        var program = Loader.Load(code);
+        var result = (List<object>)program.Evaluate("g()");
+        Assert.That(result[0], Is.EqualTo(4));
+        Assert.That(result[1], Is.EqualTo(1));
+        Assert.That(result[2], Is.EqualTo(25));
+        Assert.That(result[3], Is.EqualTo(16));
+        Assert.That(result[4], Is.EqualTo(4));
+    }
+
+    [Test]
+    public void Filter()
+    {
+        var code = """
+                   f() = [2,1,5,4,-2].
+                   g() = filter(f(), (x: int) => x > 0).
+                   """;
+        var program = Loader.Load(code);
+        var result = (List<object>)program.Evaluate("g()");
+        Assert.That(result.Count, Is.EqualTo(4));
+        Assert.That(result[0], Is.EqualTo(2));
+        Assert.That(result[1], Is.EqualTo(1));
+        Assert.That(result[2], Is.EqualTo(5));
+        Assert.That(result[3], Is.EqualTo(4));
+    }
 }
