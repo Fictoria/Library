@@ -10,10 +10,6 @@
   &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a7368dea_002Db6de_002D4576_002Daf84_002D6cf3aa45ec32/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Lambda" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::105B17FA-DC4A-4909-945D-C22823010FE0::net7.0::Fictoria.Tests.Logic.FunctionTests.Lambda&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::105B17FA-DC4A-4909-945D-C22823010FE0::net7.0::Fictoria.Tests.Logic.BuiltInTests.Map&lt;/TestId&gt;
-    &lt;TestId&gt;NUnit3x::105B17FA-DC4A-4909-945D-C22823010FE0::net7.0::Fictoria.Tests.Logic.BuiltInTests.Filter&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Fictoria/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -133,7 +133,8 @@ public class Planner
                 {
                     var newNode = new Plan(newState, node, step);
                     visited.Add(state.Scope);
-                    var distance = 1.0 - Intuition.Similarity(goalExpression, action, semantics, new Context(newState));
+                    var distance = 1.0 -
+                                   Intuition.Similarity(goalExpression, action, semantics, new Context(newState));
                     var cost = (long)state.Evaluate(action.Cost, bindings) * distance;
                     queue.Enqueue(newNode, priority + cost);
                 }

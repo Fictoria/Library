@@ -97,8 +97,12 @@ extract(r: resource, m: material) -> {
         !location(m, _, _),
     "target":
         location(self, @xpos, @ypos);
-        &location(@id, @x, @y) using (xpos, ypos) within (1000.0);
-        [id, x, y],
+        &location(@id :: typeof(r), @x, @y) using (xpos, ypos) within (1000.0);
+        results = zip(id, x, y);
+        by_distance = map(results, (a: tuple) => a + [distance(xpos, ypos, a[1], a[2])]);
+        sorted = sort(by_distance, (a: tuple) => a[3]);
+        closest = sorted[0];
+        closest,
     "locals":
         name = str(m) + "_" + id(),
     "effects":

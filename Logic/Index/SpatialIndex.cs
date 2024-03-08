@@ -54,6 +54,7 @@ public class SpatialIndex
 
     public void Clear()
     {
+        _cache.Clear();
         _tree.Clear();
     }
 
