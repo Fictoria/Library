@@ -181,6 +181,18 @@ public partial class LogicBaseListener : ILogicListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitStruct([NotNull] LogicParser.StructContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.lambda"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLambda([NotNull] LogicParser.LambdaContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.lambda"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLambda([NotNull] LogicParser.LambdaContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.field"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -204,6 +216,20 @@ public partial class LogicBaseListener : ILogicListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitSeries([NotNull] LogicParser.SeriesContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by the <c>lambdaExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLambdaExpression([NotNull] LogicParser.LambdaExpressionContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by the <c>lambdaExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLambdaExpression([NotNull] LogicParser.LambdaExpressionContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>assignExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.

@@ -1,4 +1,6 @@
 using Fictoria.Logic;
+using Fictoria.Logic.Evaluation;
+using Fictoria.Logic.Function;
 using Fictoria.Tests.Utilities;
 
 namespace Fictoria.Tests.Logic;
@@ -94,5 +96,17 @@ public class FunctionTests
         program.AssertEvaluationResult("fib(8)", 34);
         program.AssertEvaluationResult("fib(9)", 55);
         program.AssertEvaluationResult("fib(10)", 89);
+    }
+
+    [Test]
+    public void Lambda()
+    {
+        var code = """
+                   x() = (x: int) => x * x.
+                   """;
+        var program = Loader.Load(code);
+        var func = (Function)program.Evaluate("x()");
+        var nine = func.Evaluate(new Context(program), new List<object> { 3 });
+        Assert.That(nine, Is.EqualTo(9));
     }
 }

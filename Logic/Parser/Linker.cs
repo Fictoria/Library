@@ -495,6 +495,33 @@ public class Linker
                 LinkExpression(scope, accessor.Structure);
                 LinkExpression(scope, accessor.Indexer);
                 break;
+            case Lambda lambda:
+                foreach (var parameter in lambda.Parameters)
+                {
+                    if (parameter.Type.GetType() != typeof(TypePlaceholder))
+                    {
+                        continue;
+                    }
+
+                    var placeholder = (TypePlaceholder)parameter.Type;
+                    if (scope.Types.TryGetValue(placeholder.Name, out var found1))
+                    {
+                        parameter.Type = found1;
+                        scope.Bindings[parameter.Name] = found1;
+                        continue;
+                    }
+
+                    if (scope.Bindings.TryGetValue(placeholder.Name, out var binding))
+                    {
+                        parameter.Type = (Type.Type)binding;
+                        scope.Bindings[parameter.Name] = (Type.Type)binding;
+                        continue;
+                    }
+
+                    throw new ParseException($"unknown lambda parameter type '{placeholder.Name}'");
+                }
+                LinkExpression(scope, lambda.Implementation);
+                break;
             default:
                 throw new ParseException($"unknown expression '{expression}'");
         }

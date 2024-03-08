@@ -62,7 +62,11 @@ struct
         field* (COMMA field)*
         CLOSE_BRACE
     ;
-    
+
+lambda
+    :   OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN DOUBLE_ARROW series
+    ;
+
 field
     :   literalString COLON (statement+ | series)
     ;
@@ -82,6 +86,7 @@ expression
     |   assign                                                          # assignExpression
     |   if                                                              # ifExpression
     |   struct                                                          # structExpression
+    |   lambda                                                          # lambdaExpression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op='::' right=expression                        # infixExpression
     |   left=expression op='^' right=expression                         # infixExpression
@@ -199,6 +204,10 @@ INT
 
 FLOAT
     :   '-'? [0-9]+ PERIOD [0-9]+
+    ;
+
+DOUBLE_ARROW
+    :   '=>'
     ;
 
 ARROW

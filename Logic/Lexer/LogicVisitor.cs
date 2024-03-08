@@ -105,6 +105,12 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStruct([NotNull] LogicParser.StructContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LogicParser.lambda"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLambda([NotNull] LogicParser.LambdaContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LogicParser.field"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -116,6 +122,13 @@ public interface ILogicVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitSeries([NotNull] LogicParser.SeriesContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>lambdaExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLambdaExpression([NotNull] LogicParser.LambdaExpressionContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>assignExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.

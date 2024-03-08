@@ -152,6 +152,16 @@ public interface ILogicListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitStruct([NotNull] LogicParser.StructContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="LogicParser.lambda"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLambda([NotNull] LogicParser.LambdaContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="LogicParser.lambda"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLambda([NotNull] LogicParser.LambdaContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="LogicParser.field"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -171,6 +181,18 @@ public interface ILogicListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitSeries([NotNull] LogicParser.SeriesContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>lambdaExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLambdaExpression([NotNull] LogicParser.LambdaExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>lambdaExpression</c>
+	/// labeled alternative in <see cref="LogicParser.expression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLambdaExpression([NotNull] LogicParser.LambdaExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>assignExpression</c>
 	/// labeled alternative in <see cref="LogicParser.expression"/>.

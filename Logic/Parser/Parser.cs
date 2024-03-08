@@ -121,6 +121,13 @@ public class Parser : LogicBaseVisitor<object>
         );
     }
 
+    public override object VisitLambda(LogicParser.LambdaContext context)
+    {
+        var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
+        var series = (Series)Visit(context.series());
+        return new Lambda(context.GetText(), parameters, series);
+    }
+
     public override object VisitStruct(LogicParser.StructContext context)
     {
         var fields = context.field().Select(f => ((string, Field))Visit(f)).ToList();
