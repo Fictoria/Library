@@ -11,4 +11,8 @@ closest(from: object, to: object) =
     by_distance = map(results, (a: tuple) => a + [distance(xpos, ypos, a[1], a[2])]);
     sorted = sort(by_distance, (a: tuple) => a[3]);
     found = sorted[0];
-    found.
+    {
+        "id": found[0],
+        "point": [found[1], found[2]],
+        "distance": found[3]
+    }.

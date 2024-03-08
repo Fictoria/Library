@@ -13,19 +13,23 @@ namespace Fictoria.Simulation.Human.Brain;
 public class PrefrontalCortex : FictoriaActor
 {
     private readonly Network _network = Network.LoadFromFile("../../../_data/semnet.json");
+    private IActorRef? _reality;
     private IActorRef? _body;
     private IActorRef? _brain;
+    private string _destinationId;
     private Point? _destination;
     private string? _goal;
     private Logic.Program? _knowledge;
     private Plan? _plan;
     private Planner? _planner;
 
+    private bool _acting = false;
     private Point? _position;
     private int _step = -1;
 
     protected override void PreStart()
     {
+        _reality = GetReality();
         _brain = GetActor("..");
         _body = GetActor("../../body");
         SubscribeToTime();
@@ -66,8 +70,13 @@ public class PrefrontalCortex : FictoriaActor
                     }
                 }
                 break;
+            case ActorReceipt ar:
+                ar.Actor.Tell(new PerformAction(_plan.Steps[_step].Action.Name));
+                _step++;
+                _acting = false;
+                break;
             case Tick:
-                if (_knowledge is null || _goal is null || _plan is null)
+                if (_acting || _knowledge is null || _goal is null || _plan is null)
                 {
                     return;
                 }
@@ -75,18 +84,20 @@ public class PrefrontalCortex : FictoriaActor
                 var action = step.Action;
                 if (_destination is null && action.Target is not null)
                 {
-                    var target = _knowledge.Evaluate(action.Target) as List<object>;
-                    var id = target![0].ToString();
-                    var x = (double)target![1];
-                    var y = (double)target![2];
+                    var target = (Dictionary<string, object>)_knowledge.Evaluate(action.Target);
+                    var id = target["id"].ToString();
+                    var x = (double)((List<object>)target["point"])[0];
+                    var y = (double)((List<object>)target["point"])[1];
+                    var distance = (double)target["distance"];
                     var point = new Point(x, y);
                     _destination = point;
+                    _destinationId = id;
                     _body.Tell(new Walk(point));
                     // TODO this should be a helper/utility function somewhere
                     var bindings = string.Join(", ",
                         step.Bindings.Take(step.Action.Parameters.Count).Select(p => p.ToString()));
                     _log.Info($"action {step.Action.Name}({bindings})");
-                    _log.Info($"destination ({x}, {y})");
+                    _log.Info($"destination to ({id}) at ({x}, {y}) from distance ({distance})");
                 }
                 else if (_destination is not null)
                 {
@@ -100,7 +111,9 @@ public class PrefrontalCortex : FictoriaActor
                         _destination = null;
                         _body.Tell(new Stop());
                         _log.Info($"arrived ({_position.X}, {_position.Y})");
-                        _step++;
+                        _reality.Tell(new ActorRequest(_destinationId));
+                        _acting = true;
+                        // _step++;
                     }
                 }
                 break;
