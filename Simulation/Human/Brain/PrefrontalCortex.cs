@@ -6,33 +6,33 @@ using Fictoria.Planning.Semantic;
 using Fictoria.Simulation.Common;
 using Fictoria.Simulation.Human.Messages;
 using Fictoria.Simulation.Nature.Messages;
+using Action = Fictoria.Logic.Action.Action;
 
 namespace Fictoria.Simulation.Human.Brain;
 
 // TODO decompose the planning pieces of this into the dorsolateral prefrontal cortex
-public class PrefrontalCortex : FictoriaActor
+public class PrefrontalCortex : BrainActor
 {
     private readonly Network _network = Network.LoadFromFile("../../../_data/semnet.json");
-    private IActorRef? _reality;
     private IActorRef? _body;
-    private IActorRef? _brain;
-    private string _destinationId;
-    private Point? _destination;
+    private Location? _destination;
     private string? _goal;
     private Logic.Program? _knowledge;
     private Plan? _plan;
     private Planner? _planner;
-
-    private bool _acting = false;
     private Point? _position;
+    private IActorRef? _reality;
+
+    private State _state = State.Idle;
     private int _step = -1;
+    private IActorRef? _target;
 
     protected override void PreStart()
     {
         _reality = GetReality();
-        _brain = GetActor("..");
         _body = GetActor("../../body");
         SubscribeToTime();
+        SubscribeToKnowledge();
     }
 
     protected override void OnReceive(object message)
@@ -45,84 +45,87 @@ public class PrefrontalCortex : FictoriaActor
             case Goal g:
                 _goal = g.Predicate;
                 _log.Info($"received goal {_goal}");
-                requestKnowledge();
-                _log.Info("requesting knowledge");
                 break;
             case KnowledgeReceipt rk:
                 _knowledge = rk.Knowledge;
-                _log.Info("received knowledge");
-                if (isGoalAchieved())
+                break;
+            case ActorReceipt ar:
+                _target = ar.Actor;
+                break;
+            case CompleteAction:
+                _step++;
+                _state = State.Ready;
+                _target = null;
+                break;
+            case Tick:
+                tick();
+                break;
+        }
+    }
+
+    private void tick()
+    {
+        switch (_state)
+        {
+            case State.Idle:
+                if (_knowledge is not null && _goal is not null && _plan is null)
                 {
-                    // done
-                    _log.Info("goal already achieved");
-                }
-                else
-                {
-                    _log.Info("planning for goal");
+                    _state = State.Planning;
                     if (planForGoal())
                     {
+                        _state = State.Ready;
                         _log.Info($"plan found with {_plan.Steps.Count} steps");
                         _step = 0;
                     }
                     else
                     {
+                        _state = State.Idle;
                         _log.Info("plan not found");
                     }
                 }
                 break;
-            case ActorReceipt ar:
-                ar.Actor.Tell(new PerformAction(_plan.Steps[_step].Action.Name));
-                _step++;
-                _acting = false;
-                break;
-            case Tick:
-                if (_acting || _knowledge is null || _goal is null || _plan is null)
-                {
-                    return;
-                }
+            case State.Ready:
                 var step = _plan.Steps[_step];
                 var action = step.Action;
-                if (_destination is null && action.Target is not null)
+                var location = getTarget(action);
+                _destination = location;
+                _body.Tell(new Walk(_destination.Point));
+                // TODO this should be a helper/utility function somewhere
+                var bindings = string.Join(", ",
+                    step.Bindings.Take(step.Action.Parameters.Count).Select(p => p.ToString()));
+                _log.Info($"action {step.Action.Name}({bindings})");
+                _state = State.Walking;
+                break;
+            case State.Walking:
+                var distance = _position?.DistanceTo(_destination.Point);
+                if (distance is not null)
                 {
-                    var target = (Dictionary<string, object>)_knowledge.Evaluate(action.Target);
-                    var id = target["id"].ToString();
-                    var x = (double)((List<object>)target["point"])[0];
-                    var y = (double)((List<object>)target["point"])[1];
-                    var distance = (double)target["distance"];
-                    var point = new Point(x, y);
-                    _destination = point;
-                    _destinationId = id;
-                    _body.Tell(new Walk(point));
-                    // TODO this should be a helper/utility function somewhere
-                    var bindings = string.Join(", ",
-                        step.Bindings.Take(step.Action.Parameters.Count).Select(p => p.ToString()));
-                    _log.Info($"action {step.Action.Name}({bindings})");
-                    _log.Info($"destination to ({id}) at ({x}, {y}) from distance ({distance})");
+                    _log.Info($"walking, distance {distance}");
                 }
-                else if (_destination is not null)
+                if (distance < 0.5)
                 {
-                    var distance = _position?.DistanceTo(_destination);
-                    if (distance is not null)
-                    {
-                        _log.Info($"walking, distance {distance}");
-                    }
-                    if (distance < 0.5)
-                    {
-                        _destination = null;
-                        _body.Tell(new Stop());
-                        _log.Info($"arrived ({_position.X}, {_position.Y})");
-                        _reality.Tell(new ActorRequest(_destinationId));
-                        _acting = true;
-                        // _step++;
-                    }
+                    _destination = null;
+                    _body.Tell(new Stop());
+                    _reality.Tell(new ActorRequest(_destination.Id));
+                    _state = State.Acting;
+                    _log.Info($"arrived ({_position.X}, {_position.Y})");
                 }
+                break;
+            case State.Acting:
+                _target.Tell(new PerformAction(_plan.Steps[_step].Action.Name));
                 break;
         }
     }
 
-    private void requestKnowledge()
+    private Location getTarget(Action action)
     {
-        _brain.Tell(new KnowledgeRequest());
+        var target = (Dictionary<string, object>)_knowledge.Evaluate(action.Target);
+        var id = target["id"].ToString();
+        var x = (double)((List<object>)target["point"])[0];
+        var y = (double)((List<object>)target["point"])[1];
+        var distance = (double)target["distance"];
+        _log.Info($"destination to ({id}) at ({x}, {y}) from distance ({distance})");
+        return new Location(id, new Point(x, y));
     }
 
     private bool isGoalAchieved()
@@ -148,5 +151,14 @@ public class PrefrontalCortex : FictoriaActor
             return true;
         }
         return false;
+    }
+
+    private enum State
+    {
+        Idle,
+        Planning,
+        Ready,
+        Walking,
+        Acting
     }
 }
