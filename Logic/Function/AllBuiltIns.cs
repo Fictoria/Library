@@ -21,7 +21,13 @@ public class AllBuiltIns
         new Zip(),
         new Sort(),
         new Map(),
-        new Filter()
+        new Filter(),
+        new Sin(),
+        new Cos(),
+        new Tan(),
+        new Arcsin(),
+        new Arccos(),
+        new Arctan()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);
