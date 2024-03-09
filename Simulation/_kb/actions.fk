@@ -81,7 +81,7 @@ gather(m: material) -> {
         !carrying(_) and
         location(m, _, _),
     "target":
-        closest(self, r),
+        closest(self, m),
     "effects":
         carrying(m).
         ~location(m, _, _).
