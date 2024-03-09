@@ -6,10 +6,18 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=39baa3b6_002Dff1a_002D4624_002D9272_002D710d2d8592d3/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3e68faa8_002Dbeea_002D4b5a_002Dbb35_002D72f561050a22/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AngularDiameter #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=707fe995_002D6562_002D4d6e_002Db391_002D853eaf2cb6f8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AngularDiameter" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::105B17FA-DC4A-4909-945D-C22823010FE0::net7.0::Fictoria.Tests.Logic.BuiltInTests.AngularDiameter&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8d218d19_002D461b_002D48cd_002D8fdc_002Dc338762dde95/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SpatialIndex #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a7368dea_002Db6de_002D4576_002Daf84_002D6cf3aa45ec32/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Lambda" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a7368dea_002Db6de_002D4576_002Daf84_002D6cf3aa45ec32/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Lambda" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Fictoria/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

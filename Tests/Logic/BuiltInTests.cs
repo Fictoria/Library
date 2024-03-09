@@ -86,4 +86,16 @@ public class BuiltInTests
         Assert.That(result[2], Is.EqualTo(5));
         Assert.That(result[3], Is.EqualTo(4));
     }
+
+    [Test]
+    public void AngularDiameter()
+    {
+        var code = """
+                   angular_diameter(dist: float, diam: float) =
+                       2.0 * arctan(diam / (2.0 * dist)).
+                   """;
+        var program = Loader.Load(code);
+        var result = program.Evaluate("angular_diameter(100.0, 0.3)");
+        Assert.That(result, Is.EqualTo(0.003).Within(0.0001));
+    }
 }
