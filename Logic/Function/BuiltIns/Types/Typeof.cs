@@ -27,6 +27,8 @@ public class Typeof : BuiltIn
         {
             case Instance instance:
                 return instance.Type;
+            case Logic.Type.Type type:
+                return type;
         }
         throw new EvaluateException($"unknown input `{input}`");
     }

@@ -104,11 +104,11 @@ public class PrefrontalCortex : BrainActor
                 }
                 if (distance < 0.5)
                 {
-                    _destination = null;
                     _body.Tell(new Stop());
                     _reality.Tell(new ActorRequest(_destination.Id));
                     _state = State.Acting;
                     _log.Info($"arrived ({_position.X}, {_position.Y})");
+                    _destination = null;
                 }
                 break;
             case State.Acting:
