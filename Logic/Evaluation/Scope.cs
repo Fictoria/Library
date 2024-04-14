@@ -1,4 +1,6 @@
+using Fictoria.Domain.Locality;
 using Fictoria.Logic.Fact;
+using Fictoria.Logic.Index;
 using Fictoria.Logic.Parser;
 using Fictoria.Logic.Search;
 using Fictoria.Logic.Type;
@@ -7,11 +9,25 @@ namespace Fictoria.Logic.Evaluation;
 
 public class Scope
 {
+    public IDictionary<string, Type.Type> Types { get; }
+    public IDictionary<Type.Type, ISet<Type.Type>> TypesByParent { get; }
+    public IDictionary<string, Schema> Schemata { get; }
+    public IDictionary<string, SpatialIndex> SpatialIndices { get; }
+    public IDictionary<string, ISet<Fact.Fact>> Facts { get; }
+    public ISet<Antifact> Antifacts { get; }
+    public IDictionary<string, Instance> Instances { get; }
+    public IDictionary<string, ISet<string>> InstancesByType { get; }
+    public IDictionary<string, Function.Function> Functions { get; }
+    public IDictionary<string, Action.Action> Actions { get; }
+    public IDictionary<string, object> Bindings { get; }
+    public IList<Query> Queries { get; }
+
     public Scope()
     {
         Types = new Dictionary<string, Type.Type>();
         TypesByParent = new Dictionary<Type.Type, ISet<Type.Type>>();
         Schemata = new Dictionary<string, Schema>();
+        SpatialIndices = new Dictionary<string, SpatialIndex>();
         Facts = new Dictionary<string, ISet<Fact.Fact>>();
         Antifacts = new HashSet<Antifact>();
         Instances = new Dictionary<string, Instance>();
@@ -40,7 +56,6 @@ public class Scope
         {
             instancesClone[name] = new Instance(instance);
         }
-
         Instances = instancesClone;
 
         var instancesByTypeClone = new Dictionary<string, ISet<string>>();
@@ -48,8 +63,14 @@ public class Scope
         {
             instancesByTypeClone[key] = new HashSet<string>(value);
         }
-
         InstancesByType = instancesByTypeClone;
+
+        var spatialIndicesClone = new Dictionary<string, SpatialIndex>();
+        foreach (var (key, value) in scope.SpatialIndices)
+        {
+            spatialIndicesClone[key] = new SpatialIndex(value);
+        }
+        SpatialIndices = spatialIndicesClone;
 
         var factsClone = new Dictionary<string, ISet<Fact.Fact>>();
         foreach (var (schema, set) in scope.Facts)
@@ -61,18 +82,6 @@ public class Scope
         Antifacts = new HashSet<Antifact>();
         Queries = new List<Query>();
     }
-
-    public IDictionary<string, Type.Type> Types { get; }
-    public IDictionary<Type.Type, ISet<Type.Type>> TypesByParent { get; }
-    public IDictionary<string, Schema> Schemata { get; }
-    public IDictionary<string, ISet<Fact.Fact>> Facts { get; }
-    public ISet<Antifact> Antifacts { get; }
-    public IDictionary<string, Instance> Instances { get; }
-    public IDictionary<string, ISet<string>> InstancesByType { get; }
-    public IDictionary<string, Function.Function> Functions { get; }
-    public IDictionary<string, Action.Action> Actions { get; }
-    public IDictionary<string, object> Bindings { get; }
-    public IList<Query> Queries { get; }
 
     public void Resolve(Context context)
     {
@@ -143,9 +152,13 @@ public class Scope
         Types[type.Name] = type;
     }
 
-    public void DefineSchema(Schema schema)
+    public void DefineSchema(Schema schema, SpatialIndex? spatialIndex = null)
     {
         Schemata[schema.Name] = schema;
+        if (spatialIndex is not null)
+        {
+            SpatialIndices[schema.Name] = spatialIndex;
+        }
     }
 
     public void DefineFact(Fact.Fact fact)
@@ -155,14 +168,38 @@ public class Scope
         {
             facts[fact.Schema.Name] = new HashSet<Fact.Fact>();
         }
-
         facts[fact.Schema.Name].Add(fact);
+        
+        if (SpatialIndices.TryGetValue(fact.Schema.Name, out var index))
+        {
+            var schema = fact.Schema;
+            if (fact.Schema is SchemaPlaceholder placeholder)
+            {
+                schema = Schemata[placeholder.Name];
+            }
+            var context = new Context(new Program(this));
+            var idIdx = schema.Parameters.FindIndex(p => p.Name == index.IdField);
+            var xIdx = schema.Parameters.FindIndex(p => p.Name == index.XField);
+            var yIdx = schema.Parameters.FindIndex(p => p.Name == index.YField);
+            var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
+            var x = Convert.ToDouble(fact.Arguments[xIdx].Evaluate(context));
+            var y = Convert.ToDouble(fact.Arguments[yIdx].Evaluate(context));
+            index.Insert(id, new Point(x, y), fact);
+        }
     }
 
     public void UndefineFact(Fact.Fact fact)
     {
         var schema = fact.Schema.Name;
         Facts[schema].Remove(fact);
+
+        if (SpatialIndices.TryGetValue(fact.Schema.Name, out var index))
+        {
+            var context = new Context(new Program(this));
+            var idIdx = fact.Schema.Parameters.FindIndex(p => p.Name == index.IdField);
+            var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
+            index.Remove(id);
+        }
     }
 
     public void DefineAntifact(Antifact fact)
@@ -206,7 +243,8 @@ public class Scope
 
         foreach (var (_, s) in other.Schemata)
         {
-            DefineSchema(s);
+            other.SpatialIndices.TryGetValue(s.Name, out var spatialIndex);
+            DefineSchema(s, spatialIndex);
         }
         // TODO functions and actions
 
@@ -225,15 +263,7 @@ public class Scope
             DefineInstance(t);
         }
 
-        // TODO
-        foreach (var fs in other.Facts)
-        {
-            foreach (var f in fs.Value)
-            {
-                DefineFact(f);
-            }
-        }
-
+        // undefine first
         var program = new Program(this);
         var context = new Context(program);
         foreach (var af in other.Antifacts)
@@ -242,6 +272,15 @@ public class Scope
             foreach (var f in facts)
             {
                 UndefineFact(f);
+            }
+        }
+
+        // TODO
+        foreach (var fs in other.Facts)
+        {
+            foreach (var f in fs.Value)
+            {
+                DefineFact(f);
             }
         }
 
@@ -261,6 +300,38 @@ public class Scope
         }
 
         Linker.LinkAll(this);
+        RebuildIndices();
+    }
+
+    public void RebuildIndices()
+    {
+        foreach (var idx in SpatialIndices.Values)
+        {
+            idx.Clear();
+        }
+
+        foreach (var set in Facts.Values)
+        {
+            foreach (var fact in set)
+            {
+                if (SpatialIndices.TryGetValue(fact.Schema.Name, out var index))
+                {
+                    var schema = fact.Schema;
+                    if (fact.Schema is SchemaPlaceholder placeholder)
+                    {
+                        schema = Schemata[placeholder.Name];
+                    }
+                    var context = new Context(new Program(this));
+                    var idIdx = schema.Parameters.FindIndex(p => p.Name == index.IdField);
+                    var xIdx = schema.Parameters.FindIndex(p => p.Name == index.XField);
+                    var yIdx = schema.Parameters.FindIndex(p => p.Name == index.YField);
+                    var id = fact.Arguments[idIdx].Evaluate(context).ToString()!;
+                    var x = Convert.ToDouble(fact.Arguments[xIdx].Evaluate(context));
+                    var y = Convert.ToDouble(fact.Arguments[yIdx].Evaluate(context));
+                    index.Insert(id, new Point(x, y), fact);
+                }
+            }
+        }
     }
 
     protected bool Equals(Scope other)

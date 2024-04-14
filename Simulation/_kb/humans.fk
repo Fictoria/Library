@@ -1,0 +1,5 @@
+human: object.
+
+instantiate(self, human).
+
+location(self, 0.0, 0.0).

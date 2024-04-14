@@ -115,7 +115,10 @@ public class Planner
                 }
 
                 var context = new Context(state);
-                state.Evaluate(context, action.Locals, bindings);
+                if (action.Locals is not null)
+                {
+                    state.Evaluate(context, action.Locals, bindings);
+                }
                 foreach (var (k, v) in context.Stack.Peek().Bindings)
                 {
                     // TODO fix how built-in Str() works (can't ToString types)
@@ -130,7 +133,8 @@ public class Planner
                 {
                     var newNode = new Plan(newState, node, step);
                     visited.Add(state.Scope);
-                    var distance = 1.0 - Intuition.Similarity(goalExpression, action, semantics, new Context(newState));
+                    var distance = 1.0 -
+                                   Intuition.Similarity(goalExpression, action, semantics, new Context(newState));
                     var cost = (long)state.Evaluate(action.Cost, bindings) * distance;
                     queue.Enqueue(newNode, priority + cost);
                 }

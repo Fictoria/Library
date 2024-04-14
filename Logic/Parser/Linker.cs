@@ -224,6 +224,12 @@ public class Linker
                     break;
                 }
 
+                if (scope.Functions.TryGetValue(identifier.Name, out var func))
+                {
+                    identifier.Type = func.Expression.Type;
+                    break;
+                }
+
                 throw new ResolveException($"unknown symbol '{identifier.Name}'");
             case Binding binding:
                 if (scope.Bindings.TryGetValue("$", out var found))
@@ -326,7 +332,7 @@ public class Linker
                     break;
                 }
 
-                if (Builtins.ByName.TryGetValue(call.Functor, out var builtin))
+                if (AllBuiltIns.ByName.TryGetValue(call.Functor, out var builtin))
                 {
                     foreach (var e in call.Arguments)
                     {
@@ -388,7 +394,7 @@ public class Linker
                     infix.BindingName = infix.Right.BindingName;
                 }
 
-                if (!infix.Left.Type.Equals(infix.Right.Type) && infix.Operator != "::")
+                if (!infix.Left.Type.Equals(infix.Right.Type) && infix.Operator != "::" && infix.Operator != "^")
                 {
                     throw new ParseException(
                         $"mismatched types '{infix.Left.Type}' and '{infix.Right.Type}' for '{infix.Operator}' infix expression");
@@ -397,7 +403,7 @@ public class Linker
                 switch (infix.Operator)
                 {
                     case "::":
-                        if (infix.Left is Binding && infix.Right is Identifier)
+                        if (infix.Left is Binding)
                         {
                             infix.Type = Type.Type.Boolean;
                             break;
@@ -488,6 +494,33 @@ public class Linker
             case Accessor accessor:
                 LinkExpression(scope, accessor.Structure);
                 LinkExpression(scope, accessor.Indexer);
+                break;
+            case Lambda lambda:
+                foreach (var parameter in lambda.Parameters)
+                {
+                    if (parameter.Type.GetType() != typeof(TypePlaceholder))
+                    {
+                        continue;
+                    }
+
+                    var placeholder = (TypePlaceholder)parameter.Type;
+                    if (scope.Types.TryGetValue(placeholder.Name, out var found1))
+                    {
+                        parameter.Type = found1;
+                        scope.Bindings[parameter.Name] = found1;
+                        continue;
+                    }
+
+                    if (scope.Bindings.TryGetValue(placeholder.Name, out var binding))
+                    {
+                        parameter.Type = (Type.Type)binding;
+                        scope.Bindings[parameter.Name] = (Type.Type)binding;
+                        continue;
+                    }
+
+                    throw new ParseException($"unknown lambda parameter type '{placeholder.Name}'");
+                }
+                LinkExpression(scope, lambda.Implementation);
                 break;
             default:
                 throw new ParseException($"unknown expression '{expression}'");

@@ -23,7 +23,6 @@ deposit(b: building, m: material) -> {
         consumes(b, m) and
         !contains(b, m) and
         carrying(m),
-    "locals": _,
     "effects":
         contains(b, m).
         ~carrying(_).
@@ -35,8 +34,7 @@ drop(t: thing) -> {
     "space":
         &carrying(@c); c,
     "conditions":
-        true; carrying(t), // TODO just `carrying(t)` is ambiguous...probably need to tweak the grammar
-    "locals": _,
+        carrying(t),
     "effects":
         ~carrying(t).
          // thing should now be at current location
@@ -47,7 +45,7 @@ light(c: campfire) -> {
     "cost": 2,
     "terms": ["campfire", "wood", "fire"],
     "space":
-        true; instances(campfire),
+        instances(campfire),
     "conditions":
         location(c, _, _) and
         contains(c, wood),
@@ -69,7 +67,6 @@ warm(f: fire) -> {
     "conditions":
         !warm(self) and
         location(f, _, _),
-    "locals": _,
     "effects":
         warm(self).
 }.
@@ -79,11 +76,12 @@ gather(m: material) -> {
     "cost": 2, // TODO distance
     "terms": ["carrying", str(m)],
     "space":
-        true; instances(material),
+        instances(material),
     "conditions":
         !carrying(_) and
         location(m, _, _),
-    "locals": _,
+    "target":
+        closest(self, m),
     "effects":
         carrying(m).
         ~location(m, _, _).
@@ -99,6 +97,8 @@ extract(r: resource, m: material) -> {
         provides(r, m) and
         location(r, _, _) and
         !location(m, _, _),
+    "target":
+        closest(self, r),
     "locals":
         name = str(m) + "_" + id(),
     "effects":

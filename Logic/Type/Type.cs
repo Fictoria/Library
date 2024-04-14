@@ -30,7 +30,7 @@ public class Type
     public static readonly Type Tuple     = new("tuple");
     public static readonly HashSet<Type> BuiltIns = new()
     {
-        Nothing, Anything, Boolean, Int, Float, String, Symbol, Object, Struct, Schema, Function
+        Nothing, Anything, Boolean, Int, Float, String, Symbol, Object, Struct, Schema, Function, Tuple
     };
     
     public string Name { get; }

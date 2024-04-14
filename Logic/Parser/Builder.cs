@@ -29,7 +29,7 @@ public class Builder
                     scope.DefineInstance(instance);
                     break;
                 case Schema schema:
-                    scope.DefineSchema(schema);
+                    scope.DefineSchema(schema, schema.Index);
                     break;
                 case Fact.Fact fact:
                     if (fact.Schema.Name == "instance")

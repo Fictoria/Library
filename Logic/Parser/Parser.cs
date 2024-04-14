@@ -2,6 +2,7 @@ using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Expression;
 using Fictoria.Logic.Fact;
+using Fictoria.Logic.Index;
 using Fictoria.Logic.Lexer;
 using Fictoria.Logic.Type;
 using Tuple = Fictoria.Logic.Expression.Tuple;
@@ -14,6 +15,7 @@ public class Parser : LogicBaseVisitor<object>
     {
         var statements = context.statement().Select(Visit);
         var scope = Builder.FromStatements(statements);
+        scope.RebuildIndices();
 
         return new Program(scope);
     }
@@ -47,8 +49,28 @@ public class Parser : LogicBaseVisitor<object>
     {
         var identifier = context.identifier().IDENTIFIER().GetText();
         var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
+        var indices = context.index().Select(i => (SpatialIndex)Visit(i)).ToList();
+        SpatialIndex? index = null;
+        if (indices.Count > 0)
+        {
+            index = indices[0];
+        }
 
-        return new Schema(identifier, parameters);
+        return new Schema(identifier, parameters, index);
+    }
+
+    public override object VisitIndex(LogicParser.IndexContext context)
+    {
+        var spatial = context.spatial is not null;
+        if (spatial)
+        {
+            var id = (Identifier)Visit(context.identifier()[0]);
+            var x = (Identifier)Visit(context.identifier()[1]);
+            var y = (Identifier)Visit(context.identifier()[2]);
+            return new SpatialIndex(id.Name, x.Name, y.Name);
+        }
+
+        throw new ParseException($"non-spatial indices not supported yet at '{context.GetText()}'");
     }
 
     public override object VisitFact(LogicParser.FactContext context)
@@ -81,7 +103,8 @@ public class Parser : LogicBaseVisitor<object>
         var space = @struct.Value["space"].Expression!;
         var cost = @struct.Value["cost"].Expression!;
         var conditions = @struct.Value["conditions"].Expression!;
-        var locals = @struct.Value["locals"].Expression!;
+        var target = @struct.GetOrNull("target")?.Expression;
+        var locals = @struct.GetOrNull("locals")?.Expression;
         var terms = @struct.Value["terms"].Expression!;
         var effects = @struct.Value["effects"].Statements!;
 
@@ -91,10 +114,18 @@ public class Parser : LogicBaseVisitor<object>
             space,
             cost,
             conditions,
+            target,
             locals,
             terms,
             effects
         );
+    }
+
+    public override object VisitLambda(LogicParser.LambdaContext context)
+    {
+        var parameters = context.parameter().Select(p => (Parameter)Visit(p)).ToList();
+        var series = (Series)Visit(context.series());
+        return new Lambda(context.GetText(), parameters, series);
     }
 
     public override object VisitStruct(LogicParser.StructContext context)
@@ -204,8 +235,21 @@ public class Parser : LogicBaseVisitor<object>
         var many = context.many() is not null;
         var identifier = context.identifier().IDENTIFIER().GetText();
         var arguments = context.expression().Select(a => (Expression.Expression)Visit(a)).ToList();
+        Using? @using = null;
+        if (context.@using() is not null)
+        {
+            @using = (Using)Visit(context.@using());
+        }
 
-        return new Call(context.GetText(), identifier, arguments, many);
+        return new Call(context.GetText(), identifier, arguments, many, @using);
+    }
+
+    public override object VisitUsing(LogicParser.UsingContext context)
+    {
+        var point = context.expression().Select(e => (Expression.Expression)Visit(e)).ToList();
+        var distance = (Expression.Expression)Visit(context.threshold);
+
+        return new Using(point[0], point[1], distance);
     }
 
     public override object VisitUnaryExpression(LogicParser.UnaryExpressionContext context)

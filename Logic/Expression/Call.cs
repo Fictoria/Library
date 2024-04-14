@@ -2,22 +2,26 @@ using System.Diagnostics.CodeAnalysis;
 using Fictoria.Logic.Evaluation;
 using Fictoria.Logic.Exceptions;
 using Fictoria.Logic.Function;
+using Fictoria.Logic.Index;
 using Fictoria.Logic.Search;
 
 namespace Fictoria.Logic.Expression;
 
 public class Call : Expression
 {
-    public Call(string text, string functor, IList<Expression> arguments, bool many = false) : base(text)
+    public bool Many { get; }
+    public string Functor { get; }
+    public IList<Expression> Arguments { get; }
+    public Using? Using { get; }
+
+    public Call(string text, string functor, IList<Expression> arguments, bool many = false,
+        Using? @using = null) : base(text)
     {
         Functor = functor;
         Arguments = arguments;
         Many = many;
+        Using = @using;
     }
-
-    public bool Many { get; }
-    public string Functor { get; }
-    public IList<Expression> Arguments { get; }
 
     public override object Evaluate(Context context)
     {
@@ -35,7 +39,7 @@ public class Call : Expression
         {
             if (Many)
             {
-                return FactSearch.SearchAll(context, schema, Arguments);
+                return FactSearch.SearchAll(context, schema, Arguments, Using);
             }
 
             return FactSearch.Search(context, schema, Arguments);
@@ -46,7 +50,7 @@ public class Call : Expression
             return function.Evaluate(context, Arguments);
         }
 
-        if (Builtins.ByName.TryGetValue(Functor, out var builtin))
+        if (AllBuiltIns.ByName.TryGetValue(Functor, out var builtin))
         {
             return builtin.Evaluate(context, Arguments);
         }

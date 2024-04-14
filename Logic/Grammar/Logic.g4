@@ -30,8 +30,12 @@ instance
     ;
 
 schema
-    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN
+    :   identifier OPEN_PAREN parameter (COMMA parameter)* CLOSE_PAREN index*
         PERIOD
+    ;
+
+index
+    :   'with' spatial='spatial'? 'index' OPEN_PAREN identifier (COMMA identifier)* CLOSE_PAREN
     ;
     
 fact
@@ -58,7 +62,11 @@ struct
         field* (COMMA field)*
         CLOSE_BRACE
     ;
-    
+
+lambda
+    :   OPEN_PAREN parameter? (COMMA parameter)* CLOSE_PAREN DOUBLE_ARROW series
+    ;
+
 field
     :   literalString COLON (statement+ | series)
     ;
@@ -78,6 +86,7 @@ expression
     |   assign                                                          # assignExpression
     |   if                                                              # ifExpression
     |   struct                                                          # structExpression
+    |   lambda                                                          # lambdaExpression
     |   op=('-' | '!') expression                                       # unaryExpression
     |   left=expression op='::' right=expression                        # infixExpression
     |   left=expression op='^' right=expression                         # infixExpression
@@ -109,7 +118,12 @@ assign
     ;
 
 call
-    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
+    :   many? identifier OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN using?
+    ;
+    
+using
+    :   'using' OPEN_PAREN expression? (COMMA expression)* CLOSE_PAREN
+        'within' OPEN_PAREN threshold=expression CLOSE_PAREN
     ;
 
 parenthetical
@@ -190,6 +204,10 @@ INT
 
 FLOAT
     :   '-'? [0-9]+ PERIOD [0-9]+
+    ;
+
+DOUBLE_ARROW
+    :   '=>'
     ;
 
 ARROW

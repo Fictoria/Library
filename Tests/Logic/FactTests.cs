@@ -66,4 +66,27 @@ public class FactTests
         var facts2 = program.Scope.Facts["alive"];
         Assert.That(facts2, Has.Count.EqualTo(0));
     }
+
+    [Test]
+    public void SpatialIndex()
+    {
+        var code = """
+                   foo: object.
+                   bar(f: foo, x: float, y: float) with spatial index (f, x, y).
+                   instantiate(baz, foo).
+                   bar(baz, 1.2, 3.4).
+                   """;
+        var program = Loader.Load(code);
+        var query = """
+                    &bar(@id, @x, @y) using (0.0, 0.0) within (10.0); [id, x, y]
+                    """;
+        var result = (List<object>)program.Evaluate(query);
+        var id = ((List<object>)result[0])[0].ToString();
+        var x = (double)((List<object>)result[1])[0];
+        var y = (double)((List<object>)result[2])[0];
+        
+        Assert.That(id, Is.EqualTo("baz"));
+        Assert.That(x, Is.EqualTo(1.2).Within(0.001));
+        Assert.That(y, Is.EqualTo(3.4).Within(0.001));
+    }
 }

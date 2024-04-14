@@ -1,0 +1,22 @@
+resource: thing.
+material: thing.
+
+tree: resource.
+quarry: resource.
+
+wood: material.
+stone: material.
+
+diameter(tree, 10.0).
+diameter(wood, 1.0).
+
+searchable(tree).
+searchable(quarry).
+
+provides(r: +resource, m: +material).
+
+provides(tree, wood).
+provides(quarry, stone).
+
+instantiate(tree1, tree).
+location(tree1, 5.0, 2.0).

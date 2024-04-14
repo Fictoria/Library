@@ -112,6 +112,17 @@ public class ExpressionTests
     }
 
     [Test]
+    public void TupleAccessor()
+    {
+        var code = """
+                   f() = [1, 2, 3].
+                   """;
+        var program = Loader.Load(code);
+
+        program.AssertEvaluationResult("f()[0]", 1);
+    }
+
+    [Test]
     public void Call()
     {
         var code = """
@@ -170,7 +181,7 @@ public class ExpressionTests
                            "foo": {
                                "bar": "baz"
                            }
-                       }
+                       }.
                    """;
         var program = Loader.Load(code);
 
@@ -178,6 +189,16 @@ public class ExpressionTests
         {
             { "foo", new Dictionary<string, object> { { "bar", "baz" } } }
         });
+    }
+
+    [Test]
+    public void StructAccessor()
+    {
+        var code = """
+                   f() = { "a": 1 }.
+                   """;
+        var program = Loader.Load(code);
+        program.AssertEvaluationResult("""f()["a"]""", 1);
     }
 
     [Test]
