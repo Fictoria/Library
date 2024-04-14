@@ -1,4 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+<<<<<<< Updated upstream
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/Users/richardpianka/Library/Caches/JetBrains/Rider2023.2/resharper-host/temp/Rider/vAny/CoverageData/_Fictoria.-20576263/Snapshot/snapshot.utdcvr</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0303b090_002D23f0_002D481b_002D8e67_002Dff03eb1e1a24/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SpatialIndex" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
@@ -19,5 +20,10 @@
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a7368dea_002Db6de_002D4576_002Daf84_002D6cf3aa45ec32/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Lambda" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+=======
+	
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=39baa3b6_002Dff1a_002D4624_002D9272_002D710d2d8592d3/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\Users\kevin\Documents\code\csharp\Library\Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
+>>>>>>> Stashed changes
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Fictoria/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
