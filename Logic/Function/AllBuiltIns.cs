@@ -17,6 +17,7 @@ public class AllBuiltIns
         new Sqrt(),
         new Floor(),
         new Ceil(),
+        new Abs(),
         new Typeof(),
         new Zip(),
         new Sort(),
@@ -27,7 +28,8 @@ public class AllBuiltIns
         new Tan(),
         new Arcsin(),
         new Arccos(),
-        new Arctan()
+        new Arctan(),
+        new Clamp()
     };
 
     public static IDictionary<string, BuiltIn> ByName => All.ToDictionary(b => b.Name, b => b);

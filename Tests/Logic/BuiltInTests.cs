@@ -98,4 +98,16 @@ public class BuiltInTests
         var result = program.Evaluate("angular_diameter(100.0, 0.3)");
         Assert.That(result, Is.EqualTo(0.003).Within(0.0001));
     }
+
+    [Test]
+    public void Clamp()
+    {
+        var program = Loader.Load("x:object.");
+        //Positive Case
+        var result = program.Evaluate("clamp(3,1,5)");
+        Assert.That(result, Is.EqualTo(3));
+        //Negative Case
+        result = program.Evaluate("clamp(3,1,2)");
+        Assert.That(result, Is.EqualTo(2));
+    }
 }
