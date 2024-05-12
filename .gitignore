@@ -4,4 +4,9 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 **/.DS_Store
+<<<<<<< HEAD
 Fictoria.sln.DotSettings.user
+=======
+.name
+.user
+>>>>>>> 2e53d816918ffeb6a4c71d75c257e1d0efb3bf20
