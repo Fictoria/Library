@@ -25,7 +25,14 @@ public class Accessor : Expression
             case Dictionary<string, object> dict:
                 return dict[(string)index];
             case List<object> list:
-                return list[Convert.ToInt32(index)];
+                var asInt = Convert.ToInt32(index);
+                if (asInt >= list.Count)
+                {
+                    return new None();
+                }
+                return list[asInt];
+            case None none:
+                return none;
         }
 
         throw new EvaluateException($"`{Structure.Text}` is not a struct or tuple");

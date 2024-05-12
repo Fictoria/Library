@@ -1,0 +1,29 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/Users/richardpianka/Library/Caches/JetBrains/Rider2023.2/resharper-host/temp/Rider/vAny/CoverageData/_Fictoria.-20576263/Snapshot/snapshot.utdcvr</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0303b090_002D23f0_002D481b_002D8e67_002Dff03eb1e1a24/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SpatialIndex" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=39baa3b6_002Dff1a_002D4624_002D9272_002D710d2d8592d3/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3e68faa8_002Dbeea_002D4b5a_002Dbb35_002D72f561050a22/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="AngularDiameter #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=707fe995_002D6562_002D4d6e_002Db391_002D853eaf2cb6f8/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="AngularDiameter" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::105B17FA-DC4A-4909-945D-C22823010FE0::net7.0::Fictoria.Tests.Logic.BuiltInTests.AngularDiameter&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8d218d19_002D461b_002D48cd_002D8fdc_002Dc338762dde95/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SpatialIndex #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a7368dea_002Db6de_002D4576_002Daf84_002D6cf3aa45ec32/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="Lambda" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/Users/richardpianka/Code/Fictoria/Fictoria/Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e27d356d_002Dd7c0_002D4d73_002Da6fc_002D2d23062a952e/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from FunctionTests.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Or&gt;
+    &lt;ProjectFile&gt;105B17FA-DC4A-4909-945D-C22823010FE0/d:Logic/f:FunctionTests.cs&lt;/ProjectFile&gt;
+    &lt;ProjectFile&gt;105B17FA-DC4A-4909-945D-C22823010FE0/d:Logic/f:BuiltInTests.cs&lt;/ProjectFile&gt;
+  &lt;/Or&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Fictoria/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

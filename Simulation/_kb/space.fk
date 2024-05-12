@@ -3,18 +3,18 @@ location(t: -thing, x: float, y: float)
 
 diameter(t: -thing, d: float).
 
-distance(x1: float, y1: float, x2: float, y2: float) =
-    sqrt((x2 - x1)^2 + (y2 - y1)^2).
+//distance(x1: float, y1: float, x2: float, y2: float) =
+//    sqrt((x2 - x1)^2 + (y2 - y1)^2).
     
-closest(from: object, to: object) =
-    location(from, @xpos, @ypos);
-    &location(@id :: typeof(to), @x, @y) using (xpos, ypos) within (1000.0);
-    results = zip(id, x, y);
-    by_distance = map(results, (a: tuple) => a + [distance(xpos, ypos, a[1], a[2])]);
-    sorted = sort(by_distance, (a: tuple) => a[3]);
-    found = sorted[0];
-    {
-        "id": found[0],
-        "point": [found[1], found[2]],
-        "distance": found[3]
-    }.
+//closest(from: object, to: object) =
+//    location(from, @xpos, @ypos);
+//    &location(@id :: typeof(to), @x, @y) using (xpos, ypos) within (1000.0);
+//    results = zip(id, x, y);
+//    by_distance = map(results, (a: tuple) => a + [distance(xpos, ypos, a[1], a[2])]);
+//    sorted = sort(by_distance, (a: tuple) => a[3]);
+//    found = sorted[0];
+//    {
+//        "id": found[0],
+//        "point": [found[1], found[2]],
+//        "distance": found[3]
+//    }.

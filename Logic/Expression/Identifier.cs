@@ -17,6 +17,11 @@ public class Identifier : Expression
     {
         if (context.Resolve(Name, out var variable))
         {
+            if (variable is None)
+            {
+                return new None();
+            }
+
             // TODO i don't remember what this was supposed to do, but it seems suspicious
             if (typeof(Expression).IsAssignableFrom(variable.GetType()))
             {

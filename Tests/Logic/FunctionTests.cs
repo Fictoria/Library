@@ -14,10 +14,10 @@ public class FunctionTests
                    f() = 42.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f()", 42);
     }
-    
+
     [Test]
     public void Arithmetic()
     {
@@ -27,12 +27,12 @@ public class FunctionTests
                    square(x: int) = x ^ 2.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("double(2)", 4);
         program.AssertEvaluationResult("halve(10)", 5);
         program.AssertEvaluationResult("square(5)", 25);
     }
-    
+
     [Test]
     public void Arguments()
     {
@@ -40,10 +40,10 @@ public class FunctionTests
                    add(a: int, b: int) = a + b.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("add(2, 3)", 5);
     }
-    
+
     [Test]
     public void ReturnsLast()
     {
@@ -54,10 +54,10 @@ public class FunctionTests
                        halfSum.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("average(2, 4)", 3);
     }
-    
+
     [Test]
     public void Compose()
     {
@@ -66,12 +66,12 @@ public class FunctionTests
                    g(x: int) = x ^ 2.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("f(f(5))", 20);
         program.AssertEvaluationResult("f(g(5))", 50);
         program.AssertEvaluationResult("g(f(5))", 100);
     }
-    
+
     [Test]
     public void Recursion()
     {
@@ -84,7 +84,7 @@ public class FunctionTests
                        }; ret.
                    """;
         var program = Loader.Load(code);
-        
+
         program.AssertEvaluationResult("fib(0)", 1);
         program.AssertEvaluationResult("fib(1)", 1);
         program.AssertEvaluationResult("fib(2)", 2);
